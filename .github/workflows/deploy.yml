@@ -54,11 +54,10 @@ jobs:
           VPS_USER: ${{ secrets.VPS_USER }}
         run: |
           SSH="ssh -i ~/.ssh/deploy_key -p ${VPS_PORT:-22}"
-          RELEASE="/srv/poliklot/releases/${GITHUB_SHA}"
+          RELEASE="/opt/poliklot/releases/${GITHUB_SHA}"
           $SSH "$VPS_USER@$VPS_HOST" "mkdir -p '$RELEASE'"
           rsync -az --delete -e "$SSH" dist/ "$VPS_USER@$VPS_HOST:$RELEASE/"
-          $SSH "$VPS_USER@$VPS_HOST" "ln -sfn '$RELEASE' /srv/poliklot/current && find /srv/poliklot/releases -mindepth 1 -maxdepth 1 -type d -printf '%T@ %p\n' | sort -nr | tail -n +6 | cut -d' ' -f2- | xargs -r rm -rf"
+          $SSH "$VPS_USER@$VPS_HOST" "ln -sfn 'releases/${GITHUB_SHA}' /opt/poliklot/current && find /opt/poliklot/releases -mindepth 1 -maxdepth 1 -type d -printf '%T@ %p\n' | sort -nr | tail -n +6 | cut -d' ' -f2- | xargs -r rm -rf"
 
       - name: Verify production
         run: curl --fail --retry 6 --retry-delay 5 --max-time 15 https://poliklot.ru/
-

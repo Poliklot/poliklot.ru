@@ -37,7 +37,7 @@ npm run build
 
 ## Deployment
 
-Every push to `main` runs `.github/workflows/deploy.yml`. The workflow validates and builds the site, uploads an immutable release directory with `rsync`, atomically moves `/srv/poliklot/current`, keeps the five newest releases and verifies the production URL.
+Every push to `main` runs `.github/workflows/deploy.yml`. The workflow validates and builds the site, uploads an immutable release directory with `rsync`, atomically moves `/opt/poliklot/current`, keeps the five newest releases and verifies the production URL.
 
 Required GitHub Actions secrets:
 
