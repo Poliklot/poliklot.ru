@@ -1,0 +1,129 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import {GravityIcon, GravityLinkButton, ToolCloud} from './GravityUI';
+import {copy, HH_URL, type Locale} from '../data/site';
+
+interface Props { locale: Locale; }
+const {locale} = Astro.props;
+const t = copy[locale];
+---
+
+<BaseLayout title={`${t.name} — ${t.role}`} description={t.lead} locale={locale} path={locale === 'ru' ? '/' : '/en/'} alternatePath={locale === 'ru' ? '/en/' : '/'}>
+	<div class="landing">
+		<section class="launch-hero page-width">
+			<p class="hero-overline">{t.name}<span>{t.heroOverline}</span></p>
+			<h1><span>{t.heroTitle[0]}</span><span>{t.heroTitle[1]}</span></h1>
+			<p class="hero-copy">{t.heroLead}</p>
+			<div class="hero-actions">
+				<a class="primary-link" href="#scope">{t.heroPrimary}</a>
+				<a class="quiet-link" href={HH_URL} target="_blank" rel="noreferrer">{t.heroSecondary}</a>
+			</div>
+			<ul class="hero-facts" aria-label={locale === 'ru' ? 'Ключевые факты' : 'Key facts'}>
+				{t.heroFacts.map((fact) => <li>{fact}</li>)}
+			</ul>
+		</section>
+
+		<section class="scope-stage" id="scope">
+			<div class="page-width scope-inner">
+				<div class="scope-copy">
+					<h2>{t.scopeTitle}</h2>
+					<p>{t.scopeLead}</p>
+				</div>
+				<div class="scope-wordflow" aria-label={t.scopeWords.join(', ')}>
+					{t.scopeWords.map((word, index) => <span class:list={{'scope-word_active': index === 5}}>{word}</span>)}
+				</div>
+			</div>
+		</section>
+
+		<section class="velocity-stage" id="velocity">
+			<div class="page-width">
+				<p class="velocity-eyebrow">{t.velocityEyebrow}</p>
+				<h2>{t.velocityTitle}</h2>
+				<p class="velocity-lead">{t.velocityLead}</p>
+				<div class="responsibility-split">
+					<article>
+						<div class="responsibility-title"><GravityIcon name="ai" size={28} /><h3>{t.agentTitle}</h3></div>
+						<ul>{t.agentItems.map((item) => <li>{item}</li>)}</ul>
+					</article>
+					<article>
+						<div class="responsibility-title"><GravityIcon name="delivery" size={28} /><h3>{t.humanTitle}</h3></div>
+						<ul>{t.humanItems.map((item) => <li>{item}</li>)}</ul>
+					</article>
+				</div>
+			</div>
+		</section>
+
+		<section class="use-stage page-width" id="use-cases">
+			<div class="section-heading">
+				<h2>{t.useTitle}</h2>
+				<p>{t.useIntro}</p>
+			</div>
+			<div class="use-grid">
+				{t.useCases.map((item, index) => (
+					<article>
+						<span aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+						<h3>{item.title}</h3>
+						<p>{item.text}</p>
+					</article>
+				))}
+			</div>
+		</section>
+
+		<section class="stack-stage" id="stack">
+			<div class="page-width stack-intro">
+				<h2>{t.stackTitle}</h2>
+				<p>{t.stackLead}</p>
+			</div>
+			<div class="stack-list">
+				{t.stackDomains.map((domain) => (
+					<article id={`stack-${domain.key}`} class:list={['stack-domain', `stack-domain_${domain.key}`]}>
+						<div class="page-width stack-domain-inner">
+							<div class="stack-domain-copy">
+								<GravityIcon name={domain.key} size={32} />
+								<h3>{domain.title}</h3>
+								<p>{domain.text}</p>
+							</div>
+							<ToolCloud items={domain.tools} />
+						</div>
+					</article>
+				))}
+			</div>
+		</section>
+
+		<section class="proof-stage" id="proof">
+			<div class="page-width proof-heading">
+				<h2>{t.proofTitle}</h2>
+				<p>{t.proofLead}</p>
+			</div>
+			<div class="page-width proof-grid">
+				{t.stats.map((item) => (
+					<article><p>{item.note}</p><strong>{item.value}</strong><span>{item.label}</span></article>
+				))}
+			</div>
+		</section>
+
+		<section class="experience-stage page-width" id="experience">
+			<h2>{t.experienceTitle}</h2>
+			<div class="experience-list">
+				{t.experience.map((item) => (
+					<article>
+						<p class="experience-period">{item.period}</p>
+						<div><h3>{item.company}</h3><strong>{item.role}</strong></div>
+						<p class="experience-copy">{item.text}</p>
+					</article>
+				))}
+			</div>
+		</section>
+
+		<section class="contact-stage" id="contact">
+			<div class="page-width contact-inner">
+				<h2>{t.contactTitle}</h2>
+				<p>{t.contactText}</p>
+				<div class="contact-actions">
+					<GravityLinkButton href={HH_URL}>{t.contactPrimary}</GravityLinkButton>
+					<a href="https://github.com/Poliklot" target="_blank" rel="noreferrer">{t.contactSecondary}</a>
+				</div>
+			</div>
+		</section>
+	</div>
+</BaseLayout>
