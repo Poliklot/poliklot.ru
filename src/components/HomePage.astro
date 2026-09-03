@@ -19,7 +19,7 @@ const t = copy[locale];
 				<a class="quiet-link" href={HH_URL} target="_blank" rel="noreferrer">{t.heroSecondary}</a>
 			</div>
 			<ul class="hero-facts" aria-label={locale === 'ru' ? 'Ключевые факты' : 'Key facts'}>
-				{t.heroFacts.map((fact) => <li>{fact}</li>)}
+				{t.heroFacts.map((fact) => <li><strong>{fact.value}</strong><span>{fact.label}</span></li>)}
 			</ul>
 		</section>
 

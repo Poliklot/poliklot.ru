@@ -50,7 +50,7 @@ ul { margin: 0; padding: 0; }
 .site-nav a:hover { color: var(--blue); }
 .gravity-header-actions { display: flex; align-items: center; gap: 0.2rem; }
 
-.launch-hero { min-height: calc(100svh - 4.25rem); padding-top: clamp(5rem, 10vh, 8rem); display: flex; flex-direction: column; align-items: center; text-align: center; }
+.launch-hero { position: relative; isolation: isolate; min-height: calc(100svh - 4.25rem); padding-top: clamp(5rem, 10vh, 8rem); display: flex; flex-direction: column; align-items: center; text-align: center; }
 .hero-overline { display: flex; align-items: center; gap: 0.75rem; font-size: 0.95rem; font-weight: 680; }
 .hero-overline span { color: var(--muted); font-weight: 450; }
 .launch-hero h1 { margin-top: clamp(2.4rem, 6vh, 4.8rem); font-size: clamp(4.5rem, 9.2vw, 8.7rem); line-height: 0.9; letter-spacing: -0.075em; font-weight: 680; text-wrap: balance; }
@@ -63,9 +63,20 @@ ul { margin: 0; padding: 0; }
 .primary-link:hover { background: var(--blue-dark); }
 .quiet-link { color: var(--blue); }
 .quiet-link:hover { background: #eef5ff; }
-.hero-facts { width: 100%; margin-top: auto; display: grid; grid-template-columns: repeat(3, 1fr); list-style: none; border-top: 1px solid var(--line); }
-.hero-facts li { padding: 1.5rem 1rem 1.7rem; color: var(--muted); font-size: 0.86rem; }
+.hero-facts { position: relative; z-index: 1; width: 100%; margin-top: auto; display: grid; grid-template-columns: repeat(3, 1fr); list-style: none; border-top: 1px solid var(--line); }
+.hero-facts li { min-height: 7.25rem; padding: 1.35rem 1.7rem 1.55rem; display: flex; align-items: baseline; justify-content: center; gap: 0.65rem; color: var(--muted); text-align: left; }
+.hero-facts strong { color: var(--ink); font-size: 2.25rem; line-height: 1; letter-spacing: -0.055em; font-weight: 680; }
+.hero-facts span { max-width: 10rem; font-size: 0.8rem; line-height: 1.35; }
 .hero-facts li + li { border-left: 1px solid var(--line); }
+
+@media (min-width: 1100px) {
+	.launch-hero h1 span { animation: hero-line-in 850ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+	.launch-hero h1 span:last-child { animation-delay: 90ms; }
+	.hero-copy, .hero-actions { animation: hero-support-in 700ms 240ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+}
+
+@keyframes hero-line-in { from { opacity: 0; transform: translateY(0.38em); } to { opacity: 1; transform: translateY(0); } }
+@keyframes hero-support-in { from { opacity: 0; transform: translateY(1rem); } to { opacity: 1; transform: translateY(0); } }
 
 .scope-stage { scroll-margin-top: 4.25rem; padding: clamp(7rem, 13vw, 12rem) 0; background: var(--black); color: #fff; }
 .scope-copy { display: grid; grid-template-columns: minmax(0, 7fr) minmax(18rem, 4fr); gap: 6rem; align-items: end; }
@@ -166,6 +177,22 @@ ul { margin: 0; padding: 0; }
 	.experience-copy { grid-column: 2; }
 }
 
+@media (min-width: 1440px) {
+	.page-width { width: min(1380px, calc(100% - 96px)); }
+	.launch-hero { padding-top: clamp(6rem, 10vh, 9.5rem); }
+	.launch-hero h1 { font-size: clamp(8.7rem, 9.1vw, 10rem); }
+	.hero-copy { max-width: 53rem; font-size: 1.42rem; }
+	.hero-facts li { min-height: 8rem; }
+	.hero-facts strong { font-size: 2.65rem; }
+	.stack-domain-inner { min-height: 35rem; }
+}
+
+@media (min-width: 1920px) {
+	.page-width { width: min(1600px, calc(100% - 128px)); }
+	.launch-hero h1 { font-size: 11rem; }
+	.scope-copy { grid-template-columns: minmax(0, 8fr) minmax(22rem, 4fr); }
+}
+
 @media (max-width: 680px) {
 	.page-width { width: min(100% - 40px, 1200px); }
 	.document-bar-inner { min-height: 3.8rem; gap: 0.5rem; }
@@ -182,7 +209,9 @@ ul { margin: 0; padding: 0; }
 	.hero-actions { flex-direction: column; gap: 0.25rem; }
 	.primary-link, .quiet-link { min-width: 12rem; }
 	.hero-facts { margin-top: 4rem; grid-template-columns: 1fr; }
-	.hero-facts li { padding: 0.9rem 0; }
+	.hero-facts li { min-height: 0; padding: 0.9rem 0; justify-content: center; gap: 0.55rem; text-align: left; }
+	.hero-facts strong { min-width: 2.5rem; font-size: 1.25rem; }
+	.hero-facts span { width: 12.5rem; max-width: none; font-size: 0.76rem; }
 	.hero-facts li + li { border-left: 0; border-top: 1px solid var(--line); }
 	.scope-stage, .velocity-stage, .contact-stage { scroll-margin-top: 3.8rem; }
 	.scope-copy h2, .section-heading h2, .proof-heading h2, .experience-stage > h2 { font-size: 3.25rem; }

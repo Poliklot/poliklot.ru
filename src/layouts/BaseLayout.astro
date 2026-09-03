@@ -20,6 +20,10 @@ const home = locale === 'ru' ? '/' : '/en/';
 const canonical = new URL(path, Astro.site ?? 'https://poliklot.ru');
 const alternateLocale = locale === 'ru' ? 'en' : 'ru';
 const alternate = alternatePath ? new URL(alternatePath, Astro.site ?? 'https://poliklot.ru') : undefined;
+const ogImage = new URL('/og-poliklot.png', Astro.site ?? 'https://poliklot.ru');
+const ogImageAlt = locale === 'ru'
+	? 'Игорь / Poliklot — сложные цифровые продукты целиком'
+	: 'Igor / Poliklot — complex digital products end to end';
 const rootClassName = getRootClassName({ theme: 'light' });
 const languageHref = alternatePath ?? (locale === 'ru' ? '/en/' : '/');
 ---
@@ -37,9 +41,16 @@ const languageHref = alternatePath ?? (locale === 'ru' ? '/en/' : '/');
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:url" content={canonical} />
-		<meta property="og:image" content={new URL('/og.png', Astro.site ?? 'https://poliklot.ru')} />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:secure_url" content={ogImage} />
+		<meta property="og:image:type" content="image/png" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content={ogImageAlt} />
 		<meta property="og:locale" content={locale === 'ru' ? 'ru_RU' : 'en_US'} />
 		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:image" content={ogImage} />
+		<meta name="twitter:image:alt" content={ogImageAlt} />
 		<link rel="canonical" href={canonical} />
 		{alternate && <link rel="alternate" hreflang={alternateLocale} href={alternate} />}
 		<link rel="alternate" hreflang="x-default" href={new URL('/', Astro.site ?? 'https://poliklot.ru')} />
