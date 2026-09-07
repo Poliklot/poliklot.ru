@@ -4,7 +4,7 @@
 
 **Impact:** high  
 **Effort:** low  
-**Status:** prepared locally
+**Status:** deployed; Telegram cache refresh remains a user-account action
 
 1. Deploy the current application changes.
 2. Confirm `https://poliklot.ru/og-poliklot-2026-09.jpg` returns HTTP 200 and `Content-Type: image/jpeg`.
@@ -20,23 +20,23 @@ Do not use `?preview=2` as an SEO or cache-version URL. It correctly canonicaliz
 **Impact:** high  
 **Effort:** low  
 **Dependency:** VPS configuration access  
-**Status:** example prepared; live server change still required
+**Status:** completed and verified on the live VPS
 
-Apply the updated `deploy/Caddyfile.example` logic to the live Caddy configuration, validate, then reload Caddy. Verify:
+The updated `deploy/Caddyfile.example` logic was applied to the live Caddy configuration after validation and a rollback-safe backup. Verification:
 
 ```bash
 curl -I https://poliklot.ru/does-not-exist
 ```
 
-Expected result: `HTTP/2 404`, with the custom 404 page body.
+Verified result: `HTTP/2 404`, with the custom 404 page body and security headers.
 
-Also confirm the new `Content-Security-Policy` response header does not break the page.
+The new `Content-Security-Policy` response header is active on both normal and error responses.
 
 ## 3. Quick win: deploy structured entity data
 
 **Impact:** high  
 **Effort:** low  
-**Status:** prepared and locally validated
+**Status:** deployed and validated
 
 - `WebSite` defines the Poliklot site entity.
 - `ProfilePage` defines each language page and points to the same person.
@@ -49,7 +49,7 @@ After deployment, validate the production source and Google's Rich Results Test.
 
 **Impact:** medium/high for GEO  
 **Effort:** low  
-**Status:** prepared locally
+**Status:** deployed and returning `text/plain; charset=utf-8`
 
 Verify after deployment:
 
@@ -64,7 +64,7 @@ Expected: HTTP 200 and a plain-text content type, not HTML. Keep the files synch
 
 **Impact:** medium  
 **Effort:** low  
-**Status:** prepared locally
+**Status:** deployed
 
 - self-referencing `ru` and `en` hreflang on both pages;
 - `x-default` to the Russian root;

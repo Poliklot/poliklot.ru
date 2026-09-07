@@ -1,8 +1,9 @@
 # SEO + GEO audit — poliklot.ru
 
-**Audit date:** 2026-09-07  
-**Scope:** public Russian homepage, English alternate, `?preview=2`, crawl controls, social metadata, structured data, performance, and AI-search readiness.  
-**Live baseline:** **61/100 — Needs improvement**  
+**Audit date:** 2026-09-07
+**Scope:** public Russian homepage, English alternate, `?preview=2`, crawl controls, social metadata, structured data, performance, and AI-search readiness.
+**Live baseline:** **61/100 — Needs improvement**
+**Post-remediation estimate:** **90–94/100** after the 2026-09-07 application deploy and verified Caddy correction.
 **Score confidence:** medium. Core Web Vitals were measured with Lighthouse, but Search Console, Yandex Webmaster, and real Telegram cache state were not available.
 
 ## Audit summary
@@ -83,7 +84,7 @@ Scores are directional and use the audit rubric rather than equating Lighthouse 
 
 Weighted result: approximately **61/100**. After the prepared application changes and the live Caddy correction, the same checklist is expected to move into the **90–94** band; this is an implementation estimate, not a ranking guarantee.
 
-## Prepared implementation
+## Implemented remediation
 
 - versioned JPEG social card at 1200×630 and 97 KB;
 - full Open Graph and Twitter metadata;
@@ -93,7 +94,7 @@ Weighted result: approximately **61/100**. After the prepared application change
 - complete bilingual hreflang in HTML and sitemap;
 - English description reduced to 158 characters;
 - header logo reduced from 92 KB to 28 KB;
-- corrected Caddy soft-404 and CSP example;
+- corrected live Caddy soft-404 handling and CSP, with the repository example synchronized;
 - stronger deployment verification for the social card and llms file.
 
 ## Unknowns and follow-ups
@@ -102,4 +103,4 @@ Weighted result: approximately **61/100**. After the prepared application change
 - Google Search Console and Yandex Webmaster were not available, so indexing status and actual search queries remain unknown.
 - The sample `site:poliklot.ru` search did not surface the portfolio; this must be confirmed in webmaster tools before calling it an indexing problem.
 - Telegram's internal cached object cannot be inspected without the user's Telegram account. Production headers and crawler accessibility were verified directly.
-- The Caddy change is not applied by the existing content deployment workflow and must be installed/reloaded separately on the VPS.
+- Live Caddy was validated before reload; unknown URLs now return HTTP 404 with the custom page and the expected security headers.

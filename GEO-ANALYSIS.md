@@ -1,16 +1,16 @@
 # GEO analysis — poliklot.ru
 
-**Audit date:** 2026-09-07  
-**Current live GEO readiness:** **40/100**  
-**Prepared-build estimate:** **80–85/100** after application deployment; the remaining gap is external entity authority and production verification.
+**Audit date:** 2026-09-07
+**Pre-remediation GEO readiness:** **40/100**
+**Current live estimate:** **80–85/100** after application deployment and production verification; the remaining gap is external entity authority and webmaster indexing data.
 
 ## Platform breakdown
 
 | Platform | Current readiness | Main signal |
 |---|---:|---|
-| Google AI Overviews | 50/100 | Static indexable content and clean headings, but no entity schema and uncertain index status. |
-| ChatGPT search | 45/100 | Crawlers are allowed and GitHub evidence exists, but there is no valid llms file or first-party person graph in production. |
-| Perplexity | 40/100 | Crawlable source, but weak cross-platform person mentions and limited citation-ready passages on the visual landing itself. |
+| Google AI Overviews | 82/100 | Static indexable content, complete hreflang, entity schema, and strong performance; actual index status still needs Search Console. |
+| ChatGPT search | 85/100 | Search crawlers are explicitly allowed, the person graph is live, and both llms files are valid. |
+| Perplexity | 75/100 | The source is crawlable and citation-ready context is available, but cross-platform person mentions remain limited. |
 
 These are readiness estimates, not visibility or ranking measurements.
 
@@ -30,8 +30,8 @@ No critical content depends on client-side JavaScript. The full portfolio is pre
 
 ## llms.txt status
 
-**Production:** invalid. `/llms.txt` and `/llms-full.txt` currently return the HTML 404 fallback with HTTP 200.  
-**Prepared build:** real Markdown files with canonical pages, key facts, experience, technology range, authoritative links, and usage terms.
+**Before remediation:** `/llms.txt` and `/llms-full.txt` returned the HTML 404 fallback with HTTP 200.
+**Current production:** real Markdown files with canonical pages, key facts, experience, technology range, authoritative links, and usage terms; both return HTTP 200 as `text/plain; charset=utf-8`.
 
 The concise file is designed for discovery. The full file supplies self-contained sections that can be quoted without scraping the visual landing into fragments.
 
