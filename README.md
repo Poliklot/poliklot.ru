@@ -12,6 +12,16 @@ Source for [poliklot.ru](https://poliklot.ru): a bilingual personal product land
 - no remote fonts or client-side framework runtime;
 - Russian homepage with a complete English version under `/en/`.
 
+## Search and link previews
+
+- bilingual canonical and `hreflang` metadata is mirrored in `sitemap.xml`;
+- `Person`, `ProfilePage` and `WebSite` JSON-LD describe the Poliklot entity;
+- `/llms.txt` and `/llms-full.txt` provide concise and expanded AI-readable context;
+- major search and AI crawlers are explicitly allowed in `robots.txt`;
+- the Open Graph card uses a versioned filename so Telegram and other messengers do not keep serving an overwritten cached image.
+
+When the social artwork changes, publish it under a new filename and update `ogImage` in `src/layouts/BaseLayout.astro`. After deployment, refresh the clean canonical URL through Telegram's `@WebpageBot`; query parameters are not a reliable substitute because the page correctly canonicalizes to `/`.
+
 ## Stack
 
 - Astro 7

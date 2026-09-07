@@ -81,7 +81,7 @@ export const copy = {
 		headerResume: 'Résumé',
 		name: 'Igor / Poliklot',
 		role: 'Full-stack developer · Frontend lead',
-		lead: 'I design, build and ship complex digital products end to end. AI agents provide team-level execution speed while my experience keeps architecture, quality and outcomes under control.',
+		lead: 'Full-stack developer and frontend lead building complex products end to end. AI agents accelerate delivery while experience protects architecture and quality.',
 		nav: { scope: 'Capabilities', stack: 'Stack', experience: 'Experience' },
 		heroOverline: 'Full-stack developer · Frontend lead',
 		heroTitle: ['Complex products.', 'End to end.'],

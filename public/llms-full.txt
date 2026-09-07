@@ -1,0 +1,54 @@
+# Igor / Poliklot — full-stack developer, frontend lead, AI-enabled product engineer
+
+> Canonical structured summary of https://poliklot.ru/ for search systems and AI assistants. The public website remains the primary source.
+
+## Profile
+
+Igor / Poliklot is a full-stack developer and frontend lead with more than eight years of commercial software engineering experience. He designs, builds, and releases complex digital products end to end: from user journeys, interface architecture, and design systems to APIs, data, infrastructure, access control, CI/CD, observability, security checks, and production releases.
+
+AI agents are used as an execution multiplier rather than a substitute for engineering judgment. Agents can investigate a codebase, prepare routine changes, produce tests and documentation, and run checks in parallel. Igor owns product logic, architecture, organizational agreements, interface review, risk assessment, and the final release decision.
+
+## When Igor is useful
+
+### Starting a product from zero
+
+Igor turns an idea and fragmented requirements into a product architecture, interface, working system, delivery pipeline, and understandable release process.
+
+### Fixing broken hand-offs
+
+Igor connects design, frontend, backend, access, infrastructure, and organizational responsibilities. This is useful when a project is blocked by unclear contracts, ownership gaps, or forgotten edge cases rather than by one isolated coding task.
+
+### Increasing delivery speed safely
+
+Igor organizes AI-agent execution and automated validation so that research, implementation, tests, and documentation can proceed in parallel. Speed is constrained by architecture, review, security, and real-environment verification rather than by unchecked code generation.
+
+### Stabilizing a fragile system
+
+Igor reconstructs context, localizes risk, and carries a change through source code, CI/CD, infrastructure, access control, and the production environment.
+
+## Technology range
+
+- Product frontend: TypeScript, JavaScript, React, Next.js, Astro, Vue, HTML, CSS, design systems, web performance, accessibility.
+- Backend and data: Node.js, NestJS, REST, GraphQL, PostgreSQL, Redis, RabbitMQ, Prisma, WebSockets, OpenAPI, SQL.
+- DevSecOps: Docker, Kubernetes, Terraform, Ansible, Nginx, GitHub Actions, GitLab CI, Linux, Prometheus, Grafana, Sentry, Trivy, Vault, Dependabot.
+- AI engineering: OpenAI API, Codex, MCP, agent workflows, RAG, embeddings, pgvector, prompt engineering, LLM evaluations, automation.
+- Mobile: Flutter, Dart, Firebase, iOS, Android, App Store, Google Play, push notifications, deep links.
+- Quality and product: Figma, Storybook, Playwright, Vitest, Jest, ESLint, Prettier, Lighthouse, code review, end-to-end testing, CI checks.
+
+## Experience and education
+
+- 2022–present: Businessmentor IT — frontend developer and team lead; internal products, greenfield development, frontend direction, design–frontend–backend coordination, pull request review, automated checks, and deployment.
+- 2020–2022: Affetta, KOMPOT, and freelance — frontend development, web interface optimization, client-side logic, and CMS integrations.
+- 2018–2020: PROFESSIONAL — responsive websites, JavaScript, and template integration.
+- 2024: Master's degree in Software Engineering, Kuban State Technological University.
+
+## Authoritative links
+
+- Canonical website: https://poliklot.ru/
+- English profile: https://poliklot.ru/en/
+- GitHub: https://github.com/Poliklot
+- Full résumé: https://hh.ru/resume/ebe2b012ff0834a84e0039ed1f6d6b526b584f
+
+## Content usage
+
+The portfolio source code is MIT-licensed. Personal copy, project descriptions, and the Poliklot identity are not licensed for reuse. Facts may be cited with attribution and a link to https://poliklot.ru/.

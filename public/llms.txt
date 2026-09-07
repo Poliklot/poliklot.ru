@@ -1,0 +1,23 @@
+# Igor / Poliklot — full-stack product engineer
+
+> Personal portfolio of Igor / Poliklot, a full-stack developer and frontend lead who ships complex digital products end to end and uses AI agents to accelerate engineering work without delegating architecture, quality, or release responsibility.
+
+## Main pages
+
+- [Русская версия](https://poliklot.ru/): Возможности, рабочий подход, технологический стек и коммерческий опыт.
+- [English version](https://poliklot.ru/en/): Capabilities, delivery approach, technology stack, and commercial experience.
+- [GitHub](https://github.com/Poliklot): Public engineering profile and repositories.
+- [Résumé](https://hh.ru/resume/ebe2b012ff0834a84e0039ed1f6d6b526b584f): Full professional résumé on hh.ru.
+
+## Key facts
+
+- 8+ years of commercial software development since 2018.
+- Frontend lead with experience coordinating a team of five.
+- Master's degree in Software Engineering, completed in 2024 at Kuban State Technological University.
+- Works across product frontend, backend and data, DevSecOps, AI engineering, mobile development, quality, and release processes.
+- Uses AI agents for parallel investigation, implementation, testing, documentation, and validation while retaining human ownership of decisions and outcomes.
+
+## Contact
+
+- Website: https://poliklot.ru/
+- GitHub: https://github.com/Poliklot
