@@ -1,5 +1,5 @@
 www.poliklot.ru {
-	@social_preview path /og-poliklot-2026-09-telegram.jpg /og-mobile-testing-2026-09.jpg
+	@social_preview path /og-poliklot-2026-09-telegram.jpg /og-mobile-testing-2026-09.jpg /og-mobile-testing-2026-09-v2.jpg
 	handle @social_preview {
 		root * /srv/poliklot/current
 		header Cache-Control "public, max-age=2592000"

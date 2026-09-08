@@ -2,9 +2,11 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import '../../styles/article.css';
 
-const title = 'Рекомендации по тестированию мобильных приложений';
-const description = 'Практическое руководство для тестировщиков и координаторов: установка, регулярные проверки, обновления, обратная связь и требования Google Play.';
-const googlePlayUrl = 'https://support.google.com/googleplay/android-developer/answer/14151465?hl=ru';
+const title = 'Как пройти обязательное тестирование в Google Play перед первой публикацией';
+const description = 'Пошаговая инструкция для новых личных аккаунтов Google Play: 12 тестировщиков, 14 дней, частота проверок, передача результатов и заявка на публикацию.';
+const requirementsUrl = 'https://support.google.com/googleplay/android-developer/answer/14151465?hl=ru';
+const testingSetupUrl = 'https://support.google.com/googleplay/android-developer/answer/9845334?hl=ru';
+const testerFeedbackUrl = 'https://support.google.com/googleplay/answer/7003180?hl=ru';
 ---
 
 <BaseLayout
@@ -13,297 +15,303 @@ const googlePlayUrl = 'https://support.google.com/googleplay/android-developer/a
 	locale="ru"
 	path="/articles/mobile-app-testing/"
 	pageType="article"
-	ogImagePath="https://www.poliklot.ru/og-mobile-testing-2026-09.jpg"
-	ogImageAlt="Рекомендации по тестированию мобильных приложений — руководство Poliklot"
+	ogImagePath="https://www.poliklot.ru/og-mobile-testing-2026-09-v2.jpg"
+	ogImageAlt="Как пройти обязательное тестирование в Google Play — Poliklot"
 	datePublished="2026-09-08"
 	dateModified="2026-09-08"
 >
 	<article class="guide">
-		<header class="guide-hero">
-			<div class="page-width">
-				<nav class="guide-breadcrumbs" aria-label="Хлебные крошки">
-					<a href="/">Игорь / Poliklot</a>
-					<span aria-hidden="true">/</span>
-					<span>Практические материалы</span>
-				</nav>
-
-				<div class="guide-hero-grid">
-					<div class="guide-hero-copy">
-						<p class="guide-meta"><span>Руководство</span><time datetime="2026-09-08">8 сентября 2026</time><span>8 минут</span></p>
-						<h1>Тестирование мобильных приложений</h1>
-						<p class="guide-lead">Цель тестирования — проверить приложение в реальных условиях, собрать обратную связь и убедиться, что обновления исправляют проблемы. Просто установить приложение недостаточно.</p>
-						<div class="guide-actions">
-							<a class="guide-primary" href="#tester">Чек-лист тестировщика</a>
-							<button class="guide-share" type="button" data-share-button data-goatcounter-click="share-mobile-testing" data-goatcounter-title="Скопировали ссылку на руководство">
-								<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7V5a4 4 0 0 1 4-4h6a5 5 0 0 1 5 5v6a4 4 0 0 1-4 4h-2v3a4 4 0 0 1-4 4H6a5 5 0 0 1-5-5v-6a5 5 0 0 1 5-5h2Zm2 0h3a4 4 0 0 1 4 4v3h2a2 2 0 0 0 2-2V6a3 3 0 0 0-3-3h-6a2 2 0 0 0-2 2v2Zm-4 2a3 3 0 0 0-3 3v6a3 3 0 0 0 3 3h7a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2H6Z" /></svg>
-								<span data-share-label>Скопировать ссылку</span>
-							</button>
-						</div>
-					</div>
-
-					<div class="test-device" aria-hidden="true">
-						<div class="test-device-top"><span></span><span></span></div>
-						<div class="test-device-screen">
-							<div class="test-signal"><span>Сборка 1.4.2</span><strong>Готова к проверке</strong></div>
-							<ul>
-								<li><i></i><span><strong>Авторизация</strong><small>Пройдено</small></span><b>✓</b></li>
-								<li><i></i><span><strong>Основной сценарий</strong><small>Пройдено</small></span><b>✓</b></li>
-								<li class="test-device-active"><i></i><span><strong>Отправка фото</strong><small>Проверяется</small></span><em></em></li>
-								<li><i></i><span><strong>Обновление</strong><small>Следующий шаг</small></span><span class="test-device-arrow">›</span></li>
-							</ul>
-							<div class="test-device-progress"><span></span></div>
-						</div>
-						<p class="test-device-note"><span>●</span> Реальные сценарии, а не формальное участие</p>
-					</div>
+		<header class="guide-hero page-width">
+			<nav class="guide-breadcrumbs" aria-label="Хлебные крошки">
+				<a href="/">Игорь / Poliklot</a><span aria-hidden="true">/</span><span>Материалы</span>
+			</nav>
+			<div class="guide-hero-copy">
+				<p class="guide-kicker">Google Play · Первая публикация</p>
+				<h1>Как пройти обязательное тестирование</h1>
+				<p class="guide-lead">Требования Google и конкретные действия для тестировщиков, руководителей и разработчиков.</p>
+				<div class="guide-meta">
+					<time datetime="2026-09-08">8 сентября 2026</time>
+					<span>7 минут</span>
+					<button class="guide-share" type="button" data-share-button data-goatcounter-click="share-mobile-testing" data-goatcounter-title="Скопировали ссылку на руководство">
+						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7V5a4 4 0 0 1 4-4h6a5 5 0 0 1 5 5v6a4 4 0 0 1-4 4h-2v3a4 4 0 0 1-4 4H6a5 5 0 0 1-5-5v-6a5 5 0 0 1 5-5h2Zm2 0h3a4 4 0 0 1 4 4v3h2a2 2 0 0 0 2-2V6a3 3 0 0 0-3-3h-6a2 2 0 0 0-2 2v2Zm-4 2a3 3 0 0 0-3 3v6a3 3 0 0 0 3 3h7a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2H6Z" /></svg>
+						<span data-share-label>Скопировать ссылку</span>
+					</button>
 				</div>
-
-				<ul class="guide-numbers" aria-label="Ключевые параметры руководства">
-					<li><strong>2</strong><span>роли в процессе</span></li>
-					<li><strong>6 + 6</strong><span>этапов проверки</span></li>
-					<li><strong>12</strong><span>участников Google Play*</span></li>
-					<li><strong>14</strong><span>дней подряд*</span></li>
-				</ul>
 			</div>
 		</header>
 
 		<div class="guide-body page-width">
-			<aside class="guide-toc" aria-label="Содержание статьи">
-				<p>Содержание</p>
-				<ol>
-					<li><a href="#tester">Для тестировщиков</a></li>
-					<li><a href="#installation">Установка и участие</a></li>
-					<li><a href="#updates">Обновления</a></li>
-					<li><a href="#feedback">Обратная связь</a></li>
-					<li><a href="#organizer">Для организатора</a></li>
-					<li><a href="#google-play">Требования Google Play</a></li>
-				</ol>
-			</aside>
+			<div class="guide-tabs-shell">
+				<div class="guide-tabs" role="tablist" aria-label="Информация по ролям">
+					<button type="button" role="tab" id="tab-general" aria-controls="panel-general" aria-selected="true" tabindex="0" data-guide-tab="general">Общая информация</button>
+					<button type="button" role="tab" id="tab-testers" aria-controls="panel-testers" aria-selected="false" tabindex="-1" data-guide-tab="testers">Тестировщикам</button>
+					<button type="button" role="tab" id="tab-managers" aria-controls="panel-managers" aria-selected="false" tabindex="-1" data-guide-tab="managers">Руководителям</button>
+					<button type="button" role="tab" id="tab-developers" aria-controls="panel-developers" aria-selected="false" tabindex="-1" data-guide-tab="developers">Разработчикам</button>
+				</div>
+			</div>
 
 			<div class="guide-content">
-				<section class="guide-opening" aria-labelledby="guide-principle">
-					<p class="opening-mark" aria-hidden="true">✓</p>
-					<div>
-						<h2 id="guide-principle">Хорошее тестирование оставляет доказательства.</h2>
-						<p>Кто участвовал, какую версию проверял, какие сценарии прошёл, что нашёл и что перепроверил после обновления. Именно эта цепочка превращает установку приложения в полезное тестирование.</p>
+				<section class="guide-tab-panel" id="panel-general" role="tabpanel" aria-labelledby="tab-general" data-guide-panel="general">
+					<div class="tab-intro">
+						<p>Коротко</p>
+						<h2>Что требуется для первой публикации</h2>
 					</div>
-				</section>
 
-				<section class="role-section role-section-tester" id="tester" aria-labelledby="tester-title">
-					<div class="role-heading">
-						<div class="role-symbol" aria-hidden="true">
-							<svg viewBox="0 0 32 32"><path d="M10 2h12a5 5 0 0 1 5 5v18a5 5 0 0 1-5 5H10a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v18a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H10Zm3 20h6v2h-6v-2Z" /></svg>
+					<section class="role-section" id="requirements" aria-labelledby="requirements-title">
+						<div class="role-heading"><span>01</span><h2 id="requirements-title">Проверьте, относится ли требование к вам</h2></div>
+						<div class="section-copy">
+							<p>Закрытое тестирование обязательно для личных аккаунтов разработчика Google Play, созданных после 13 ноября 2023 года.</p>
+							<div class="play-rule-numbers" aria-label="Минимальные требования Google Play">
+								<div><strong>12</strong><span>тестировщиков минимум</span></div>
+								<div><strong>14</strong><span>дней непрерывного участия</span></div>
+							</div>
+							<p>После выполнения условий нужно отдельно подать заявку на доступ к рабочей версии. Истечение 14 дней не означает автоматическое одобрение.</p>
+							<a class="source-link" href={requirementsUrl} target="_blank" rel="noreferrer" data-goatcounter-click="open-google-play-testing-requirements">Официальные требования Google Play <span aria-hidden="true">↗</span></a>
 						</div>
-						<div><p>Роль 1</p><h2 id="tester-title">Для тестировщиков</h2></div>
-					</div>
-					<p class="role-intro">Ваша задача — пройти реальные пользовательские сценарии и точно описать результат. Не нужно искусственно увеличивать время в приложении.</p>
+					</section>
 
-					<div class="steps">
-						<section class="step" id="installation">
-							<div class="step-index">01</div>
-							<div class="step-copy">
-								<h3>Установка и участие</h3>
-								<ul class="check-list">
-									<li>Устанавливайте приложение только по ссылке и инструкции организатора.</li>
-									<li>Используйте учётную запись, которую передали для доступа к тестированию.</li>
-									<li>Если нужно присоединиться к программе тестирования, обязательно подтвердите участие. Открытие карточки и установка приложения не всегда означают присоединение.</li>
-									<li>Сообщите организатору, удалось ли установить и запустить приложение.</li>
-								</ul>
-							</div>
-						</section>
-
-						<section class="step">
-							<div class="step-index">02</div>
-							<div class="step-copy">
-								<h3>Регулярное использование</h3>
-								<ul class="check-list">
-									<li>Пользуйтесь приложением весь согласованный период, желательно ежедневно.</li>
-									<li>Выполняйте обычные пользовательские действия и сценарии организатора.</li>
-									<li>Проверяйте разные функции, а не только главный экран.</li>
-								</ul>
-								<div class="inline-note"><strong>Важно</strong><span>Постоянно держать приложение открытым не нужно. Ценятся реальные проверки, а не количество минут.</span></div>
-							</div>
-						</section>
-
-						<section class="step" id="updates">
-							<div class="step-index">03</div>
-							<div class="step-copy">
-								<h3>Обновления</h3>
-								<ul class="check-list">
-									<li>Следите за сообщениями о новых версиях и устанавливайте обновления из указанного источника.</li>
-									<li>После обновления проверяйте запуск, сохранность входа и данных, а также основные функции.</li>
-									<li>Повторно проверяйте ошибки, которые должны быть исправлены.</li>
-									<li>Если обновление не появляется или не устанавливается — сообщите организатору.</li>
-								</ul>
-							</div>
-						</section>
-
-						<section class="step" id="feedback">
-							<div class="step-index">04</div>
-							<div class="step-copy">
-								<h3>Обратная связь</h3>
-								<p>Сообщайте не только об ошибках, но и о неудобствах, непонятных действиях и результатах успешных проверок.</p>
-								<blockquote>«Проверил вход, поиск и отправку фото — всё работает» полезнее, чем просто «Всё нормально».</blockquote>
-
-								<div class="bug-report">
-									<div class="bug-report-head"><span>Сообщение об ошибке</span><span>6 деталей</span></div>
-									<ol>
-										<li><span>Среда</span><p>Версия приложения, модель телефона и версия ОС</p></li>
-										<li><span>Шаги</span><p>Последовательность действий до проблемы</p></li>
-										<li><span>Результат</span><p>Что ожидалось и что произошло фактически</p></li>
-										<li><span>Частота</span><p>Примерное время и повторяемость проблемы</p></li>
-										<li><span>Материалы</span><p>Скриншот или видео, если они помогают</p></li>
-										<li><span>Сеть</span><p>Wi-Fi или мобильная сеть, использовался ли VPN</p></li>
-									</ol>
-								</div>
-							</div>
-						</section>
-
-						<section class="step">
-							<div class="step-index">05</div>
-							<div class="step-copy">
-								<h3>Осторожность с данными</h3>
-								<ul class="check-list">
-									<li>Уточните, можно ли использовать реальные данные или нужны тестовые.</li>
-									<li>Не выполняйте необратимые действия, покупки и публикации без отдельного сценария.</li>
-									<li>Не публикуйте пароли, коды доступа и персональные данные.</li>
-									<li>Не очищайте данные и не переустанавливайте приложение многократно без согласования.</li>
-								</ul>
-							</div>
-						</section>
-
-						<section class="step">
-							<div class="step-index">06</div>
-							<div class="step-copy">
-								<h3>Завершение участия</h3>
-								<ul class="check-list">
-									<li>Не покидайте программу тестирования, пока организатор не сообщит о завершении.</li>
-									<li>Предупредите, если не можете продолжать или сменили устройство или учётную запись.</li>
-									<li>В конце дайте короткую сводку: что проверили, что не успели, какие проблемы остались.</li>
-								</ul>
-							</div>
-						</section>
-					</div>
-				</section>
-
-				<div class="process-band" aria-label="Цикл качественного тестирования">
-					<p>Установка</p><span>→</span><p>Сценарий</p><span>→</span><p>Отзыв</p><span>→</span><p>Исправление</p><span>→</span><p>Перепроверка</p>
-				</div>
-
-				<section class="role-section role-section-organizer" id="organizer" aria-labelledby="organizer-title">
-					<div class="role-heading">
-						<div class="role-symbol" aria-hidden="true">
-							<svg viewBox="0 0 32 32"><path d="M15 2h2v8.1a6 6 0 0 1 4.2 9.4l5.7 5.7-1.4 1.4-5.7-5.7A6 6 0 0 1 11 13l-5.6-5.6L6.8 6 12.4 11a6 6 0 0 1 2.6-.9V2Zm1 10a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z" /></svg>
+					<section class="role-section" id="general-process" aria-labelledby="general-process-title">
+						<div class="role-heading"><span>02</span><h2 id="general-process-title">Пройдите четыре этапа</h2></div>
+						<div class="section-copy">
+							<ol class="action-list">
+								<li><span><strong>Подготовка.</strong> Создайте выпуск в разделе закрытого тестирования, список участников, сценарии и единый канал связи.</span></li>
+								<li><span><strong>Подключение.</strong> Каждый участник открывает ссылку под добавленным Google-аккаунтом, вступает в программу и устанавливает приложение.</span></li>
+								<li><span><strong>14 дней.</strong> Не менее 12 человек остаются подключёнными, проверяют приложение, оставляют личные отзывы в Google Play и передают подробные результаты координатору.</span></li>
+								<li><span><strong>Заявка.</strong> Организатор описывает участие, обратную связь, исправления и готовность приложения.</span></li>
+							</ol>
+							<p class="note">Добавить 12 почтовых адресов и ждать недостаточно. Участники должны фактически вступить в программу. При слабом тестировании Google может потребовать продолжить тест.</p>
 						</div>
-						<div><p>Роль 2</p><h2 id="organizer-title">Для организатора и координатора</h2></div>
-					</div>
-					<p class="role-intro">Задача координатора — сделать участие понятным, видеть фактическую активность и доводить каждый полезный сигнал до решения.</p>
+					</section>
 
-					<div class="steps">
-						<section class="step">
-							<div class="step-index">01</div>
-							<div class="step-copy">
-								<h3>Подготовьте понятный старт</h3>
-								<p>До начала тестирования отправьте участникам одним сообщением:</p>
-								<ul class="check-list">
-									<li>ссылку и точный порядок установки;</li>
-									<li>номер актуальной версии;</li>
-									<li>сроки и сценарии проверки;</li>
-									<li>правила работы с реальными и тестовыми данными;</li>
-									<li>канал связи и ответственного за вопросы.</li>
-								</ul>
-							</div>
-						</section>
-
-						<section class="step">
-							<div class="step-index">02</div>
-							<div class="step-copy">
-								<h3>Ведите учёт фактического участия</h3>
-								<div class="participation-table-wrap">
-									<table class="participation-table">
-										<thead><tr><th>Что учитывать</th><th>Что проверять</th></tr></thead>
-										<tbody>
-											<tr><td>Контакт и аккаунт</td><td>Предоставлен ли доступ нужному человеку</td></tr>
-											<tr><td>Устройство и ОС</td><td>Есть ли разнообразие устройств</td></tr>
-											<tr><td>Подтверждение участия</td><td>Присоединился ли человек к программе</td></tr>
-											<tr><td>Установка и версия</td><td>Запускается ли приложение, установлено ли обновление</td></tr>
-											<tr><td>Последняя проверка</td><td>Какие сценарии выполнены</td></tr>
-											<tr><td>Обратная связь</td><td>Получены ли замечания или результаты успешных проверок</td></tr>
-											<tr><td>Проблемы</td><td>Есть ли препятствия для дальнейшего участия</td></tr>
-										</tbody>
-									</table>
-								</div>
-								<div class="inline-note"><strong>Не путайте</strong><span>список допущенных пользователей с активными участниками, а установленное приложение — с регулярным тестированием.</span></div>
-							</div>
-						</section>
-
-						<section class="step">
-							<div class="step-index">03</div>
-							<div class="step-copy">
-								<h3>Поддерживайте регулярную обратную связь</h3>
-								<ul class="check-list">
-									<li>Сразу задайте частоту коротких отчётов.</li>
-									<li>Получайте результат проверки от каждого участника, а не только сообщения о сбоях.</li>
-									<li>Уточняйте статус у тех, кто долго не отвечает.</li>
-									<li>Фиксируйте успешные проверки — они подтверждают покрытие сценариев.</li>
-								</ul>
-							</div>
-						</section>
-
-						<section class="step">
-							<div class="step-index">04</div>
-							<div class="step-copy">
-								<h3>Контролируйте обновления</h3>
-								<p>Для каждой версии сообщайте её номер, список изменений и сценарии повторной проверки. Убедитесь, что участники получили обновление, и отделяйте отзывы о старой сборке от отзывов о новой.</p>
-							</div>
-						</section>
-
-						<section class="step">
-							<div class="step-index">05</div>
-							<div class="step-copy">
-								<h3>Доводите замечания до результата</h3>
-								<ul class="check-list">
-									<li>Ведите единый список проблем и объединяйте дубликаты.</li>
-									<li>Назначайте ответственного и приоритет.</li>
-									<li>Подтверждайте тестировщику, что сообщение принято.</li>
-									<li>После исправления возвращайте проблему на повторную проверку.</li>
-									<li>Закрывайте проблему по результату проверки, а не только по сообщению разработчика.</li>
-								</ul>
-							</div>
-						</section>
-
-						<section class="step">
-							<div class="step-index">06</div>
-							<div class="step-copy">
-								<h3>Подводите итоги</h3>
-								<p>Перед завершением тестирования проверьте, какие сценарии выполнены, у всех ли актуальная версия, перепроверены ли исправления, остались ли критические проблемы и выполнены ли требования площадки.</p>
-								<div class="final-summary">
-									<p>Итоговая сводка</p>
-									<ul><li>что проверено;</li><li>что исправлено и перепроверено;</li><li>какие ограничения остались;</li><li>почему приложение готово или пока не готово к следующему этапу.</li></ul>
-								</div>
-							</div>
-						</section>
-					</div>
+					<section class="role-section" id="general-rules" aria-labelledby="general-rules-title">
+						<div class="role-heading"><span>03</span><h2 id="general-rules-title">Не прерывайте участие</h2></div>
+						<div class="section-copy">
+							<ul>
+								<li>Срок считают не от загрузки сборки и не от добавления почтовых адресов.</li>
+								<li>Тестировщик не нажимает «Покинуть программу тестирования» до сообщения координатора.</li>
+								<li>Выход и повторное вступление прерывают непрерывный период конкретного участника.</li>
+								<li>Выполнение условий проверяют в Play Console, а не только по календарю.</li>
+							</ul>
+							<blockquote>Закрыть приложение на телефоне — не значит выйти из программы тестирования.</blockquote>
+						</div>
+					</section>
 				</section>
 
-				<section class="play-rule" id="google-play" aria-labelledby="play-rule-title">
-					<div class="play-rule-copy">
-						<p>Отдельно о Google Play</p>
-						<h2 id="play-rule-title">Не просто срок.<br />Реальное участие.</h2>
-						<p>Для новых личных аккаунтов разработчиков, созданных после 13 ноября 2023 года, Google требует закрытое тестирование. Минимум 12 участников должны непрерывно участвовать не менее 14 дней.</p>
-						<p class="play-rule-note">Это требование относится не ко всем аккаунтам. Сам по себе срок не гарантирует допуск к публикации: Google также запрашивает сведения о вовлечённости, полученной обратной связи и изменениях в приложении.</p>
-						<a href={googlePlayUrl} target="_blank" rel="noreferrer" data-goatcounter-click="open-google-play-testing-requirements" data-goatcounter-title="Открыли требования Google Play">Проверить требования в справке Google Play <span aria-hidden="true">↗</span></a>
+				<section class="guide-tab-panel" id="panel-testers" role="tabpanel" aria-labelledby="tab-testers" data-guide-panel="testers" hidden>
+					<div class="tab-intro">
+						<p>Тестировщикам</p>
+						<h2>Когда проверять и куда отправлять результат</h2>
 					</div>
-					<div class="play-rule-numbers" aria-label="Минимальные требования Google Play">
-						<div><strong>12</strong><span>участников</span></div>
-						<div><strong>14</strong><span>дней подряд</span></div>
+
+					<section class="role-section" id="tester-start" aria-labelledby="tester-start-title">
+						<div class="role-heading"><span>01</span><h2 id="tester-start-title">Правильно подключитесь</h2></div>
+						<div class="section-copy">
+							<ol class="action-list">
+								<li><span>Передайте координатору адрес своего Google-аккаунта.</span></li>
+								<li><span>Откройте присланную ссылку под этим же аккаунтом.</span></li>
+								<li><span>Подтвердите вступление в закрытое тестирование.</span></li>
+								<li><span>Установите приложение из Google Play и проверьте запуск.</span></li>
+								<li><span>Сообщите координатору, что вступление, установка и запуск прошли успешно.</span></li>
+							</ol>
+							<p class="note">Если вы участвуете во внутреннем тестировании этого приложения, сначала выйдите из него. После этого вступайте в закрытое.</p>
+							<a class="source-link" href={testingSetupUrl} target="_blank" rel="noreferrer">Как устроено тестирование Google Play <span aria-hidden="true">↗</span></a>
+						</div>
+					</section>
+
+					<section class="role-section" id="tester-frequency" aria-labelledby="tester-frequency-title">
+						<div class="role-heading"><span>02</span><h2 id="tester-frequency-title">Проверяйте регулярно</h2></div>
+						<div class="section-copy">
+							<div class="cadence-list" aria-label="Рекомендуемая частота проверок">
+								<div><strong>В первый день</strong><span>Вступить, установить, запустить и пройти основной сценарий.</span></div>
+								<div><strong>Каждый день</strong><span>По возможности провести одну содержательную проверку. Постоянно держать приложение открытым не нужно.</span></div>
+								<div><strong>После обновления</strong><span>Установить новую версию в течение суток и перепроверить основные сценарии и исправления.</span></div>
+								<div><strong>При ошибке</strong><span>Сообщить сразу, не дожидаясь следующего планового отчёта.</span></div>
+								<div><strong>Раз в 2–3 дня</strong><span>Отправить короткий результат, даже если проблем не найдено, если координатор не задал другой график.</span></div>
+							</div>
+							<p class="note"><strong>Важно:</strong> Google не устанавливает норму ежедневных запусков или количества минут. Это рабочий график, который помогает подтвердить реальное тестирование.</p>
+						</div>
+					</section>
+
+					<section class="role-section" id="tester-feedback" aria-labelledby="tester-feedback-title">
+						<div class="role-heading"><span>03</span><h2 id="tester-feedback-title">Используйте два канала обратной связи</h2></div>
+						<div class="section-copy">
+							<p>Google Play принимает личный отзыв тестировщика, а команда проекта — подробный отчёт с материалами. Это разные задачи.</p>
+							<div class="delivery-list">
+								<div><strong>В Google Play</strong><span>Оставьте короткий личный отзыв на странице тестового приложения. Он появится у разработчика в Play Console и не повлияет на публичную оценку.</span></div>
+								<div><strong>Координатору</strong><span>Отправьте подробный отчёт в назначенный чат, тему, форму или трекер.</span></div>
+								<div><strong>Скриншоты и видео</strong><span>Приложите к подробному отчёту или дайте доступную координатору ссылку на файл.</span></div>
+								<div><strong>Ссылки</strong><span>Укажите, на каком шаге ссылка открывалась и что произошло.</span></div>
+							</div>
+							<h3>Где именно оставить отзыв в Google Play</h3>
+							<ol class="action-list">
+								<li><span>Откройте приложение <strong>Google Play</strong> на телефоне.</span></li>
+								<li><span>Нажмите значок профиля → <strong>Управление приложениями и устройством</strong> → <strong>Бета</strong>.</span></li>
+								<li><span>Выберите тестируемое приложение и прокрутите страницу до блока <strong>«Личный отзыв для разработчика»</strong>.</span></li>
+								<li><span>Нажмите <strong>«Оставить отзыв»</strong>, выберите количество звёзд и напишите, что проверили и какие проблемы нашли.</span></li>
+								<li><span>Нажмите <strong>«Опубликовать»</strong>. Отзыв увидит только разработчик.</span></li>
+							</ol>
+							<p class="note"><strong>Перед Google отдельно отчитывается владелец аккаунта.</strong> После 14 дней он заполняет заявку в Play Console и передаёт сводку отзывов, проведённых проверок и внесённых изменений. Тестировщики эту итоговую заявку не заполняют.</p>
+							<a class="source-link" href={testerFeedbackUrl} target="_blank" rel="noreferrer">Официальная инструкция для тестировщика <span aria-hidden="true">↗</span></a>
+						</div>
+					</section>
+
+					<section class="role-section" id="tester-report" aria-labelledby="tester-report-title">
+						<div class="role-heading"><span>04</span><h2 id="tester-report-title">Подробный отчёт отправляйте координатору</h2></div>
+						<div class="section-copy">
+							<p><strong>Куда отправлять:</strong> в общий чат, отдельную тему, форму или трекер, который координатор указал перед началом теста. Туда же прикладывайте скриншоты, видео и доступные ссылки.</p>
+							<p>Если место для отчётов не указано, сначала запросите его у координатора. Не отправляйте части одного отчёта разным людям и в разные каналы.</p>
+							<blockquote>Версия 1.2.3, Samsung Galaxy A52, Android 14. Проверил вход, поиск и загрузку изображения — всё работает. После возвращения из фона список обновляется слишком долго.</blockquote>
+							<div class="report-list">
+								<p>Что написать в сообщении об ошибке</p>
+								<dl>
+									<div><dt>Среда</dt><dd>Версия приложения, телефон и версия Android</dd></div>
+									<div><dt>Действия</dt><dd>Что делали по шагам</dd></div>
+									<div><dt>Ожидание</dt><dd>Что должно было произойти</dd></div>
+									<div><dt>Результат</dt><dd>Что произошло фактически</dd></div>
+									<div><dt>Повторяемость</dt><dd>Когда произошло и возникает ли снова</dd></div>
+									<div><dt>Материалы</dt><dd>Скриншот, видео или ссылка с доступом</dd></div>
+								</dl>
+							</div>
+							<p>При сетевой ошибке дополнительно укажите Wi-Fi или мобильную сеть и использование VPN. Не передавайте пароли, коды входа и чужие персональные данные.</p>
+						</div>
+					</section>
+				</section>
+
+				<section class="guide-tab-panel" id="panel-managers" role="tabpanel" aria-labelledby="tab-managers" data-guide-panel="managers" hidden>
+					<div class="tab-intro">
+						<p>Руководителям</p>
+						<h2>Как организовать 14 дней без потери участников</h2>
 					</div>
+
+					<section class="role-section" id="manager-preparation" aria-labelledby="manager-preparation-title">
+						<div class="role-heading"><span>01</span><h2 id="manager-preparation-title">Подготовьте единые правила</h2></div>
+						<div class="section-copy">
+							<p>До старта отправьте каждому участнику:</p>
+							<ul>
+								<li>ссылку для вступления и точный порядок подключения;</li>
+								<li>номер актуальной версии и список сценариев;</li>
+								<li>один канал для результатов, скриншотов, видео и ссылок;</li>
+								<li>правила работы с реальными и тестовыми данными;</li>
+								<li>график коротких отчётов и контакт ответственного.</li>
+							</ul>
+							<p class="note"><strong>Практическая рекомендация:</strong> приглашайте 15–20 человек. Это не требование Google, а запас на случай отказов и технических проблем.</p>
+						</div>
+					</section>
+
+					<section class="role-section" id="manager-control" aria-labelledby="manager-control-title">
+						<div class="role-heading"><span>02</span><h2 id="manager-control-title">Ведите реестр участия</h2></div>
+						<div class="section-copy">
+							<div class="table-wrap" tabindex="0" aria-label="Таблица участников, прокручивается по горизонтали">
+								<table class="tracking-table">
+									<thead><tr><th>Участник / Google-почта</th><th>Устройство и ОС</th><th>Вступление</th><th>Версия</th><th>Последняя проверка</th><th>Проблемы</th></tr></thead>
+									<tbody><tr><td>Имя и адрес</td><td>Модель, Android</td><td>Дата подтверждения</td><td>Номер сборки</td><td>Дата и результат</td><td>Доступ, установка, ошибки</td></tr></tbody>
+								</table>
+							</div>
+							<p class="table-hint">На мобильном таблица прокручивается в сторону.</p>
+							<ul>
+								<li>Не считайте количество добавленных адресов количеством вступивших.</li>
+								<li>Каждый день проверяйте, хватает ли участников с непрерывным сроком.</li>
+								<li>Раз в 2–3 дня собирайте короткий результат от каждого.</li>
+								<li>При молчании сразу выясняйте, есть ли проблемы с доступом или запуском.</li>
+							</ul>
+						</div>
+					</section>
+
+					<section class="role-section" id="manager-feedback" aria-labelledby="manager-feedback-title">
+						<div class="role-heading"><span>03</span><h2 id="manager-feedback-title">Собирайте проверяемую обратную связь</h2></div>
+						<div class="section-copy">
+							<ul>
+								<li>Регулярно открывайте в Play Console раздел «Отзывы тестировщиков» и отвечайте на личные отзывы.</li>
+								<li>Получайте результаты успешных проверок, а не только сообщения об ошибках.</li>
+								<li>Храните текст, скриншоты и ссылки рядом с конкретным замечанием.</li>
+								<li>Распределяйте сценарии, чтобы группа проверяла разные функции.</li>
+								<li>Для каждой версии сообщайте изменения и то, что нужно перепроверить.</li>
+								<li>Закрывайте замечание только после проверки исправления тестировщиком.</li>
+							</ul>
+							<p class="note">Не требуйте положительных оценок. Нужна честная обратная связь и понятная история внесённых изменений.</p>
+						</div>
+					</section>
+
+					<section class="role-section" id="production" aria-labelledby="production-title">
+						<div class="role-heading"><span>04</span><h2 id="production-title">Подайте заявку на рабочую версию</h2></div>
+						<div class="section-copy">
+							<p>После подтверждения условий в Play Console опишите:</p>
+							<ul>
+								<li>как и насколько регулярно участники использовали приложение;</li>
+								<li>какую обратную связь вы получили;</li>
+								<li>что изменили по итогам тестирования;</li>
+								<li>почему приложение готово к публикации.</li>
+							</ul>
+							<p>Дождитесь решения Google. После одобрения отдельно создайте выпуск рабочей версии.</p>
+							<a class="source-link" href={requirementsUrl} target="_blank" rel="noreferrer">Порядок получения доступа <span aria-hidden="true">↗</span></a>
+						</div>
+					</section>
+				</section>
+
+				<section class="guide-tab-panel" id="panel-developers" role="tabpanel" aria-labelledby="tab-developers" data-guide-panel="developers" hidden>
+					<div class="tab-intro">
+						<p>Разработчикам</p>
+						<h2>Что подготовить и как выпускать обновления</h2>
+					</div>
+
+					<section class="role-section" id="developer-release" aria-labelledby="developer-release-title">
+						<div class="role-heading"><span>01</span><h2 id="developer-release-title">Подготовьте тестовый выпуск</h2></div>
+						<div class="section-copy">
+							<ul>
+								<li>Используйте именно закрытое тестирование. Внутренний тест не заменяет обязательный этап.</li>
+								<li>Загрузите подписанную сборку и дождитесь её доступности на выбранном треке.</li>
+								<li>Настройте список Google-аккаунтов или Google Group.</li>
+								<li>Передайте координатору ссылку для вступления, номер версии и известные ограничения.</li>
+							</ul>
+							<a class="source-link" href={testingSetupUrl} target="_blank" rel="noreferrer">Настройка закрытого тестирования <span aria-hidden="true">↗</span></a>
+						</div>
+					</section>
+
+					<section class="role-section" id="developer-updates" aria-labelledby="developer-updates-title">
+						<div class="role-heading"><span>02</span><h2 id="developer-updates-title">Делайте обновления проверяемыми</h2></div>
+						<div class="section-copy">
+							<p>Для каждой сборки передавайте координатору четыре вещи:</p>
+							<div class="delivery-list">
+								<div><strong>Версия</strong><span>Version name и version code.</span></div>
+								<div><strong>Изменения</strong><span>Короткий список того, что добавлено и исправлено.</span></div>
+								<div><strong>Проверка</strong><span>Сценарии, которые нужно пройти повторно.</span></div>
+								<div><strong>Ограничения</strong><span>Известные проблемы и действия, которые нельзя выполнять на реальных данных.</span></div>
+							</div>
+							<p>После публикации обновления убедитесь, что оно доступно тестировщикам. Не смешивайте отчёты от разных версий.</p>
+						</div>
+					</section>
+
+					<section class="role-section" id="developer-triage" aria-labelledby="developer-triage-title">
+						<div class="role-heading"><span>03</span><h2 id="developer-triage-title">Разбирайте ошибки до результата</h2></div>
+						<div class="section-copy">
+							<ol class="action-list">
+								<li><span>Проверьте версию, устройство, шаги, ожидаемый и фактический результат.</span></li>
+								<li><span>Запросите недостающий скриншот, видео, ссылку или сетевые условия.</span></li>
+								<li><span>Объедините дубликаты и зафиксируйте приоритет.</span></li>
+								<li><span>После исправления укажите версию и точный сценарий повторной проверки.</span></li>
+								<li><span>Закройте замечание только после подтверждения на новой сборке.</span></li>
+							</ol>
+						</div>
+					</section>
+
+					<section class="role-section" id="developer-summary" aria-labelledby="developer-summary-title">
+						<div class="role-heading"><span>04</span><h2 id="developer-summary-title">Подготовьте данные для заявки</h2></div>
+						<div class="section-copy">
+							<p>Передайте руководителю краткую техническую сводку:</p>
+							<ul>
+								<li>какие версии прошли тестирование;</li>
+								<li>какие основные сценарии проверены;</li>
+								<li>какие ошибки исправлены и перепроверены;</li>
+								<li>какие ограничения остались;</li>
+								<li>почему текущая сборка готова к рабочему выпуску.</li>
+							</ul>
+						</div>
+					</section>
 				</section>
 
 				<footer class="guide-end">
-					<p>Коротко</p>
-					<h2>Установить. Проверить. Описать. Исправить. Перепроверить.</h2>
-					<p>Чем точнее организован этот цикл, тем выше качество приложения и тем проще обосновать его готовность к выпуску.</p>
-					<button class="guide-share guide-share-bottom" type="button" data-share-button data-goatcounter-click="share-mobile-testing" data-goatcounter-title="Скопировали ссылку на руководство">
+					<p>Официальный минимум — 12 участников и 14 дней. Всё остальное нужно организовать так, чтобы тестирование было реальным, результаты — проверяемыми, а исправления — подтверждёнными.</p>
+					<button class="guide-share" type="button" data-share-button data-goatcounter-click="share-mobile-testing" data-goatcounter-title="Скопировали ссылку на руководство">
 						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7V5a4 4 0 0 1 4-4h6a5 5 0 0 1 5 5v6a4 4 0 0 1-4 4h-2v3a4 4 0 0 1-4 4H6a5 5 0 0 1-5-5v-6a5 5 0 0 1 5-5h2Zm2 0h3a4 4 0 0 1 4 4v3h2a2 2 0 0 0 2-2V6a3 3 0 0 0-3-3h-6a2 2 0 0 0-2 2v2Zm-4 2a3 3 0 0 0-3 3v6a3 3 0 0 0 3 3h7a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2H6Z" /></svg>
 						<span data-share-label>Скопировать ссылку</span>
 					</button>
@@ -313,6 +321,54 @@ const googlePlayUrl = 'https://support.google.com/googleplay/android-developer/a
 	</article>
 
 	<script is:inline>
+		const tabs = Array.from(document.querySelectorAll('[data-guide-tab]'));
+		const panels = Array.from(document.querySelectorAll('[data-guide-panel]'));
+
+		function activateTab(name, moveFocus = false) {
+			for (const tab of tabs) {
+				const active = tab.dataset.guideTab === name;
+				tab.setAttribute('aria-selected', String(active));
+				tab.tabIndex = active ? 0 : -1;
+				if (active && moveFocus) tab.focus();
+			}
+
+			for (const panel of panels) {
+				panel.hidden = panel.dataset.guidePanel !== name;
+			}
+		}
+
+		for (const tab of tabs) {
+			tab.addEventListener('click', () => {
+				const name = tab.dataset.guideTab;
+				activateTab(name);
+				history.replaceState(null, '', `#${name}`);
+				const panel = panels.find((item) => item.dataset.guidePanel === name);
+				requestAnimationFrame(() => panel?.scrollIntoView({ block: 'start' }));
+			});
+
+			tab.addEventListener('keydown', (event) => {
+				const index = tabs.indexOf(tab);
+				let nextIndex = null;
+				if (event.key === 'ArrowRight') nextIndex = (index + 1) % tabs.length;
+				if (event.key === 'ArrowLeft') nextIndex = (index - 1 + tabs.length) % tabs.length;
+				if (event.key === 'Home') nextIndex = 0;
+				if (event.key === 'End') nextIndex = tabs.length - 1;
+				if (nextIndex !== null) {
+					event.preventDefault();
+					const name = tabs[nextIndex].dataset.guideTab;
+					activateTab(name, true);
+					history.replaceState(null, '', `#${name}`);
+				}
+			});
+		}
+
+		const hash = window.location.hash.slice(1);
+		const directTab = tabs.find((tab) => tab.dataset.guideTab === hash)?.dataset.guideTab;
+		const anchor = hash ? document.getElementById(hash) : null;
+		const anchorPanel = anchor?.closest('[data-guide-panel]')?.dataset.guidePanel;
+		activateTab(directTab || anchorPanel || 'general');
+		if (anchorPanel && anchor) requestAnimationFrame(() => anchor.scrollIntoView({ block: 'start' }));
+
 		for (const button of document.querySelectorAll('[data-share-button]')) {
 			button.addEventListener('click', async () => {
 				const label = button.querySelector('[data-share-label]');
