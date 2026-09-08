@@ -6,6 +6,7 @@
 
 - [Русская версия](https://poliklot.ru/): Возможности, рабочий подход, технологический стек и коммерческий опыт.
 - [English version](https://poliklot.ru/en/): Capabilities, delivery approach, technology stack, and commercial experience.
+- [Материалы](https://poliklot.ru/articles/): Статьи и практические инструкции о разработке, тестировании и выпуске цифровых продуктов.
 - [Как пройти обязательное тестирование в Google Play](https://poliklot.ru/articles/mobile-app-testing/): Пошаговая инструкция для новых личных аккаунтов — 12 тестировщиков, 14 дней непрерывного участия и заявка на доступ к рабочей версии.
 - [GitHub](https://github.com/Poliklot): Public engineering profile and repositories.
 - [Résumé](https://hh.ru/resume/ebe2b012ff0834a84e0039ed1f6d6b526b584f): Full professional résumé on hh.ru.

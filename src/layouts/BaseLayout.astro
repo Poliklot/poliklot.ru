@@ -12,7 +12,7 @@ interface Props {
 	locale: Locale;
 	path?: string;
 	alternatePath?: string;
-	pageType?: 'profile' | 'article';
+	pageType?: 'profile' | 'article' | 'collection';
 	ogImagePath?: string;
 	ogImageAlt?: string;
 	datePublished?: string;
@@ -58,18 +58,30 @@ const pageStructuredData = pageType === 'article'
 		publisher: {'@id': personId.href},
 		isPartOf: {'@id': new URL('/#website', siteUrl).href},
 	}
-	: {
-		'@context': 'https://schema.org',
-		'@type': 'ProfilePage',
-		'@id': `${canonical.href}#profile-page`,
-		url: canonical.href,
-		name: title,
-		description,
-		inLanguage: locale,
-		dateModified,
-		isPartOf: {'@id': new URL('/#website', siteUrl).href},
-		mainEntity: {'@id': personId.href},
-	};
+	: pageType === 'collection'
+		? {
+			'@context': 'https://schema.org',
+			'@type': 'CollectionPage',
+			'@id': `${canonical.href}#collection-page`,
+			url: canonical.href,
+			name: title,
+			description,
+			inLanguage: locale,
+			dateModified,
+			isPartOf: {'@id': new URL('/#website', siteUrl).href},
+		}
+		: {
+			'@context': 'https://schema.org',
+			'@type': 'ProfilePage',
+			'@id': `${canonical.href}#profile-page`,
+			url: canonical.href,
+			name: title,
+			description,
+			inLanguage: locale,
+			dateModified,
+			isPartOf: {'@id': new URL('/#website', siteUrl).href},
+			mainEntity: {'@id': personId.href},
+		};
 const structuredData = [
 	{
 		'@context': 'https://schema.org',
@@ -134,7 +146,7 @@ const structuredData = [
 		<link rel="canonical" href={canonical} />
 		<link rel="alternate" hreflang={locale} href={canonical} />
 		{alternate && <link rel="alternate" hreflang={alternateLocale} href={alternate} />}
-		<link rel="alternate" hreflang="x-default" href={pageType === 'article' ? canonical : siteUrl} />
+		<link rel="alternate" hreflang="x-default" href={pageType === 'profile' ? siteUrl : canonical} />
 		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
 		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
 		<link rel="shortcut icon" href="/favicon.ico" />
@@ -154,7 +166,7 @@ const structuredData = [
 					<a href={`${home}#scope`}>{t.nav.scope}</a>
 					<a href={`${home}#stack`}>{t.nav.stack}</a>
 					<a href={`${home}#experience`}>{t.nav.experience}</a>
-					{locale === 'ru' && <a href="/articles/mobile-app-testing/">Материалы</a>}
+					{locale === 'ru' && <a href="/articles/">Материалы</a>}
 				</nav>
 				<HeaderActions language={t.alternateLabel} languageHref={languageHref} resumeLabel={t.headerResume} />
 			</div>

@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../styles/articles.css';
+
+const title = 'Материалы — Игорь / Poliklot';
+const description = 'Статьи и практические инструкции Игоря / Poliklot о разработке, тестировании и выпуске цифровых продуктов.';
+---
+
+<BaseLayout
+	title={title}
+	description={description}
+	locale="ru"
+	path="/articles/"
+	pageType="collection"
+>
+	<section class="articles-index page-width">
+		<nav class="articles-breadcrumbs" aria-label="Хлебные крошки">
+			<a href="/">Главная</a><span aria-hidden="true">/</span><span>Материалы</span>
+		</nav>
+
+		<header class="articles-hero">
+			<p>Материалы</p>
+			<h1>Статьи и практические инструкции</h1>
+			<p>Рабочие процессы, тестирование и выпуск цифровых продуктов — без лишней теории.</p>
+		</header>
+
+		<div class="articles-list" aria-label="Статьи">
+			<a class="articles-item" href="/articles/mobile-app-testing/">
+				<time datetime="2026-09-08">8 сентября 2026</time>
+				<div>
+					<h2>Как пройти обязательное тестирование в Google Play</h2>
+					<p>12 тестировщиков, 14 дней непрерывного участия, ежедневный план и заявка на публикацию.</p>
+				</div>
+				<span>Читать <span aria-hidden="true">↗</span></span>
+			</a>
+		</div>
+	</section>
+</BaseLayout>

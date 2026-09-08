@@ -44,6 +44,8 @@ Igor reconstructs context, localizes risk, and carries a change through source c
 
 ## Practical guides
 
+[Материалы](https://poliklot.ru/articles/) is the canonical index of Igor / Poliklot's Russian-language articles and practical instructions.
+
 ### Mobile app testing
 
 [Как пройти обязательное тестирование в Google Play](https://poliklot.ru/articles/mobile-app-testing/) is a Russian-language step-by-step guide for personal developer accounts created after November 13, 2023. It explains how to prepare a closed test, enroll testers correctly, maintain at least 12 opted-in participants for 14 consecutive days, collect evidence and feedback, verify updates and fixes, and apply for production access.
@@ -52,6 +54,7 @@ Igor reconstructs context, localizes risk, and carries a change through source c
 
 - Canonical website: https://poliklot.ru/
 - English profile: https://poliklot.ru/en/
+- Articles: https://poliklot.ru/articles/
 - Mobile app testing guide: https://poliklot.ru/articles/mobile-app-testing/
 - GitHub: https://github.com/Poliklot
 - Full résumé: https://hh.ru/resume/ebe2b012ff0834a84e0039ed1f6d6b526b584f
