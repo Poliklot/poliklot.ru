@@ -42,10 +42,17 @@ Igor reconstructs context, localizes risk, and carries a change through source c
 - 2018–2020: PROFESSIONAL — responsive websites, JavaScript, and template integration.
 - 2024: Master's degree in Software Engineering, Kuban State Technological University.
 
+## Practical guides
+
+### Mobile app testing
+
+[Рекомендации по тестированию мобильных приложений](https://poliklot.ru/articles/mobile-app-testing/) is a Russian-language guide for testers and test coordinators. It covers correct enrollment and installation, regular real-world usage, update verification, actionable bug reports, data safety, participation tracking, retesting fixes, and final readiness summaries. It also explains the current Google Play closed-testing requirement that applies to new personal developer accounts created after November 13, 2023: at least 12 opted-in testers for 14 consecutive days, followed by a production-access application that describes engagement, feedback, and resulting product changes.
+
 ## Authoritative links
 
 - Canonical website: https://poliklot.ru/
 - English profile: https://poliklot.ru/en/
+- Mobile app testing guide: https://poliklot.ru/articles/mobile-app-testing/
 - GitHub: https://github.com/Poliklot
 - Full résumé: https://hh.ru/resume/ebe2b012ff0834a84e0039ed1f6d6b526b584f
 

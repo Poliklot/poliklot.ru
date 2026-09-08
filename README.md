@@ -19,6 +19,7 @@ Source for [poliklot.ru](https://poliklot.ru): a bilingual personal product land
 - `/llms.txt` and `/llms-full.txt` provide concise and expanded AI-readable context;
 - major search and AI crawlers are explicitly allowed in `robots.txt`;
 - the Open Graph card uses a versioned filename so Telegram and other messengers do not keep serving an overwritten cached image.
+- practical guides use `TechArticle` structured data and their own 1200×630 preview images.
 
 When the social artwork changes, publish it under a new filename and update `ogImage` in `src/layouts/BaseLayout.astro`. After deployment, refresh the clean canonical URL through Telegram's `@WebpageBot`; query parameters are not a reliable substitute because the page correctly canonicalizes to `/`.
 
@@ -60,6 +61,10 @@ Required GitHub Actions secrets:
 | `VPS_KNOWN_HOSTS` | Pinned SSH host key from `ssh-keyscan` |
 
 `deploy/Caddyfile.example` contains the production virtual host. It is intentionally not installed automatically by CI; server routing remains an explicit infrastructure change.
+
+## Analytics
+
+The production site uses a self-hosted [GoatCounter](https://www.goatcounter.com/) instance under `/analytics`. The asynchronous tracker is emitted only in production, uses no cookies and keeps analytics data on the VPS. `deploy/analytics.compose.yml` defines the pinned container and persistent SQLite volume; the Caddy example proxies the private dashboard and adds `X-Robots-Tag: noindex, nofollow`.
 
 ## License
 

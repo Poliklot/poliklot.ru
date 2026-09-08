@@ -115,6 +115,29 @@ const t = copy[locale];
 			</div>
 		</section>
 
+		{locale === 'ru' && (
+			<section class="materials-stage" id="materials">
+				<div class="page-width materials-inner">
+					<div class="materials-heading">
+						<p>Практические материалы</p>
+						<h2>То, что помогает доводить продукты до выпуска.</h2>
+					</div>
+					<a class="material-feature" href="/articles/mobile-app-testing/">
+						<div class="material-visual" aria-hidden="true">
+							<span class="material-phone"><i></i><i></i><i></i></span>
+							<strong>12</strong><small>тестировщиков</small>
+						</div>
+						<div class="material-copy">
+							<p>Руководство · 8 минут</p>
+							<h3>Рекомендации по тестированию мобильных приложений</h3>
+							<span>Чек-листы для тестировщика и координатора, обратная связь, обновления и требования Google Play.</span>
+							<b>Читать материал <span aria-hidden="true">↗</span></b>
+						</div>
+					</a>
+				</div>
+			</section>
+		)}
+
 		<section class="contact-stage" id="contact">
 			<div class="page-width contact-inner">
 				<h2>{t.contactTitle}</h2>

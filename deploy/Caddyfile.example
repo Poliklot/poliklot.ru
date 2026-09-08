@@ -1,5 +1,14 @@
 www.poliklot.ru {
-	redir https://poliklot.ru{uri} permanent
+	@social_preview path /og-poliklot-2026-09-telegram.jpg /og-mobile-testing-2026-09.jpg
+	handle @social_preview {
+		root * /srv/poliklot/current
+		header Cache-Control "public, max-age=2592000"
+		file_server
+	}
+
+	handle {
+		redir https://poliklot.ru{uri} permanent
+	}
 }
 
 poliklot.ru {
@@ -16,6 +25,12 @@ poliklot.ru {
 
 	@immutable path /_astro/*
 	header @immutable Cache-Control "public, max-age=31536000, immutable"
+
+	@analytics path /analytics /analytics/*
+	header @analytics X-Robots-Tag "noindex, nofollow"
+	handle @analytics {
+		reverse_proxy poliklot-analytics:8080
+	}
 
 	handle {
 		try_files {path} {path}/index.html

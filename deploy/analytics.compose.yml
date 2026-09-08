@@ -1,0 +1,23 @@
+services:
+  analytics:
+    image: arp242/goatcounter:2.7.0
+    container_name: poliklot-analytics
+    restart: unless-stopped
+    command:
+      - serve
+      - -listen=:8080
+      - -tls=proxy
+      - -base-path=/analytics
+      - -automigrate
+    volumes:
+      - goatcounter_data:/home/goatcounter/goatcounter-data
+    networks:
+      - pravosloy_internal
+
+volumes:
+  goatcounter_data:
+
+networks:
+  pravosloy_internal:
+    external: true
+    name: pravosloy_internal
