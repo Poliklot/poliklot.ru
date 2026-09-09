@@ -3,8 +3,8 @@ import type { APIRoute } from 'astro';
 const pages = [
 	{url: 'https://poliklot.ru/', language: 'ru', alternates: true, lastmod: '2026-09-08'},
 	{url: 'https://poliklot.ru/en/', language: 'en', alternates: true, lastmod: '2026-09-08'},
-	{url: 'https://poliklot.ru/articles/', language: 'ru', alternates: false, lastmod: '2026-09-08'},
-	{url: 'https://poliklot.ru/articles/mobile-app-testing/', language: 'ru', alternates: false, lastmod: '2026-09-08'},
+	{url: 'https://poliklot.ru/articles/', language: 'ru', alternates: false, lastmod: '2026-09-09'},
+	{url: 'https://poliklot.ru/articles/mobile-app-testing/', language: 'ru', alternates: false, lastmod: '2026-09-09'},
 ];
 
 const alternates = pages
