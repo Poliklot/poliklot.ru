@@ -3,10 +3,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import '../../styles/article.css';
 
 const title = 'Как пройти обязательное тестирование в Google Play перед первой публикацией';
-const description = 'Пошаговая инструкция для новых личных аккаунтов Google Play: 12 тестировщиков, 14 дней, два способа отправить личный отзыв и заявка на публикацию.';
+const description = 'Пошаговая инструкция для новых личных аккаунтов Google Play: 12 тестировщиков, 14 дней, отзывы, проверка региона и правильной тестовой версии.';
 const requirementsUrl = 'https://support.google.com/googleplay/android-developer/answer/14151465?hl=ru';
 const testingSetupUrl = 'https://support.google.com/googleplay/android-developer/answer/9845334?hl=ru';
 const testerFeedbackUrl = 'https://support.google.com/googleplay/answer/7003180?hl=ru';
+const countryTargetingUrl = 'https://support.google.com/googleplay/android-developer/answer/7550024?hl=ru';
+const playCountryUrl = 'https://support.google.com/googleplay/answer/7431675?hl=ru';
 ---
 
 <BaseLayout
@@ -32,7 +34,7 @@ const testerFeedbackUrl = 'https://support.google.com/googleplay/answer/7003180?
 				<div class="guide-meta">
 					<time datetime="2026-09-08">8 сентября 2026</time>
 					<span>Обновлено 9 сентября</span>
-					<span>8 минут</span>
+					<span>10 минут</span>
 					<button class="guide-share" type="button" data-share-button data-goatcounter-click="share-mobile-testing" data-goatcounter-title="Скопировали ссылку на руководство">
 						<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7V5a4 4 0 0 1 4-4h6a5 5 0 0 1 5 5v6a4 4 0 0 1-4 4h-2v3a4 4 0 0 1-4 4H6a5 5 0 0 1-5-5v-6a5 5 0 0 1 5-5h2Zm2 0h3a4 4 0 0 1 4 4v3h2a2 2 0 0 0 2-2V6a3 3 0 0 0-3-3h-6a2 2 0 0 0-2 2v2Zm-4 2a3 3 0 0 0-3 3v6a3 3 0 0 0 3 3h7a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2H6Z" /></svg>
 						<span data-share-label>Скопировать ссылку</span>
@@ -167,8 +169,34 @@ const testerFeedbackUrl = 'https://support.google.com/googleplay/answer/7003180?
 						</div>
 					</section>
 
+					<section class="role-section" id="tester-region" aria-labelledby="tester-region-title">
+						<div class="role-heading"><span>04</span><h2 id="tester-region-title">Если отзыв недоступен, проверьте регион и версию</h2></div>
+						<div class="section-copy">
+							<p>Установленное приложение и даже успешное обновление ещё не означают, что Google Play выдал нужную версию закрытого тестирования. На устройстве могла остаться сборка из внутреннего или другого тестового канала, а страна аккаунта могла не входить в регионы текущего закрытого теста.</p>
+							<div class="delivery-list">
+								<div><strong>Страна Google Play</strong><span>Доступность определяется страной, указанной в профиле Google Play, а не текущим местоположением тестировщика.</span></div>
+								<div><strong>Канал тестирования</strong><span>Участник внутреннего теста не получает открытую или закрытую версию, пока не выйдет из внутреннего тестирования и не вступит в нужный канал.</span></div>
+								<div><strong>Версия приложения</strong><span>Сравните version name и version code на устройстве с номером сборки закрытого теста, который сообщил разработчик.</span></div>
+							</div>
+							<h3>Что проверить по шагам</h3>
+							<ol class="action-list">
+								<li><span>Убедитесь, что в Google Play выбран приглашённый аккаунт и на странице регистрации указано, что вы участвуете именно в закрытом тестировании.</span></li>
+								<li><span>Откройте Google Play → значок профиля → <strong>Настройки</strong> → <strong>Общие</strong> → <strong>Настройки аккаунта и устройства</strong> → <strong>Страна и профили</strong>.</span></li>
+								<li><span>Если страна Google Play не входит в регионы теста, сообщите её координатору и приложите скриншот сообщения о недоступности.</span></li>
+								<li><span>Сначала попросите разработчика добавить нужную страну в закрытый канал. Это надёжнее, чем менять регион личного аккаунта только ради теста.</span></li>
+								<li><span>Если ранее была установлена внутренняя или другая тестовая версия, выйдите из старого канала. Перед удалением приложения согласуйте это с координатором и сохраните нужные данные.</span></li>
+								<li><span>Установите приложение заново по ссылке закрытого теста, сверьте номер версии и снова проверьте блок <strong>«Личный отзыв для разработчика»</strong>.</span></li>
+							</ol>
+							<p class="note"><strong>Не меняйте страну Google Play на вымышленную.</strong> Google разрешает выбрать новый регион только при фактическом нахождении в нём и наличии местного способа оплаты. После выбора страны и между последующими изменениями нужно ждать не менее 90 дней, а обновление профиля может занять до 48 часов. Если добавить страну в тест нельзя, безопаснее заменить участника.</p>
+							<div class="source-links">
+								<a class="source-link" href={countryTargetingUrl} target="_blank" rel="noreferrer">Страны закрытого теста <span aria-hidden="true">↗</span></a>
+								<a class="source-link" href={playCountryUrl} target="_blank" rel="noreferrer">Страна профиля Google Play <span aria-hidden="true">↗</span></a>
+							</div>
+						</div>
+					</section>
+
 					<section class="role-section" id="tester-report" aria-labelledby="tester-report-title">
-						<div class="role-heading"><span>04</span><h2 id="tester-report-title">Подробный отчёт отправляйте координатору</h2></div>
+						<div class="role-heading"><span>05</span><h2 id="tester-report-title">Подробный отчёт отправляйте координатору</h2></div>
 						<div class="section-copy">
 							<p><strong>Куда отправлять:</strong> в общий чат, отдельную тему, форму или трекер, который координатор указал перед началом теста. Туда же прикладывайте скриншоты, видео и доступные ссылки.</p>
 							<p>Если место для отчётов не указано, сначала запросите его у координатора. Не отправляйте части одного отчёта разным людям и в разные каналы.</p>
@@ -202,6 +230,7 @@ const testerFeedbackUrl = 'https://support.google.com/googleplay/answer/7003180?
 							<ul>
 								<li>ссылку для вступления и точный порядок подключения;</li>
 								<li>номер актуальной версии и список сценариев;</li>
+								<li>перечень стран закрытого теста и способ сообщить о региональном ограничении;</li>
 								<li>один канал для результатов, скриншотов, видео и ссылок;</li>
 								<li>правила работы с реальными и тестовыми данными;</li>
 								<li>график коротких отчётов и контакт ответственного.</li>
@@ -224,6 +253,7 @@ const testerFeedbackUrl = 'https://support.google.com/googleplay/answer/7003180?
 								<li>Не считайте количество добавленных адресов количеством вступивших.</li>
 								<li>Каждый день проверяйте, хватает ли участников с непрерывным сроком.</li>
 								<li>Каждый день собирайте короткий результат от каждого, даже если ошибок не найдено.</li>
+								<li>Если установка доступна, но личного отзыва нет, проверьте страну Google Play, канал и фактическую версию приложения.</li>
 								<li>При молчании сразу выясняйте, есть ли проблемы с доступом или запуском.</li>
 							</ul>
 						</div>
@@ -275,9 +305,14 @@ const testerFeedbackUrl = 'https://support.google.com/googleplay/answer/7003180?
 								<li>Используйте именно закрытое тестирование. Внутренний тест не заменяет обязательный этап.</li>
 								<li>Загрузите подписанную сборку и дождитесь её доступности на выбранном треке.</li>
 								<li>Настройте список Google-аккаунтов или Google Group.</li>
+								<li>На вкладке «Страны и регионы» проверьте, что закрытая версия доступна в странах Google Play ваших тестировщиков.</li>
+								<li>Убедитесь, что участники вышли из внутреннего теста: он имеет отдельные правила доступности и блокирует получение закрытой версии.</li>
 								<li>Передайте координатору ссылку для вступления, номер версии и известные ограничения.</li>
 							</ul>
-							<a class="source-link" href={testingSetupUrl} target="_blank" rel="noreferrer">Настройка закрытого тестирования <span aria-hidden="true">↗</span></a>
+							<div class="source-links">
+								<a class="source-link" href={testingSetupUrl} target="_blank" rel="noreferrer">Настройка закрытого тестирования <span aria-hidden="true">↗</span></a>
+								<a class="source-link" href={countryTargetingUrl} target="_blank" rel="noreferrer">Настройка стран и регионов <span aria-hidden="true">↗</span></a>
+							</div>
 						</div>
 					</section>
 

@@ -48,7 +48,7 @@ Igor reconstructs context, localizes risk, and carries a change through source c
 
 ### Mobile app testing
 
-[Как пройти обязательное тестирование в Google Play](https://poliklot.ru/articles/mobile-app-testing/) is a Russian-language step-by-step guide for personal developer accounts created after November 13, 2023. It explains how to prepare a closed test, enroll testers correctly, maintain at least 12 opted-in participants for 14 consecutive days, collect evidence and feedback, verify updates and fixes, and apply for production access.
+[Как пройти обязательное тестирование в Google Play](https://poliklot.ru/articles/mobile-app-testing/) is a Russian-language step-by-step guide for personal developer accounts created after November 13, 2023. It explains how to prepare a closed test, enroll testers correctly, maintain at least 12 opted-in participants for 14 consecutive days, collect evidence and private feedback, diagnose country and testing-track mismatches, verify the installed version, and apply for production access.
 
 ## Authoritative links
 

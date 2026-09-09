@@ -288,6 +288,15 @@
 
 .source-link:hover { text-decoration: underline; }
 
+.source-links {
+	margin-top: 1.3rem;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.7rem 1.4rem;
+}
+
+.source-links .source-link { margin-top: 0; }
+
 .action-list {
 	margin: 0;
 	padding: 0;
