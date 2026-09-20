@@ -5,7 +5,6 @@ import '../../styles/article.css';
 const title = 'Self-hosted GitHub Actions без постоянно работающих серверов';
 const description = 'Как устроить ephemeral GitHub Actions runners на Timeweb Cloud: VM создаётся для одной job и удаляется сразу после неё.';
 const timewebCloudUrl = 'https://timeweb.cloud/?i=123235';
-const timewebUrl = 'https://timeweb.com/ru/';
 ---
 
 <BaseLayout
@@ -111,7 +110,6 @@ maxRunners: 4</code></pre>
 					<p>Итоговая модель</p>
 					<h2 id="ci-final-title">CI-инфраструктура становится событием, а не сервером.</h2>
 					<p>GitHub остаётся control plane. Serverless-функция — диспетчером. <a href={timewebCloudUrl} target="_blank" rel="sponsored nofollow noopener" data-goatcounter-click="open-timeweb-ephemeral-runners-final">Timeweb Cloud</a> — временным compute. Runner существует ровно столько, сколько нужно для конкретной задачи.</p>
-					<p class="ci-timeweb-site">Для хостинга, доменов и VPS — <a href={timewebUrl} target="_blank" rel="sponsored nofollow noopener" data-goatcounter-click="open-timeweb-referral-site">Timeweb</a>.</p>
 				</section>
 
 				<footer class="ci-next"><span>Продолжение следует</span><h2>В следующей части соберём эту схему по шагам.</h2><p>Подготовим образ, webhook и dispatcher, настроим регистрацию ephemeral runner, labels, TTL-очистку и запуск первой job в Timeweb Cloud.</p></footer>
