@@ -1,0 +1,119 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import '../../styles/article.css';
+
+const title = 'Self-hosted GitHub Actions без постоянно работающих серверов';
+const description = 'Как устроить ephemeral GitHub Actions runners на Timeweb Cloud: VM создаётся для одной job и удаляется сразу после неё.';
+const timewebUrl = 'https://timeweb.cloud/?i=123235';
+---
+
+<BaseLayout
+	title={`${title} — Poliklot`}
+	description={description}
+	locale="ru"
+	path="/articles/ephemeral-github-actions/"
+	pageType="article"
+	ogImagePath="https://www.poliklot.ru/og-ephemeral-github-actions.jpg"
+	ogImageAlt="Self-hosted GitHub Actions без постоянно работающего CI-сервера — Poliklot"
+	datePublished="2026-09-20"
+	dateModified="2026-09-20"
+>
+	<article class="ci-guide">
+		<header class="ci-hero page-width">
+			<nav class="ci-breadcrumbs" aria-label="Хлебные крошки">
+				<a href="/">Главная</a><span aria-hidden="true">/</span><a href="/articles/">Материалы</a>
+			</nav>
+			<div class="ci-hero-copy">
+				<p>CI/CD · GitHub Actions · Timeweb Cloud</p>
+				<h1>Self-hosted GitHub Actions.<br />Без постоянно работающего сервера.</h1>
+				<p class="ci-lead">Ephemeral runner создаётся для одной job, выполняет её и исчезает. В простое — ноль CI-машин.</p>
+				<div class="ci-meta"><time datetime="2026-09-20">20 сентября 2026</time><span>12 минут</span></div>
+			</div>
+			<div class="ci-hero-system" aria-label="Схема: GitHub запускает dispatcher, dispatcher создаёт временную VM в Timeweb Cloud, VM выполняет job и удаляется">
+				<div class="ci-node ci-node-github"><span>GitHub</span><small>workflow_job</small></div><i aria-hidden="true"></i>
+				<div class="ci-node"><span>Dispatcher</span><small>serverless</small></div><i aria-hidden="true"></i>
+				<div class="ci-node ci-node-cloud"><span>Timeweb Cloud</span><small>create VM</small></div><i aria-hidden="true"></i>
+				<div class="ci-node ci-node-runner"><span>Runner</span><small>one job</small></div>
+			</div>
+		</header>
+
+		<div class="ci-layout page-width">
+			<aside class="ci-toc" aria-label="Содержание">
+				<p>В статье</p>
+				<a href="#idea">Идея</a><a href="#kubernetes">Почему не Kubernetes</a><a href="#flow">Как это работает</a><a href="#runners">Типы runner’ов</a><a href="#economics">Экономика</a><a href="#reliability">Надёжность и безопасность</a>
+			</aside>
+
+			<div class="ci-content">
+				<section class="ci-intro" id="idea">
+					<p>Исходная задача простая: команда тратит больше 8 000 минут GitHub Actions в месяц. Нагрузка неровная: сегодня десять сборок, потом несколько дней тишина. Платить за мощный CI-сервер в ожидании следующей job — не самый очевидный выбор.</p>
+					<blockquote>Появилась job → появился compute. Job закончилась → compute исчез.</blockquote>
+					<div class="ci-idle-flow" aria-label="Схема работы без постоянных серверов"><span>Нет jobs</span><b>0 серверов</b><span>0 расходов на compute</span><em aria-hidden="true">↓</em><span>Есть job</span><b>VM для CI</b><span>Удаление после выполнения</span></div>
+					<p>Ни Kubernetes, ни постоянно включённый runner для этой модели не обязательны. Нужен сигнал о новой job, небольшой диспетчер и API облака, который создаст машину ровно под нужную работу.</p>
+				</section>
+
+				<section class="ci-section" id="kubernetes">
+					<div class="ci-section-head"><span>01</span><h2>Kubernetes — хороший, но не обязательный ответ</h2></div>
+					<div class="ci-copy">
+						<p>Официальный Actions Runner Controller умеет создавать ephemeral runners в Kubernetes. Это отличный путь, когда кластер уже есть и нужен общий orchestration layer.</p>
+						<pre aria-label="Настройка ARC"><code>minRunners: 0
+maxRunners: 4</code></pre>
+						<p>Но даже с нулём runner-подов кластер, control plane и системные компоненты остаются. Разворачивать Kubernetes только ради нерегулярных сборок — это отдельный постоянно работающий слой инфраструктуры.</p>
+						<div class="ci-compare"><div><b>ARC + Kubernetes</b><span>Логично, если кластер уже решает другие задачи.</span></div><div><b>VM per job</b><span>Логично, если CI появляется рывками и отдельный кластер не нужен.</span></div></div>
+					</div>
+				</section>
+
+				<section class="ci-section" id="flow">
+					<div class="ci-section-head"><span>02</span><h2>GitHub уже отдаёт нужный сигнал</h2></div>
+					<div class="ci-copy">
+						<p>GitHub Actions отправляет webhook <code>workflow_job</code> со статусом <code>queued</code>. Его получает dispatcher: проверяет подпись, определяет тип job, соблюдает лимит параллельности и через API создаёт VM из подготовленного образа.</p>
+						<div class="ci-pipeline"><div><small>01</small><b>Push</b><span>Разработчик запускает workflow.</span></div><div><small>02</small><b>Webhook</b><span>GitHub сообщает о queued job.</span></div><div><small>03</small><b>VM</b><span>Dispatcher создаёт временный runner.</span></div><div><small>04</small><b>Delete</b><span>После job машина удаляется.</span></div></div>
+						<p>Для облачного compute здесь подойдёт <a href={timewebUrl} target="_blank" rel="sponsored noreferrer" data-goatcounter-click="open-timeweb-ephemeral-runners">Timeweb Cloud</a>: Cloud Servers управляются через API, поэтому VM можно создавать и удалять программно. Для диспетчера достаточно serverless-функции — отдельный сервер не нужен.</p>
+					</div>
+				</section>
+
+				<section class="ci-section" id="image">
+					<div class="ci-section-head"><span>03</span><h2>Образ готовится один раз</h2></div>
+					<div class="ci-copy">
+						<p>Устанавливать Flutter, Android SDK, Java, Node.js и runner в каждой свежей Ubuntu — значит тратить время на cold start. Лучше собрать и проверить отдельный образ.</p>
+						<div class="ci-image-card"><div class="ci-image-title"><span>flutter-ci-image-v1</span><small>immutable base image</small></div><ul><li>GitHub Actions Runner</li><li>Flutter SDK и Android SDK</li><li>Java, Gradle, Node.js, pnpm</li><li>Docker / BuildKit</li></ul></div>
+						<p>При загрузке VM получает только краткоживущую конфигурацию регистрации, подключается к GitHub, забирает одну job и больше не используется.</p>
+					</div>
+				</section>
+
+				<section class="ci-section" id="runners">
+					<div class="ci-section-head"><span>04</span><h2>Ресурсы подбираются по типу работы</h2></div>
+					<div class="ci-copy">
+						<p>Backend и мобильные сборки не обязаны делить один и тот же тяжёлый сервер. Labels GitHub позволяют dispatcher’у выбрать образ и конфигурацию VM для конкретной job.</p>
+						<div class="ci-runner-grid"><article><p>Backend runner</p><strong>2 CPU<br />4 GB RAM</strong><span>Node.js · pnpm · BuildKit</span><code>runs-on: [self-hosted, nestjs]</code></article><article><p>Flutter runner</p><strong>4 CPU<br />8 GB RAM</strong><span>Flutter · Android SDK · Java</span><code>runs-on: [self-hosted, flutter]</code></article></div>
+						<p>Параллельность становится прозрачной: четыре Flutter jobs — это четыре изолированные VM. Они не спорят за CPU и память внутри одного сервера. При этом dispatcher держит общий лимит, например <code>max runners = 4</code>.</p>
+					</div>
+				</section>
+
+				<section class="ci-section" id="economics">
+					<div class="ci-section-head"><span>05</span><h2>Платим за работу, а не за ожидание</h2></div>
+					<div class="ci-copy">
+						<div class="ci-math"><div><span>8 000</span><small>runner-минут в месяц</small></div><i>≈</i><div><span>133</span><small>часа compute</small></div><i>vs</i><div><span>720</span><small>часов у сервера, который включён весь месяц</small></div></div>
+						<p>Это не калькулятор точной экономии: к compute добавляются cold start, округление биллинга, хранение образов и дисков, трафик и внешние кэши. Но при bursty-нагрузке меняется сама модель — compute существует преимущественно только когда он выполняет CI.</p>
+						<p>Локальный кэш умрёт вместе с VM, поэтому Gradle, pub и pnpm/npm cache важно вынести во внешнее хранилище. Артефакты и логи при этом остаются в GitHub или object storage.</p>
+					</div>
+				</section>
+
+				<section class="ci-section" id="reliability">
+					<div class="ci-section-head"><span>06</span><h2>Надёжность и безопасность — не после запуска</h2></div>
+					<div class="ci-copy">
+						<div class="ci-checklist"><div><b>Одноразовые данные</b><span>В образе нет постоянного GitHub PAT. Временные credentials передаются при создании VM и истекают вместе с ней.</span></div><div><b>Минимальные права</b><span>Ключ Timeweb API остаётся у dispatcher’а. Runner получает только то, что нужно для одной job.</span></div><div><b>Garbage collector</b><span>Плановая функция ищет VM с тегом <code>purpose=github-runner</code> и удаляет те, что пережили TTL.</span></div></div>
+						<p>Внешняя уборка обязательна. Если runner завис, GitHub недоступен или внутренний cleanup не отработал, VM не должна жить неделю и незаметно увеличивать счёт.</p>
+					</div>
+				</section>
+
+				<section class="ci-final" aria-labelledby="ci-final-title">
+					<p>Итоговая модель</p>
+					<h2 id="ci-final-title">CI-инфраструктура становится событием, а не сервером.</h2>
+					<p>GitHub остаётся control plane. Serverless-функция — диспетчером. <a href={timewebUrl} target="_blank" rel="sponsored noreferrer" data-goatcounter-click="open-timeweb-ephemeral-runners-final">Timeweb Cloud</a> — временным compute. Runner существует ровно столько, сколько нужно для конкретной задачи.</p>
+				</section>
+
+				<footer class="ci-next"><span>Продолжение следует</span><h2>В следующей части соберём эту схему по шагам.</h2><p>Подготовим образ, webhook и dispatcher, настроим регистрацию ephemeral runner, labels, TTL-очистку и запуск первой job в Timeweb Cloud.</p></footer>
+			</div>
+		</div>
+	</article>
+</BaseLayout>

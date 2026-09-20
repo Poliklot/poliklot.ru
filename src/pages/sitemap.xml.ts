@@ -5,6 +5,7 @@ const pages = [
 	{url: 'https://poliklot.ru/en/', language: 'en', alternates: true, lastmod: '2026-09-08'},
 	{url: 'https://poliklot.ru/articles/', language: 'ru', alternates: false, lastmod: '2026-09-09'},
 	{url: 'https://poliklot.ru/articles/mobile-app-testing/', language: 'ru', alternates: false, lastmod: '2026-09-09'},
+	{url: 'https://poliklot.ru/articles/ephemeral-github-actions/', language: 'ru', alternates: false, lastmod: '2026-09-20'},
 ];
 
 const alternates = pages
