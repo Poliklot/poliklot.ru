@@ -16,6 +16,7 @@ import {
 } from '@gravity-ui/icons';
 import {
     siAnsible,
+    siApachekafka,
     siApple,
     siAstro,
     siDart,
@@ -41,9 +42,7 @@ import {
     siPrettier,
     siPrisma,
     siPrometheus,
-    siRabbitmq,
     siReact,
-    siRedis,
     siSentry,
     siStorybook,
     siTerraform,
@@ -81,8 +80,7 @@ const brandMap: Record<string, {path: string; title: string}> = {
     NestJS: siNestjs,
     GraphQL: siGraphql,
     PostgreSQL: siPostgresql,
-    Redis: siRedis,
-    RabbitMQ: siRabbitmq,
+    Kafka: siApachekafka,
     Prisma: siPrisma,
     Docker: siDocker,
     Kubernetes: siKubernetes,
@@ -112,6 +110,10 @@ const brandMap: Record<string, {path: string; title: string}> = {
     Lighthouse: siLighthouse,
 };
 
+const customBrandMap: Record<string, {src: string}> = {
+    Redis: {src: '/brands/redis.svg'},
+};
+
 export function GravityIcon({name, size = 24, className}: {name: IconName; size?: number; className?: string}) {
     return <Icon data={iconMap[name]} size={size} className={className} />;
 }
@@ -136,10 +138,12 @@ export function ToolCloud({items}: {items: readonly string[]}) {
         <ul className="tool-cloud">
             {items.map((name) => {
                 const brand = brandMap[name];
+                const customBrand = customBrandMap[name];
                 const specialIcon = name === 'MCP' ? LogoMcp : (name === 'OpenAI API' || name === 'Codex') ? Cpu : undefined;
                 return (
-                    <li key={name} className={brand || specialIcon ? 'tool-cloud_brand' : undefined}>
+                    <li key={name} className={brand || customBrand || specialIcon ? 'tool-cloud_brand' : undefined}>
                         {brand && <svg viewBox="0 0 24 24" aria-hidden="true"><path d={brand.path} /></svg>}
+                        {customBrand && <img src={customBrand.src} width="24" height="24" alt="" />}
                         {specialIcon && <Icon data={specialIcon} size={18} />}
                         <span>{name}</span>
                     </li>

@@ -1,11 +1,20 @@
 import type { APIRoute } from 'astro';
+import {publishedArticles} from '../data/articles';
 
-const pages = [
+const staticPages = [
 	{url: 'https://poliklot.ru/', language: 'ru', alternates: true, lastmod: '2026-09-08'},
 	{url: 'https://poliklot.ru/en/', language: 'en', alternates: true, lastmod: '2026-09-08'},
 	{url: 'https://poliklot.ru/articles/', language: 'ru', alternates: false, lastmod: '2026-09-09'},
-	{url: 'https://poliklot.ru/articles/mobile-app-testing/', language: 'ru', alternates: false, lastmod: '2026-09-09'},
-	{url: 'https://poliklot.ru/articles/ephemeral-github-actions/', language: 'ru', alternates: false, lastmod: '2026-09-20'},
+];
+
+const pages = [
+	...staticPages,
+	...publishedArticles.map((article) => ({
+		url: `https://poliklot.ru/articles/${article.slug}/`,
+		language: 'ru',
+		alternates: false,
+		lastmod: article.publishedAt,
+	})),
 ];
 
 const alternates = pages

@@ -4,7 +4,7 @@ export const HH_URL = 'https://hh.ru/resume/ebe2b012ff0834a84e0039ed1f6d6b526b58
 
 const stacks = {
 	frontend: ['TypeScript', 'JavaScript', 'React', 'Next.js', 'Astro', 'Vue', 'HTML', 'CSS', 'Design systems', 'Web performance', 'Accessibility'],
-	backend: ['Node.js', 'NestJS', 'REST', 'GraphQL', 'PostgreSQL', 'Redis', 'RabbitMQ', 'Prisma', 'WebSockets', 'OpenAPI', 'SQL'],
+	backend: ['Node.js', 'NestJS', 'REST', 'GraphQL', 'PostgreSQL', 'Redis', 'Kafka', 'Prisma', 'WebSockets', 'OpenAPI', 'SQL'],
 	devsecops: ['Docker', 'Kubernetes', 'Terraform', 'Ansible', 'Nginx', 'GitHub Actions', 'GitLab CI', 'Linux', 'Prometheus', 'Grafana', 'Sentry', 'Trivy', 'Vault', 'Dependabot'],
 	ai: ['OpenAI API', 'Codex', 'MCP', 'Agent workflows', 'RAG', 'Embeddings', 'pgvector', 'Prompt engineering', 'LLM evals', 'Automation'],
 	mobile: ['Flutter', 'Dart', 'Firebase', 'iOS', 'Android', 'App Store', 'Google Play', 'Push notifications', 'Deep links'],

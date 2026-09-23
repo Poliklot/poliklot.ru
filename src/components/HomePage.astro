@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import {GravityIcon, GravityLinkButton, ToolCloud} from './GravityUI';
+import {homepageArticles} from '../data/articles';
 import {copy, HH_URL, type Locale} from '../data/site';
 
 interface Props { locale: Locale; }
@@ -122,11 +123,15 @@ const t = copy[locale];
 						<h2>Материалы</h2>
 						<a href="/articles/">Все материалы <span aria-hidden="true">↗</span></a>
 					</div>
-					<a class="material-feature" href="/articles/mobile-app-testing/">
-						<p>8 сентября 2026</p>
-						<div><h3>Как пройти обязательное тестирование в Google Play</h3><span>12 тестировщиков, 14 дней и заявка на публикацию</span></div>
-						<b>Читать <span aria-hidden="true">↗</span></b>
-					</a>
+					<div class="materials-list">
+						{homepageArticles.map((article) => (
+							<a class="material-feature" href={`/articles/${article.slug}/`}>
+								<time datetime={article.publishedAt}>{article.publishedLabel}</time>
+								<div><h3>{article.title}</h3><span>{article.description}</span></div>
+								<b>Читать <span aria-hidden="true">↗</span></b>
+							</a>
+						))}
+					</div>
 				</div>
 			</section>
 		)}

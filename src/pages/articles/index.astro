@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import {publishedArticles} from '../../data/articles';
 import '../../styles/articles.css';
 
 const title = 'Материалы — Игорь / Poliklot';
@@ -25,22 +26,16 @@ const description = 'Статьи и практические инструкци
 		</header>
 
 		<div class="articles-list" aria-label="Статьи">
-			<a class="articles-item" href="/articles/ephemeral-github-actions/">
-				<time datetime="2026-09-20">20 сентября 2026</time>
-				<div>
-					<h2>Self-hosted GitHub Actions без постоянно работающих серверов</h2>
-					<p>Ephemeral runners на Timeweb Cloud: VM поднимается для одной job и удаляется после выполнения.</p>
-				</div>
-				<span>Читать <span aria-hidden="true">↗</span></span>
-			</a>
-			<a class="articles-item" href="/articles/mobile-app-testing/">
-				<time datetime="2026-09-08">8 сентября 2026</time>
-				<div>
-					<h2>Как пройти обязательное тестирование в Google Play</h2>
-					<p>12 тестировщиков, 14 дней непрерывного участия, ежедневный план и заявка на публикацию.</p>
-				</div>
-				<span>Читать <span aria-hidden="true">↗</span></span>
-			</a>
+			{publishedArticles.map((article) => (
+				<a class="articles-item" href={`/articles/${article.slug}/`}>
+					<time datetime={article.publishedAt}>{article.publishedLabel}</time>
+					<div>
+						<h2>{article.title}</h2>
+						<p>{article.description}</p>
+					</div>
+					<span>Читать <span aria-hidden="true">↗</span></span>
+				</a>
+			))}
 		</div>
 	</section>
 </BaseLayout>
