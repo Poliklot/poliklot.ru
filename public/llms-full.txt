@@ -46,6 +46,10 @@ Igor reconstructs context, localizes risk, and carries a change through source c
 
 [Материалы](https://poliklot.ru/articles/) is the canonical index of Igor / Poliklot's Russian-language articles and practical instructions.
 
+### Temporary GitHub Actions servers
+
+[GitHub Actions: платим за сборки, а не за простой](https://poliklot.ru/articles/ephemeral-github-actions/) explains temporary self-hosted runners on Timeweb Cloud for a Russian-speaking audience. Part 1 covers ruble payments, an illustrative cost comparison, one-job servers, and cleanup failure handling. Cost examples are estimates, not benchmark results; the implementation walkthrough is planned for part 2.
+
 ### Mobile app testing
 
 [Как пройти обязательное тестирование в Google Play](https://poliklot.ru/articles/mobile-app-testing/) is a Russian-language step-by-step guide for personal developer accounts created after November 13, 2023. It explains how to prepare a closed test, enroll testers correctly, maintain at least 12 opted-in participants for 14 consecutive days, collect evidence and private feedback, diagnose country and testing-track mismatches, verify the installed version, and apply for production access.
@@ -55,6 +59,7 @@ Igor reconstructs context, localizes risk, and carries a change through source c
 - Canonical website: https://poliklot.ru/
 - English profile: https://poliklot.ru/en/
 - Articles: https://poliklot.ru/articles/
+- Temporary GitHub Actions servers: https://poliklot.ru/articles/ephemeral-github-actions/
 - Mobile app testing guide: https://poliklot.ru/articles/mobile-app-testing/
 - GitHub: https://github.com/Poliklot
 - Full résumé: https://hh.ru/resume/ebe2b012ff0834a84e0039ed1f6d6b526b584f

@@ -1,133 +1,188 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import '../../styles/article.css';
+import {publishedArticles} from '../../data/articles';
+import '../../styles/ephemeral-article.css';
 
-const title = 'Self-hosted GitHub Actions без постоянно работающих серверов';
-const description = 'Как устроить ephemeral GitHub Actions runners на Timeweb Cloud: VM создаётся для одной job и удаляется сразу после неё.';
+const article = publishedArticles.find(({slug}) => slug === 'ephemeral-github-actions')!;
 const timewebCloudUrl = 'https://timeweb.cloud/?i=123235';
 const timewebPricingUrl = 'https://timeweb.cloud/services/cloud-servers?i=123235';
-const githubRunnerPricingUrl = 'https://docs.github.com/en/billing/reference/actions-runner-pricing';
-const githubBillingChangeUrl = 'https://github.com/resources/insights/2026-pricing-changes-for-github-actions';
-const timewebDataLocationUrl = 'https://timeweb.cloud/docs/152-fz?i=123235';
+const timewebPaymentsUrl = 'https://timeweb.cloud/docs/service-payments/payment-methods?i=123235';
+const githubPricingUrl = 'https://docs.github.com/en/billing/reference/actions-runner-pricing';
+const githubBillingUrl = 'https://docs.github.com/en/billing/concepts/product-billing/github-actions';
+const githubScalingUrl = 'https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/autoscaling-with-self-hosted-runners';
+const githubPricingUpdateUrl = 'https://github.com/resources/insights/2026-pricing-changes-for-github-actions';
+const contents = [
+	['idea', 'Зачем всё это'],
+	['example', 'Один месяц сборок'],
+	['flow', 'Как это работает'],
+	['economics', 'Сколько стоит'],
+	['reliability', 'Что может пойти не так'],
+	['next', 'Что во второй части'],
+];
 ---
 
 <BaseLayout
-	title={`${title} — Poliklot`}
-	description={description}
+	title={`${article.title} — Poliklot`}
+	description={article.description}
 	locale="ru"
 	path="/articles/ephemeral-github-actions/"
 	pageType="article"
-	ogImagePath="https://www.poliklot.ru/og-ephemeral-github-actions.jpg"
-	ogImageAlt="Self-hosted GitHub Actions без постоянно работающего CI-сервера — Poliklot"
-	datePublished="2026-09-20"
-	dateModified="2026-09-23"
+	ogImagePath="/og-ephemeral-github-actions-2026-09-v2.jpg"
+	ogImageAlt="GitHub Actions: платим за сборки, а не за простой. Временные серверы с оплатой в рублях."
+	datePublished={article.publishedAt}
+	dateModified={article.updatedAt}
 >
 	<article class="ci-guide">
-		<header class="ci-hero page-width">
-			<nav class="ci-breadcrumbs" aria-label="Хлебные крошки">
-				<a href="/">Главная</a><span aria-hidden="true">/</span><a href="/articles/">Материалы</a>
-			</nav>
-			<div class="ci-hero-copy">
-				<p>CI/CD · GitHub Actions · Timeweb Cloud</p>
-				<h1>Self-hosted GitHub Actions.<br />Без постоянно работающего сервера.</h1>
-				<p class="ci-lead">Ephemeral runner создаётся для одной job, выполняет её и исчезает. В простое — ноль CI-машин.</p>
-				<div class="ci-meta"><time datetime="2026-09-20">20 сентября 2026</time><span>12 минут</span></div>
-			</div>
-			<div class="ci-hero-system" aria-label="Схема: GitHub запускает provision job, она создаёт временную VM в Timeweb Cloud, JIT runner выполняет одну job">
-				<div class="ci-node ci-node-github"><span>GitHub</span><small>workflow</small></div><i aria-hidden="true"></i>
-				<div class="ci-node"><span>Provision</span><small>GitHub-hosted job</small></div><i aria-hidden="true"></i>
-				<div class="ci-node ci-node-cloud"><span>Timeweb Cloud</span><small>create VM</small></div><i aria-hidden="true"></i>
-				<div class="ci-node ci-node-runner"><span>Runner</span><small>one job</small></div>
-			</div>
-		</header>
+		<nav class="ci-breadcrumbs" aria-label="Хлебные крошки">
+			<a href="/">Главная</a><span aria-hidden="true">/</span><a href="/articles/">Материалы</a>
+		</nav>
 
-		<div class="ci-layout page-width">
-			<aside class="ci-toc" aria-label="Содержание">
-				<p>В статье</p>
-				<a href="#idea">Идея</a><a href="#kubernetes">Почему не Kubernetes</a><a href="#flow">Как это работает</a><a href="#runners">Типы runner’ов</a><a href="#economics">Экономика</a><a href="#reliability">Надёжность</a>
+		<div class="ci-layout">
+			<header class="ci-hero">
+				<p class="ci-series">GitHub Actions на своих серверах · Часть 1</p>
+				<h1>Платим за сборки,<br class="ci-desktop-break" /> а не за простой</h1>
+				<p class="ci-lead">Сервер появляется, когда нужно собрать приложение, и удаляется после работы. GitHub остаётся привычным. Основные расходы — в рублях.</p>
+				<div class="ci-meta">
+					<span>Игорь / Poliklot</span>
+					<time datetime={article.publishedAt}>{article.publishedLabel}</time>
+					<span>8 минут</span>
+				</div>
+			</header>
+
+			<aside class="ci-toc">
+				<nav aria-label="Содержание статьи">
+					<p>В статье</p>
+					<ul>{contents.map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}</ul>
+				</nav>
 			</aside>
 
 			<div class="ci-content">
-				<section class="ci-intro" id="idea">
-					<p>Исходная задача простая: команда тратит больше 8 000 минут GitHub Actions в месяц. Нагрузка неровная: сегодня десять сборок, потом несколько дней тишина. Платить за мощный CI-сервер в ожидании следующей job — не самый очевидный выбор.</p>
-					<blockquote>Появилась job → появился compute. Job закончилась → compute исчез.</blockquote>
-					<div class="ci-idle-flow" aria-label="Схема работы без постоянных серверов"><span>Нет jobs</span><b>0 серверов</b><span>0 расходов на VM compute</span><em aria-hidden="true">↓</em><span>Есть job</span><b>VM для CI</b><span>Удаление после выполнения</span></div>
-					<p>Ни Kubernetes, ни постоянно включённый runner для этой модели не обязательны. Нужны короткая подготовительная job в GitHub Actions и API облака, который создаст машину ровно под следующую сборку.</p>
-				</section>
-
-				<section class="ci-section" id="kubernetes">
-					<div class="ci-section-head"><span>01</span><h2>Kubernetes — хороший, но не обязательный ответ</h2></div>
-					<div class="ci-copy">
-						<p>Официальный Actions Runner Controller умеет создавать ephemeral runners в Kubernetes. Это отличный путь, когда кластер уже есть и нужен общий orchestration layer.</p>
-						<pre aria-label="Настройка ARC"><code>minRunners: 0
-maxRunners: 4</code></pre>
-						<p>Но даже с нулём runner-подов кластер, control plane и системные компоненты остаются. Разворачивать Kubernetes только ради нерегулярных сборок — это отдельный постоянно работающий слой инфраструктуры.</p>
-						<div class="ci-compare"><div><b>ARC + Kubernetes</b><span>Логично, если кластер уже решает другие задачи.</span></div><div><b>VM per job</b><span>Логично, если CI появляется рывками и отдельный кластер не нужен.</span></div></div>
+				<section id="idea" class="ci-section ci-intro">
+					<h2>Минуты закончились.<br />Как платить дальше?</h2>
+					<p>Пока проект небольшой, GitHub Actions почти не замечаешь. Отправил код — запустились тесты, собралось приложение. Бесплатных минут хватает, всё удобно.</p>
+					<p>Потом проектов становится больше, сборки идут дольше, лимит заканчивается. Для команды из России это ещё и вопрос оплаты: нужен доступный способ заплатить зарубежному сервису. А хочется просто выпускать приложение, не искать ради этого иностранную карту.</p>
+					<p>Можно арендовать сервер у российского провайдера. Но зачем держать его включённым весь месяц, если сборки нужны лишь несколько часов в день?</p>
+					<div class="ci-takeaway">
+						<p><strong>Оставляем GitHub Actions.<br />Серверы берём только на время работы.</strong></p>
+						<p>В этой статье — смысл, устройство и расчёт. Во второй — настройка на живом примере.</p>
 					</div>
 				</section>
 
-				<section class="ci-section" id="flow">
-					<div class="ci-section-head"><span>02</span><h2>Runner подготавливает сам workflow</h2></div>
-					<div class="ci-copy">
-						<p>Webhook <code>workflow_job</code> не подходит для старта: GitHub отправляет его после завершения job. Поэтому workflow начинает короткая job <code>provision</code> на GitHub-hosted runner. Она создаёт VM через API, получает JIT-конфигурацию runner’а и передаёт её машине. Следующая job с <code>needs: provision</code> ждёт готовый runner и выполняется уже на нём.</p>
-						<div class="ci-pipeline"><div><small>01</small><b>Push</b><span>Разработчик запускает workflow.</span></div><div><small>02</small><b>Provision</b><span>Короткая GitHub job создаёт VM.</span></div><div><small>03</small><b>JIT runner</b><span>VM регистрируется для одной job.</span></div><div><small>04</small><b>Build</b><span>Сборка идёт на временной VM.</span></div><div><small>05</small><b>Cleanup</b><span>GitHub job удаляет VM даже при ошибке.</span></div></div>
-						<p>Для облачного compute здесь подойдёт <a href={timewebCloudUrl} target="_blank" rel="sponsored nofollow noopener" data-goatcounter-click="open-timeweb-ephemeral-runners">Timeweb Cloud</a>: Cloud Servers управляются через API, поэтому VM можно создавать и удалять программно. Отдельный постоянно работающий dispatcher не нужен; GitHub-hosted job используется только для подготовки и очистки.</p>
+				<section id="example" class="ci-section">
+					<h2>Двадцать минут на сборку.<br />Аренда — на весь месяц?</h2>
+					<p>Возьмём условную команду с Android-приложением на Flutter. Одна сборка занимает 20 минут. За день её запускают 20 раз: проверить изменения, исправить ошибку, отдать версию тестировщику.</p>
+					<div class="ci-equation" aria-label="20 сборок в день, по 20 минут, за 20 рабочих дней — 8 000 минут в месяц">
+						<span><b>20</b><small>сборок в день</small></span><i aria-hidden="true">×</i>
+						<span><b>20</b><small>минут на сборку</small></span><i aria-hidden="true">×</i>
+						<span><b>20</b><small>рабочих дней</small></span>
 					</div>
+					<figure class="ci-utilization" aria-labelledby="ci-utilization-title">
+						<figcaption id="ci-utilization-title">В месяце 720 часов. Сборкам нужны примерно 133.</figcaption>
+						<div class="ci-bar-heading"><b>Постоянный сервер</b><span>720 ч аренды</span></div>
+						<div class="ci-bar ci-bar-permanent" aria-hidden="true"><span class="ci-bar-work"></span><span class="ci-bar-idle"></span></div>
+						<div class="ci-bar-key"><span><i class="ci-key-work" aria-hidden="true"></i>133 ч сборок</span><span><i class="ci-key-idle" aria-hidden="true"></i>587 ч простоя</span></div>
+						<div class="ci-bar-heading"><b>Временные серверы</b><span>Только когда нужны</span></div>
+						<div class="ci-bar ci-bar-temporary" aria-hidden="true"><span class="ci-bar-work"></span><span class="ci-bar-absent"></span></div>
+						<p>Те же сборки. Без аренды на всё остальное время.</p>
+					</figure>
+					<p class="ci-note">Это модель нагрузки, а не замер проекта. Здесь показано только полезное время: подготовка машин и округление оплаты добавят расходы.</p>
+					<p>Если сборки идут почти непрерывно, постоянный сервер может быть выгоднее. Но для нагрузки «сегодня густо, завтра пусто» временные машины стоит хотя бы посчитать.</p>
 				</section>
 
-				<section class="ci-section" id="image">
-					<div class="ci-section-head"><span>03</span><h2>Образ готовится один раз</h2></div>
-					<div class="ci-copy">
-						<p>Устанавливать Flutter, Android SDK, Java, Node.js и runner в каждой свежей Ubuntu — значит тратить время на cold start. Лучше собрать и проверить отдельный образ.</p>
-						<div class="ci-image-card"><div class="ci-image-title"><span>flutter-ci-image-v1</span><small>immutable base image</small></div><ul><li>GitHub Actions Runner</li><li>Flutter SDK и Android SDK</li><li>Java, Gradle, Node.js, pnpm</li><li>Docker / BuildKit</li></ul></div>
-						<p>При загрузке VM получает только краткоживущую конфигурацию регистрации, подключается к GitHub, забирает одну job и больше не используется.</p>
-					</div>
+				<section id="flow" class="ci-section">
+					<h2>Что происходит после отправки кода</h2>
+					<p>GitHub умеет запускать задачи не только на своих машинах. На ваш сервер устанавливается программа-исполнитель — <strong>runner</strong>. Она получает задачу и выполняет команды сборки.</p>
+					<p>Мы используем одноразового исполнителя: одна задача — одна свежая машина. В документации это называется <em>ephemeral runner</em>.</p>
+					<ol class="ci-steps">
+						<li><span class="ci-step-number" aria-hidden="true">1</span><div><h3>GitHub создаёт сервер</h3><p>Короткая подготовительная задача обращается к API <a href={timewebCloudUrl} target="_blank" rel="sponsored nofollow noopener" data-goatcounter-click="open-timeweb-ephemeral-runners">Timeweb Cloud</a>. Новая машина подключается к GitHub и ждёт свою сборку.</p></div><span class="ci-step-place">На машине GitHub</span></li>
+						<li><span class="ci-step-number" aria-hidden="true">2</span><div><h3>Приложение собирается</h3><p>На временной машине выполняются тесты и сборка. Готовый APK и нужные журналы сохраняются снаружи — они не должны исчезнуть вместе с сервером.</p></div><span class="ci-step-place ci-step-place-cloud">В Timeweb Cloud</span></li>
+						<li><span class="ci-step-number" aria-hidden="true">3</span><div><h3>GitHub удаляет сервер</h3><p>Отдельная задача запрашивает удаление машины, в том числе после ошибки сборки. Если очистка сорвётся, её подстрахует независимая проверка.</p></div><span class="ci-step-place">На машине GitHub</span></li>
+					</ol>
+					<p>Для разработчика всё знакомо: отправил изменения, открыл вкладку Actions, дождался проверки, скачал приложение. Вручную включать сервер не нужно.</p>
+					<details class="ci-detail">
+						<summary>А почему не запускать сервер по уведомлению GitHub?</summary>
+						<div><p>Так тоже можно. Событие <code>workflow_job</code> приходит при постановке задачи в очередь, во время выполнения и после завершения. Но для этого нужен отдельный обработчик уведомлений.</p><p>Здесь выбираем более простую отправную точку: три задачи <code>provision → build → cleanup</code> внутри GitHub Actions. Для каждой сборки нужна уникальная метка исполнителя, чтобы параллельные запуски не забирали чужие машины. Подробнее — в <a href={githubScalingUrl} target="_blank" rel="noopener noreferrer">документации GitHub</a>.</p></div>
+					</details>
+
+					<h3 id="image" class="ci-subheading">Не устанавливать Flutter четыреста раз</h3>
+					<p>Машина новая, но не пустая. Заранее готовим образ — шаблон с Flutter, Android SDK, Java и исполнителем GitHub. Иначе перед каждой сборкой будем ждать установки одних и тех же инструментов.</p>
+					<p>Образ регулярно обновляем. Постоянные ключи в него не кладём, конфигурацию для одной задачи передаём при запуске. Кэш зависимостей продумываем отдельно: локальные файлы удалятся вместе с машиной.</p>
+					<p class="ci-note">Пример — для Android. Для сборки iOS по-прежнему нужны macOS и Xcode: Linux-сервер их не заменяет.</p>
 				</section>
 
-				<section class="ci-section" id="runners">
-					<div class="ci-section-head"><span>04</span><h2>Ресурсы подбираются по типу работы</h2></div>
-					<div class="ci-copy">
-						<p>Backend и мобильные сборки не обязаны делить один и тот же тяжёлый сервер. Labels GitHub позволяют job <code>provision</code> выбрать образ и конфигурацию VM для конкретной job.</p>
-						<div class="ci-runner-grid"><article><p>Backend runner</p><strong>2 CPU<br />4 GB RAM</strong><span>Node.js · pnpm · BuildKit</span><code>runs-on: [self-hosted, nestjs]</code></article><article><p>Flutter runner</p><strong>4 CPU<br />8 GB RAM</strong><span>Flutter · Android SDK · Java</span><code>runs-on: [self-hosted, flutter]</code></article></div>
-						<p>Параллельность становится прозрачной: четыре Flutter jobs — это четыре изолированные VM. Они не спорят за CPU и память внутри одного сервера. Лимит задаётся в workflow и квотах облачного проекта, например <code>max runners = 4</code>.</p>
+				<section id="economics" class="ci-section">
+					<h2>Теперь — к деньгам</h2>
+					<div class="ci-payment">
+						<h3>За серверы — в рублях.<br />Без поиска иностранной карты.</h3>
+						<p>Основную работу оплачиваем российскому провайдеру. У Timeweb Cloud есть <a href={timewebPaymentsUrl} target="_blank" rel="sponsored nofollow noopener">СБП, банковские карты и оплата по счёту</a>.</p>
 					</div>
-				</section>
-
-				<section class="ci-section" id="economics">
-					<div class="ci-section-head"><span>05</span><h2>Экономика в одной таблице</h2></div>
-					<div class="ci-copy">
-						<div class="ci-ruble-statement"><p>Compute в рублях</p><strong>Не нужно искать иностранную карту<br />для основной статьи расходов — CI compute.</strong><span>Временные VM оплачиваются Timeweb Cloud в ₽, а не GitHub по минутам.</span></div>
-						<div class="ci-cost-table-wrap" tabindex="0" aria-label="Сравнение GitHub-hosted и ephemeral CI, таблица прокручивается по горизонтали">
-							<table class="ci-cost-table"><thead><tr><th>8 000 минут / месяц</th><th>GitHub-hosted<br />Linux 4-core</th><th>Ephemeral VM<br />Timeweb Cloud</th></tr></thead><tbody>
-								<tr><th>Ресурсы</th><td>4 CPU</td><td>4 CPU · 8 GB RAM · 80 GB NVMe</td></tr>
-								<tr><th>Цена compute</th><td>$0,012 / мин</td><td>≈2,50 ₽ / час</td></tr>
-								<tr><th>Стоимость за объём</th><td><strong>8 083 ₽</strong></td><td><strong>333 ₽</strong></td></tr>
-								<tr><th>GitHub platform fee*</th><td>включена в цену</td><td>до 1 347 ₽</td></tr>
-								<tr class="ci-cost-total"><th>Итого</th><td><strong>8 083 ₽</strong></td><td><strong>до 1 680 ₽</strong></td></tr>
-								<tr class="ci-cost-save"><th>Экономия</th><td>—</td><td><strong>−6 403 ₽ · −79%</strong></td></tr>
-							</tbody></table>
+					<p>Для наших 8 000 минут сравним три варианта. У GitHub возьмём Linux-машину с четырьмя ядрами, у Timeweb — Cloud-80 с 4 vCPU и 8 ГБ памяти.</p>
+					<table class="ci-cost-table">
+							<caption>Пример на 400 сборок по 20 минут</caption>
+							<thead><tr><th scope="col">Вариант и расчёт</th><th scope="col">Стоимость*</th></tr></thead>
+							<tbody>
+								<tr><th scope="row">На машинах GitHub<small>Linux 4-core<br />8 000 мин × $0,012</small></th><td><strong>≈8 100 ₽</strong><small>$96 при условных 84 ₽/$</small></td></tr>
+								<tr><th scope="row">На постоянном сервере<small>Timeweb Cloud-80<br />Аренда на весь месяц</small></th><td><strong>1 800 ₽</strong></td></tr>
+								<tr class="ci-cost-highlight"><th scope="row">На временных серверах<small>Тот же Cloud-80<br />133⅓ ч × ≈2,50 ₽</small></th><td><strong>≈333 ₽</strong><small>Только время сборок</small></td></tr>
+							</tbody>
+						</table>
+					<p class="ci-note">*Тарифы проверены 26 сентября 2026. Курс 84 ₽/$ взят для примера. 333 ₽ — базовая оценка, не полный счёт. Ставка ≈2,50 ₽/ч получена делением 1 800 ₽ на 720 часов; правила списания нужно подтвердить для выбранной конфигурации.</p>
+					<p><strong>Почему это ещё не итоговый счёт?</strong> Серверу нужно загрузиться, подготовиться и удалиться. Есть округление оплаты, хранение образа и результатов, возможная плата за IP. А одинаковое число ядер не гарантирует одинаковую скорость сборки.</p>
+					<details class="ci-detail">
+						<summary>Что ещё учесть в расчёте</summary>
+						<div>
+							<p>Если подготовка и удаление добавят по 3 минуты на каждый из 400 запусков, это ещё 20 часов. При пропорциональной оплате оценка вырастет до ≈383 ₽. Если же каждый запуск округляется до полного часа, четыреста коротких запусков обойдутся уже примерно в 1 000 ₽. Это два расчётных сценария, не утверждение о правилах Timeweb.</p>
+							<p>Linux 4-core у GitHub относится к увеличенным машинам — <em>larger runners</em>. Они доступны организациям на GitHub Team и Enterprise Cloud; включённые минуты на них не действуют. Для обычных машин и другой нагрузки результат будет иным.</p>
+							<p>По текущей документации использование собственных исполнителей бесплатно. Объявленную плату $0,002 за минуту <a href={githubPricingUpdateUrl} target="_blank" rel="noopener noreferrer">GitHub отложил</a>. Но подготовка и очистка на машинах GitHub расходуют минуты, а хранение тоже может быть платным. Если бесплатная квота закончится и способа оплаты нет, запуск этой схемы остановится.</p>
 						</div>
-						<p class="ci-table-note">Расчёт на 20 сентября 2026: 1 USD = 84,20 ₽; Timeweb MSK 80 — 1 800 ₽/мес, 133 часа фактической работы VM. *Для private job GitHub берёт $0,002/мин self-hosted runner после доступной квоты. Поэтому «до 1 680 ₽» — осторожная верхняя граница, а не обещание нулевого счёта GitHub.</p>
-						<div class="ci-russia-table"><div><b>Оплата</b><span>Compute оплачивается российскому провайдеру в рублях.</span></div><div><b>Данные</b><span>Build-контур, кэш и временная VM могут быть в РФ.</span></div><div><b>Контроль</b><span>Лимитируем не «минуты», а число VM и расход в ₽.</span></div></div>
-						<div class="ci-sources"><a href={timewebPricingUrl} target="_blank" rel="noopener noreferrer">Тариф Timeweb Cloud ↗</a><a href={githubRunnerPricingUrl} target="_blank" rel="noopener noreferrer">Тарифы GitHub Actions ↗</a><a href={githubBillingChangeUrl} target="_blank" rel="noopener noreferrer">Условия self-hosted runner’ов ↗</a><a href={timewebDataLocationUrl} target="_blank" rel="noopener noreferrer">Инфраструктура 152-ФЗ ↗</a></div>
+					</details>
+					<p>Честная проверка — собрать один и тот же проект в обоих вариантах, посмотреть списания и сравнить стоимость готовой сборки. Не забыв собственное время на обслуживание.</p>
+					<p class="ci-note">Счёт GitHub не обязательно станет нулевым: короткие служебные задачи и хранение остаются. Мы переносим основную нагрузку, а не отказываемся от GitHub.</p>
+				</section>
+
+				<section id="reliability" class="ci-section">
+					<h2>Сборка упала.<br />Сервер не должен остаться.</h2>
+					<p>Это важнее красивой схемы. Одноразовый исполнитель перестаёт принимать задачи, но <strong>сам облачный сервер не удаляет</strong>. Забытая машина продолжит расходовать деньги.</p>
+					<div class="ci-failure-example">
+						<h3>Например, отменили сборку посередине</h3>
+						<p>На обычную задачу очистки нельзя полагаться безоговорочно. Периодическая проверка должна найти оставшуюся машину по служебным меткам и удалить её после предельного срока жизни.</p>
+						<p>Срок выбираем с запасом под нормальную сборку. Удаляем только явно помеченные сборочные машины и ненужные связанные ресурсы, а не «все старые серверы».</p>
 					</div>
+					<ul class="ci-safety-list">
+						<li><strong>Ограничиваем число машин.</strong> Лимит общий для запусков, которые используют один бюджет.</li>
+						<li><strong>Не отдаём сборке ключ от облака.</strong> Он нужен подготовке и очистке, а не коду приложения.</li>
+						<li><strong>Не доверяем чужому коду секреты.</strong> Одноразовая машина не мешает украсть доступные ей данные во время работы.</li>
+						<li><strong>Сохраняем результат и журналы снаружи.</strong> Иначе после удаления нечего скачивать и нечего разбирать.</li>
+					</ul>
+					<p class="ci-note">Проверка внутри GitHub не поможет во время недоступности самого GitHub. Для этого нужна очистка вне платформы. И сервер в РФ не означает, что все данные в РФ: код, журналы и результаты могут оставаться в GitHub.</p>
 				</section>
 
-				<section class="ci-section" id="reliability">
-					<div class="ci-section-head"><span>06</span><h2>Надёжность и безопасность — не после запуска</h2></div>
-					<div class="ci-copy">
-						<div class="ci-checklist"><div><b>Одноразовые данные</b><span>В образе нет постоянного GitHub PAT. VM получает JIT-конфигурацию для одной job и отключается после неё.</span></div><div><b>Минимальные права</b><span>Ключ Timeweb API остаётся в GitHub Secrets и доступен только job <code>provision</code> и <code>cleanup</code>. Runner его не получает.</span></div><div><b>Garbage collector</b><span>Плановая job ищет VM с тегом <code>purpose=github-runner</code> и удаляет те, что пережили TTL.</span></div></div>
-						<p>Внешняя уборка обязательна. Если runner завис, GitHub недоступен или внутренний cleanup не отработал, VM не должна жить неделю и незаметно увеличивать счёт.</p>
-					</div>
+				<section id="kubernetes" class="ci-section">
+					<h2>А может, ничего не менять?</h2>
+					<p>Если бесплатных минут хватает и скорость устраивает — вполне. Стандартные машины GitHub для публичных репозиториев тоже могут быть бесплатными. Своя инфраструктура не нужна ради самой инфраструктуры.</p>
+					<p>Если Kubernetes уже есть, посмотрите на Actions Runner Controller: он управляет исполнителями в кластере. Но заводить отдельный кластер только ради нескольких сборок в день необязательно.</p>
+					<p id="runners">Временные серверы интереснее всего, когда сборки тяжёлые, запускаются рывками, а держать машину круглосуточно не хочется. Размер сервера подбираем по замерам, не по принципу «побольше на всякий случай».</p>
 				</section>
 
-				<section class="ci-final" aria-labelledby="ci-final-title">
-					<p>Итоговая модель</p>
-					<h2 id="ci-final-title">CI-инфраструктура становится событием, а не сервером.</h2>
-					<p>GitHub остаётся control plane и запускает короткие job подготовки и очистки. <a href={timewebCloudUrl} target="_blank" rel="sponsored nofollow noopener" data-goatcounter-click="open-timeweb-ephemeral-runners-final">Timeweb Cloud</a> — временный compute. Runner существует ровно столько, сколько нужно для конкретной задачи.</p>
+				<section id="next" class="ci-next" aria-labelledby="ci-next-title">
+					<p class="ci-series">Часть 2 · Готовится</p>
+					<h2 id="ci-next-title">Соберём приложение.<br />А потом специально всё сломаем.</h2>
+					<p>Подготовим образ, соединим GitHub с Timeweb Cloud и получим первый APK. Затем сломаем сборку и отменим другой запуск посередине — проверим, не остались ли платные машины.</p>
+					<ul><li>Рабочий пример в открытом репозитории</li><li>Скриншоты настройки без секретов</li><li>Фактическое время запуска и расходы</li></ul>
+					<p class="ci-next-end" id="ci-final-title">Цель — не просто зелёная галочка. А понятный ответ: сколько стоит сборка и кто уберёт сервер, если что-то пойдёт не так.</p>
 				</section>
 
-				<footer class="ci-next"><span>Продолжение следует</span><h2>В следующей части соберём эту схему по шагам.</h2><p>Подготовим образ, workflow <code>provision → build → cleanup</code>, JIT-регистрацию runner’а, labels, TTL-очистку и запуск первой job в Timeweb Cloud.</p></footer>
+				<footer class="ci-sources">
+					<h2>Источники и тарифы</h2>
+					<p>Проверено 26 сентября 2026. Пример нагрузки условный; реальных замеров этой схемы в статье пока нет.</p>
+					<ul>
+						<li><a href={githubPricingUrl} target="_blank" rel="noopener noreferrer">GitHub: тарифы машин</a></li>
+						<li><a href={githubBillingUrl} target="_blank" rel="noopener noreferrer">GitHub: квоты, свои исполнители и хранение</a></li>
+						<li><a href={githubScalingUrl} target="_blank" rel="noopener noreferrer">GitHub: одноразовые исполнители и масштабирование</a></li>
+						<li><a href={timewebPricingUrl} target="_blank" rel="sponsored nofollow noopener">Timeweb Cloud: тарифы серверов</a></li>
+					</ul>
+					<p class="ci-affiliate-note">Ссылки на Timeweb Cloud — партнёрские.</p>
+				</footer>
 			</div>
 		</div>
 	</article>

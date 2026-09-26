@@ -2,6 +2,7 @@ export interface ArticleSummary {
 	slug: string;
 	publishedAt: string;
 	publishedLabel: string;
+	updatedAt?: string;
 	title: string;
 	description: string;
 }
@@ -11,8 +12,9 @@ const articles: readonly ArticleSummary[] = [
 		slug: 'ephemeral-github-actions',
 		publishedAt: '2026-09-20',
 		publishedLabel: '20 сентября 2026',
-		title: 'Self-hosted GitHub Actions без постоянно работающих серверов',
-		description: 'Ephemeral runners на Timeweb Cloud: VM поднимается для одной job и удаляется после выполнения.',
+		updatedAt: '2026-09-26',
+		title: 'GitHub Actions: платим за сборки, а не за простой',
+		description: 'Временные серверы для GitHub Actions: оплата в рублях, понятный расчёт расходов и одна машина на сборку. Часть 1.',
 	},
 	{
 		slug: 'mobile-app-testing',

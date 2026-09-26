@@ -13,7 +13,7 @@ const pages = [
 		url: `https://poliklot.ru/articles/${article.slug}/`,
 		language: 'ru',
 		alternates: false,
-		lastmod: article.publishedAt,
+		lastmod: article.updatedAt ?? article.publishedAt,
 	})),
 ];
 
