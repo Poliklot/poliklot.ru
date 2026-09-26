@@ -1,0 +1,177 @@
+---
+import {copy, type Locale} from '../data/site';
+import {ToolCloud} from './GravityUI';
+import ScopePanel, {type PanelKind} from './ScopePanel.astro';
+
+interface Props { locale: Locale; }
+const {locale} = Astro.props;
+const t = copy[locale];
+const captions = locale === 'ru' ? [
+	'Начинаю с задачи человека, а не со списка технологий.',
+	'Моя основа. Из пустого холста — в интерфейс: сетка, типографика, компоненты и внимание к каждому действию.',
+	'За интерфейсом — контракт API, проверка данных, кэш и события. Не отдельные части, а связная система.',
+	'Сборка, тесты, проверка безопасности, выпуск. Затем — логи, метрики и трейсы, чтобы видеть, как живёт продукт.',
+	'Роли превращаются в правила: кто может читать, менять и выпускать. Нужные возможности — нужным людям.',
+	'Все слои работают вместе. Продукт готов к использованию.',
+] : [
+	'Start with what people need, not a list of technologies.',
+	'My foundation. From a blank canvas to an interface: grid, typography, components and care in every interaction.',
+	'Behind the interface: an API contract, validation, cache and events. Not isolated parts, but a connected system.',
+	'Build, test, scan and deploy. Then logs, metrics and traces to see how the product behaves.',
+	'Roles become rules: who can read, change and release. The right capabilities for the right people.',
+	'Every layer working together. A product ready to use.',
+];
+const chapters: {panel?: PanelKind; tools: string[]}[] = [
+	{tools: []},
+	{panel: 'frontend', tools: ['Figma', 'TypeScript', 'React', 'Storybook']},
+	{panel: 'backend', tools: ['Node.js', 'NestJS', 'PostgreSQL', 'Redis', 'Kafka']},
+	{panel: 'devops', tools: ['Docker', 'GitHub Actions', 'Prometheus', 'Grafana']},
+	{panel: 'access', tools: ['Vault']},
+	{tools: []},
+];
+const panels: PanelKind[] = ['frontend', 'backend', 'devops', 'access'];
+---
+
+<div class="scope-presentation">
+	<div class="scope-scene" aria-hidden="true">
+		<div class="scope-light"></div>
+		<div class="scope-camera">
+			<div class="scope-object">
+				{panels.map((kind, index) => (
+					<div class="scope-layer" style={`--level: ${3 - index * 2}; --build-start: ${10 + index * 20}%`}>
+						<div class:list={['scope-plane', `scope-plane_${kind}`]}>
+							<div class="plane-face"><ScopePanel kind={kind} locale={locale} /></div>
+							{kind === 'frontend' && <>
+								<div class="front-intro"><span>Frontend</span><strong>Aa</strong><div><i></i><i></i><i></i></div></div>
+								<div class="front-complete"><span>Fullstack</span><strong>{t.heroTitle[1]}</strong></div>
+							</>}
+						</div>
+					</div>
+				))}
+			</div>
+		</div>
+	</div>
+	<div class="scope-chapters">
+		{t.scopeWords.map((word, index) => (
+			<div class="scope-chapter" id={`scope-${index + 1}`}>
+				<div class="chapter-copy">
+					<h3>{word}</h3>
+					<p>{captions[index]}</p>
+					{chapters[index].tools.length > 0 && <div class="scope-tools"><ToolCloud items={chapters[index].tools} /></div>}
+				</div>
+				{chapters[index].panel && <div class="inline-panel" aria-hidden="true"><ScopePanel kind={chapters[index].panel!} locale={locale} /></div>}
+			</div>
+		))}
+	</div>
+</div>
+
+<style>
+	/* Readable normal-flow chapters are the baseline. The sticky scene is enabled
+	   only when its complete native timeline and viewport requirements are met. */
+	.scope-presentation { --stage-height: calc(100svh - 4.25rem); position: relative; margin-top: 6rem; }
+	.scope-scene { display: none; }
+	.scope-chapters { display: grid; gap: 6rem; }
+	.scope-chapter { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 3rem; align-items: center; scroll-margin-top: 7rem; }
+	.scope-chapter h3 { color: #f5f5f7; font-size: clamp(3rem, 6vw, 5.6rem); font-weight: 650; line-height: 1; letter-spacing: -0.065em; }
+	.scope-chapter p { max-width: 26rem; margin-top: 1.5rem; color: #a1a1a6; font-size: 1.05rem; line-height: 1.6; text-wrap: pretty; }
+	.scope-tools { max-width: 26rem; margin-top: 2rem; }
+	.scope-tools :global(.tool-cloud) { gap: 1rem 1.4rem; }
+	.scope-tools :global(.tool-cloud li) { min-height: 1.5rem; padding: 0; border: 0; border-radius: 0; background: none; color: #c1c5ce; font-size: 0.78rem; font-weight: 480; gap: 0.5rem; }
+	.scope-tools :global(svg), .scope-tools :global(img) { width: 1rem; height: 1rem; user-select: none; -webkit-user-drag: none; pointer-events: none; }
+	.inline-panel { position: relative; width: 100%; aspect-ratio: 1.4; border: 1px solid #ffffff30; border-radius: 1.3rem; }
+	.scope-scene, .inline-panel { user-select: none; -webkit-user-drag: none; pointer-events: none; }
+	.scope-camera { perspective: 1600px; perspective-origin: 50% 45%; }
+	.scope-object { position: relative; width: min(44vw, 37rem, 78svh); aspect-ratio: 1.4; transform-style: preserve-3d; }
+	.scope-layer { position: absolute; inset: 0; transform-style: preserve-3d; }
+	.scope-plane { position: absolute; inset: 0; border-radius: 1.3rem; background: #202734; box-shadow: 0 1px 0 #98a8bd, 0 4px 0 #303846, 0 6px 0 #101116, 0 24px 40px #00000080; backface-visibility: hidden; }
+	.plane-face { position: absolute; inset: 0; border: 1px solid #ffffff35; border-radius: inherit; overflow: hidden; }
+	.scope-plane_frontend { background: #e8ecf2; }
+	.scope-plane_frontend .plane-face { border-color: #fff; }
+	.scope-plane::after { content: ''; position: absolute; inset: -1px; border: 1px solid #77b3ff; border-radius: inherit; opacity: 0; }
+	.front-intro, .front-complete { position: absolute; inset: 0; overflow: hidden; border-radius: inherit; background: linear-gradient(145deg, #fff, #e8ecf2); color: #1d1d1f; }
+	.front-intro > span, .front-complete > span { position: absolute; top: 7%; left: 6%; font-size: 0.85rem; color: #616876; }
+	.front-intro strong { position: absolute; left: 6%; top: 24%; font-size: clamp(7rem, 13vw, 12rem); font-weight: 620; line-height: 1; letter-spacing: -0.075em; }
+	.front-intro > div { position: absolute; right: 7%; bottom: 12%; display: grid; gap: 0.65rem; width: 25%; }
+	.front-intro i { height: 0.25rem; background: #8d98aa; }
+	.front-intro i:nth-child(2) { width: 70%; }
+	.front-intro i:nth-child(3) { width: 40%; background: var(--blue); }
+	.front-complete { display: grid; place-items: center; opacity: 0; }
+	.front-complete strong { padding: 1rem; font-size: clamp(2.8rem, 5.3vw, 4.9rem); font-weight: 650; letter-spacing: -0.07em; }
+	.scope-light { position: absolute; inset: 5% 0; background: radial-gradient(ellipse at 50% 60%, #1269e826, transparent 68%); }
+
+	/* Six chapter centres = 0 / 20 / 40 / 60 / 80 / 100% of contain.
+	   Each surface arrives, builds from blank, then holds. The camera stays quiet
+	   while content is read. Completed cards leave the stage instead of ghosting.
+	   Geometry invariant: all surfaces stay opaque and PARALLEL, with a fixed
+	   depth order (3, 1, -1, -3). Only the common camera rotates. Depth lives on
+	   scope-layer; vertical withdrawal lives on scope-plane. No card can cross
+	   another's depth plane, including between keyframes and during reassembly.
+	   Everything is reversible: no listeners, timers, inertia or scroll hijacking. */
+	@supports (animation-timeline: view()) and (animation-range: contain 0% contain 100%) {
+		@media (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-width: 901px) and (min-height: 700px) {
+			.scope-presentation { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 3rem; view-timeline: --scope-layers block; view-timeline-inset: 4.25rem 0; }
+			.scope-scene { position: sticky; top: 4.25rem; grid-column: 2; grid-row: 1; height: var(--stage-height); display: grid; place-items: center; align-self: start; overflow: clip; }
+			.scope-chapters { grid-column: 1; grid-row: 1; display: block; }
+			.scope-chapter { height: var(--stage-height); display: flex; align-items: center; }
+			.inline-panel { display: none; }
+			.scope-object { animation-name: scope-camera; }
+			.scope-layer { animation-name: scope-depth; }
+			.scope-plane_frontend { animation-name: scope-frontend; }
+			.scope-plane_backend { animation-name: scope-backend; }
+			.scope-plane_devops { animation-name: scope-devops; }
+			.front-intro { animation-name: scope-intro; }
+			.front-complete { animation-name: scope-complete; }
+			.scope-plane_frontend .plane-face { animation-name: scope-front-content; }
+			.scope-plane::after { animation-name: scope-connect; }
+			.scope-object, .scope-layer, .scope-plane, .front-intro, .front-complete, .scope-plane_frontend .plane-face, .scope-plane::after {
+				animation-duration: auto; animation-timing-function: cubic-bezier(0.45, 0, 0.2, 1); animation-fill-mode: both; animation-timeline: --scope-layers; animation-range: contain 0% contain 100%;
+			}
+		}
+	}
+	@keyframes scope-camera {
+		0%, 3% { transform: rotateX(22deg) rotateY(-16deg) rotateZ(-9deg) scale(0.88); }
+		10%, 89% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1); }
+		92%, 94% { transform: rotateX(48deg) rotateY(-8deg) rotateZ(-20deg) scale(0.8); }
+		100% { transform: rotateX(12deg) rotateY(-10deg) rotateZ(-5deg) scale(0.96); }
+	}
+	@keyframes scope-depth {
+		0%, 84%, 100% { transform: translateZ(calc(var(--level) * 6px)); }
+		89%, 94% { transform: translateZ(calc(var(--level) * 50px)); }
+	}
+	/* Lift the top surface straight out of the stage. Keep its depth rank even
+	   offstage, so reverse scroll is the exact same safe trajectory. Return lower
+	   surfaces first, then close the parallel stack as one object. */
+	@keyframes scope-frontend {
+		0%, 23%, 89%, 100% { transform: translateY(0); }
+		30%, 86% { transform: translateY(calc(-1 * var(--stage-height))); }
+	}
+	@keyframes scope-backend {
+		0%, 43%, 88%, 100% { transform: translateY(0); }
+		50%, 85% { transform: translateY(calc(-1 * var(--stage-height))); }
+	}
+	@keyframes scope-devops {
+		0%, 63%, 87%, 100% { transform: translateY(0); }
+		70%, 84% { transform: translateY(calc(-1 * var(--stage-height))); }
+	}
+	@keyframes scope-intro { 0%, 4% { opacity: 1; } 9%, 100% { opacity: 0; } }
+	/* Clear the UI before revealing the final title — never crossfade two texts. */
+	@keyframes scope-complete { 0%, 96.5% { opacity: 0; } 99%, 100% { opacity: 1; } }
+	@keyframes scope-front-content { 0%, 94% { opacity: 1; } 96%, 100% { opacity: 0; } }
+	@keyframes scope-connect { 0%, 90%, 99%, 100% { opacity: 0; } 92%, 94% { opacity: 0.8; } }
+
+	@media (max-width: 1100px) {
+		.scope-presentation, .scope-chapter { column-gap: 2rem; }
+		.scope-chapter h3 { font-size: clamp(3rem, 5.8vw, 4.3rem); }
+	}
+	@media (max-width: 900px) {
+		.scope-presentation { margin-top: 4rem; }
+		.scope-chapters { gap: 5rem; }
+		.scope-chapter { grid-template-columns: 1fr; gap: 2.5rem; }
+		.scope-chapter h3 { font-size: clamp(2.8rem, 8.5vw, 4.8rem); }
+		.scope-chapter p { max-width: 32rem; margin-top: 1rem; }
+		.inline-panel { max-width: 36rem; }
+		.scope-tools { margin-top: 1.5rem; max-width: none; }
+	}
+	@media (forced-colors: active) { .inline-panel { display: none; } .scope-chapter h3, .scope-chapter p, .scope-tools :global(.tool-cloud li) { color: CanvasText; } }
+	@media print { .scope-scene, .inline-panel { display: none !important; } .scope-presentation, .scope-chapters, .scope-chapter { display: block; } .scope-chapter { height: auto; margin-block: 2rem; } .scope-chapter h3, .scope-chapter p, .scope-tools :global(.tool-cloud li) { color: #1d1d1f; } }
+</style>

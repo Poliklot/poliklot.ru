@@ -1,0 +1,216 @@
+---
+import {GravityIcon} from './GravityUI';
+import {copy, type Locale} from '../data/site';
+
+export type PanelKind = 'frontend' | 'backend' | 'devops' | 'access';
+interface Props { kind: PanelKind; locale: Locale; }
+const {kind, locale} = Astro.props;
+const t = copy[locale];
+const ru = locale === 'ru';
+const labels = {frontend: 'Frontend', backend: 'API & Data', devops: 'DevSecOps', access: 'Access'};
+---
+
+<!-- Illustrations of engineering, not a working application or measured client results.
+     The parent hides the artwork from AT; chapter copy and tool names remain semantic. -->
+<div class:list={['scope-panel', `scope-panel_${kind}`]}>
+	<div class="panel-heading"><span>{labels[kind]}</span><span>{kind === 'frontend' ? 'poliklot.ru' : ru ? 'Схема процесса' : 'Process illustration'}</span></div>
+
+	{kind === 'frontend' && <div class="frontend-workbench">
+		<div class="blueprint"><i></i><i></i><i></i><i></i></div>
+		<div class="browser-shell build" style="--step: 0">
+			<div class="browser-bar build" style="--step: 1"><span class="window-dots"><i></i><i></i><i></i></span><span>poliklot.ru</span><span class="browser-menu"><i></i><i></i></span></div>
+			<div class="browser-page">
+				<span class="preview-name build" style="--step: 1">{t.name}</span>
+				<div class="preview-title build" style="--step: 2"><span>{t.heroTitle[0]}</span><span>{t.heroTitle[1]}</span></div>
+				<div class="preview-copy build" style="--step: 3"><i></i><i></i></div>
+				<span class="preview-action build" style="--step: 4">{t.heroPrimary}</span>
+				<div class="preview-facts">{t.heroFacts.map((fact,index) => <span class="build" style={`--step: ${4 + index * 0.5}`}><b>{fact.value}</b><i></i></span>)}</div>
+			</div>
+		</div>
+		<div class="design-tokens build" style="--step: 5"><span class="type-token">Aa</span><span class="color-token"></span><span class="color-token color-token_blue"></span><span class="spacing-token"><i></i><i></i><i></i></span></div>
+	</div>}
+
+	{kind === 'backend' && <div class="backend-workbench">
+		<div class="request-track">
+			<span class="request-node build" style="--step: 0">Request</span>
+			<i class="request-line wipe" style="--step: 1"></i>
+			<span class="request-node request-node_active build" style="--step: 1">Validate</span>
+			<i class="request-line wipe" style="--step: 2"></i>
+			<span class="request-node build" style="--step: 2">Resolve</span>
+		</div>
+		<div class="backend-body">
+			<div class="contract build" style="--step: 1">
+				<span class="workbench-label">{ru ? 'Контракт' : 'Contract'}</span>
+				<div class="contract-code"><span class="code-brace">{'{'}</span><span class="code-row wipe" style="--step: 2"><b>input</b><i></i></span><span class="code-row wipe" style="--step: 3"><b>schema</b><i></i></span><span class="code-row wipe" style="--step: 4"><b>output</b><i></i></span><span class="code-brace">{'}'}</span></div>
+			</div>
+			<div class="data-bridge wipe" style="--step: 3"><i></i><i></i></div>
+			<div class="data-store build" style="--step: 3">
+				<div class="data-store-title"><GravityIcon name="backend" size={22} /><span>{ru ? 'Данные' : 'Data'}</span></div>
+				<div class="data-records"><span class="wipe" style="--step: 3"><b>id</b><i></i><i></i></span><span class="wipe" style="--step: 4"><b>type</b><i></i><i></i></span><span class="wipe" style="--step: 5"><b>value</b><i></i><i></i></span></div>
+			</div>
+		</div>
+		<div class="backend-services"><span class="build" style="--step: 4"><i></i>{ru ? 'Кэш' : 'Cache'}</span><span class="build" style="--step: 5"><i></i>{ru ? 'События' : 'Events'}</span><span class="build" style="--step: 5"><i></i>{ru ? 'Интеграции' : 'Integrations'}</span></div>
+	</div>}
+
+	{kind === 'devops' && <div class="ops-workbench">
+		<div class="delivery-track"><div class="delivery-line wipe" style="--step: 0; --build-span: 5%"></div>{['Build', 'Test', 'Scan', 'Deploy'].map((label, index) => <span class="delivery-step build" style={`--step: ${index}`}><i></i>{label}</span>)}</div>
+		<div class="observability build" style="--step: 1">
+			<div class="observability-heading"><span>{ru ? 'Наблюдаемость' : 'Observability'}</span><div class="chart-key"><span><i></i>{ru ? 'Нагрузка' : 'Load'}</span><span><i></i>{ru ? 'Отклик' : 'Response'}</span></div></div>
+			<svg class="telemetry-chart" viewBox="0 0 480 140" fill="none" aria-hidden="true" focusable="false">
+				<path class="chart-grid" d="M0 25H480M0 65H480M0 105H480M80 10V125M160 10V125M240 10V125M320 10V125M400 10V125" />
+				<path class="chart-area wipe" style="--step: 3; --build-span: 5%" d="M0 103C30 103 34 79 65 79S103 104 133 84S158 40 190 49S221 76 248 54S284 14 313 30S346 71 379 53S420 32 450 40L480 28V130H0Z" />
+				<path class="chart-signal draw" style="--step: 3; --build-span: 5%" pathLength="1" d="M0 103C30 103 34 79 65 79S103 104 133 84S158 40 190 49S221 76 248 54S284 14 313 30S346 71 379 53S420 32 450 40L480 28" />
+				<path class="chart-response draw" style="--step: 3.5; --build-span: 4.5%" pathLength="1" d="M0 113C40 113 42 102 74 105S120 96 149 102S195 104 230 94S270 103 305 94S350 99 390 91S433 99 480 87" />
+			</svg>
+			<span class="chart-axis">{ru ? 'Время' : 'Time'}</span>
+		</div>
+		<div class="ops-signals">{(ru ? ['Логи', 'Метрики', 'Трейсы'] : ['Logs', 'Metrics', 'Traces']).map((label,index) => <span class="build" style={`--step: ${index + 3}`}><i></i>{label}</span>)}</div>
+	</div>}
+
+	{kind === 'access' && <div class="access-workbench">
+		<div class="access-heading build" style="--step: 0"><GravityIcon name="auth" size={32} /><span>{ru ? 'Не всем всё.' : 'Not everything. Not everyone.'}</span></div>
+		<div class="permission-matrix">
+			<div class="permission-labels build" style="--step: 1"><span>{ru ? 'Роль' : 'Role'}</span><b>Reader</b><b>Editor</b><b>Maintainer</b></div>
+			{(ru ? ['Чтение', 'Правки', 'Релиз'] : ['Read', 'Write', 'Release']).map((label,col) => <div class="permission-column build" style={`--step: ${col+2}`}><span>{label}</span>{[0,1,2].map(row => <i class:list={{'permission-granted': row >= col}}></i>)}</div>)}
+			<div class="permission-boundary wipe" style="--step: 5"></div>
+		</div>
+		<div class="policy-chain build" style="--step: 5"><span>{ru ? 'Роль' : 'Role'}</span><i></i><span>{ru ? 'Политика' : 'Policy'}</span><i></i><span>{ru ? 'Доступ' : 'Access'}</span></div>
+	</div>}
+</div>
+
+<style>
+	.scope-panel { position: absolute; inset: 0; container-type: inline-size; line-height: 1.3; overflow: hidden; border-radius: inherit; color: #ecf0f7; background: linear-gradient(140deg, #20242d, #101217 80%); }
+	.scope-panel_frontend { background: linear-gradient(145deg, #fff, #e8ecf2); color: #1d1d1f; }
+	.scope-panel_devops { background: linear-gradient(140deg, #142e51, #070e1c 80%); }
+	.scope-panel_access { background: linear-gradient(140deg, #202734, #0e131d 80%); }
+	.panel-heading { position: absolute; top: 5cqw; left: 6cqw; right: 6cqw; display: flex; justify-content: space-between; gap: 1rem; font-size: 2.5cqw; line-height: 1; font-weight: 550; }
+	.panel-heading > span + span { opacity: 0.55; font-size: 2cqw; font-weight: 400; }
+	.frontend-workbench, .backend-workbench, .ops-workbench, .access-workbench { position: absolute; inset: 15% 6% 7%; }
+	.frontend-workbench { inset: 15% 7% 8%; }
+	.browser-shell { position: absolute; inset: 0 4% 0 0; border: 1px solid #bcc4d0; border-radius: 2cqw; background: #fff; box-shadow: 0 2cqw 5cqw #333b541a; overflow: hidden; }
+	.browser-bar { height: 6cqw; display: flex; align-items: center; justify-content: space-between; padding-inline: 2.5cqw; border-bottom: 1px solid #e4e7ed; font-size: 1.8cqw; color: #85858d; }
+	.window-dots { display: flex; gap: 0.6cqw; }
+	.window-dots i { width: 0.9cqw; aspect-ratio: 1; border-radius: 50%; background: #c4cad5; }
+	.browser-menu { display: grid; gap: 0.6cqw; }
+	.browser-menu i { width: 2.5cqw; height: 1px; background: #abb1bc; }
+	.browser-page { height: calc(100% - 6cqw); padding: 4cqw 3cqw 0; display: flex; flex-direction: column; align-items: center; text-align: center; }
+	.preview-name { font-size: 1.65cqw; font-weight: 650; }
+	.preview-title { margin-top: 2.6cqw; font-size: 7.5cqw; line-height: 0.96; font-weight: 680; letter-spacing: -0.075em; }
+	.preview-title span { display: block; }
+	.preview-title span + span { color: #747985; }
+	.preview-copy { display: grid; gap: 0.8cqw; justify-items: center; margin-top: 2.4cqw; width: 62%; }
+	.preview-copy i { height: 0.6cqw; width: 100%; background: #d2d7df; }
+	.preview-copy i + i { width: 78%; }
+	.preview-action { margin-top: 2cqw; height: 4cqw; padding-inline: 2cqw; display: flex; align-items: center; border-radius: 2cqw; background: var(--blue); color: #fff; font-size: 1.6cqw; font-weight: 550; }
+	.preview-facts { width: 100%; margin-top: auto; display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid #e3e6ed; }
+	.preview-facts span { padding: 2cqw; display: flex; align-items: center; justify-content: center; gap: 1cqw; }
+	.preview-facts b { font-size: 3cqw; line-height: 1; letter-spacing: -0.04em; }
+	.preview-facts i { width: 6cqw; height: 0.6cqw; background: #d1d6de; }
+	.design-tokens { position: absolute; right: -3cqw; top: 20%; display: grid; justify-items: center; gap: 2cqw; padding: 2cqw; border: 1px solid #d2d7e1; border-radius: 1.8cqw; background: #fff; box-shadow: 0 1cqw 3cqw #30395220; }
+	.type-token { font-size: 4cqw; font-weight: 620; letter-spacing: -0.08em; line-height: 1; }
+	.color-token { width: 4cqw; aspect-ratio: 1; border-radius: 1cqw; background: #1d1d1f; }
+	.color-token_blue { background: var(--blue); }
+	.spacing-token { display: flex; align-items: center; gap: 0.7cqw; height: 3cqw; }
+	.spacing-token i { width: 1px; height: 100%; background: #8290a7; }
+	.spacing-token i:nth-child(2) { height: 60%; }
+	.blueprint { position: absolute; inset: -2cqw; border: 1px solid #1269e8; opacity: 0; background: repeating-linear-gradient(90deg, transparent 0 9.9%, #1269e822 10% 10.2%); }
+	.blueprint i { position: absolute; inset-inline: 0; height: 1px; background: #1269e8; }
+	.blueprint i:nth-child(1) { top: 14%; }
+	.blueprint i:nth-child(2) { top: 33%; }
+	.blueprint i:nth-child(3) { top: 65%; }
+	.blueprint i:nth-child(4) { top: 87%; }
+
+	.request-track { display: flex; align-items: center; }
+	.request-node { padding: 2cqw 3cqw; border: 1px solid #77859d60; border-radius: 1.3cqw; color: #b8c4d7; font-size: 2.5cqw; }
+	.request-node_active { border-color: #609ff4; color: #c8ddff; background: #1269e81a; }
+	.request-line { height: 1px; flex: 1; background: #6d9bdc; transform-origin: left; }
+	.backend-body { display: grid; grid-template-columns: 1fr 10% 1fr; height: 63%; margin-top: 4cqw; }
+	.contract, .data-store { padding: 3cqw; border: 1px solid #6e829c45; border-radius: 1.5cqw; background: #0d111a70; }
+	.workbench-label { font-size: 2.6cqw; color: #d9e1ef; }
+	.contract-code { margin-top: 1.5cqw; display: grid; gap: 1cqw; }
+	.code-brace { color: #7899c9; font-size: 3cqw; line-height: 0.85; }
+	.code-row { display: flex; align-items: center; gap: 1.5cqw; padding-left: 2cqw; }
+	.code-row b { min-width: 9cqw; color: #9daeca; font-family: ui-monospace, monospace; font-weight: 400; font-size: 2.4cqw; }
+	.code-row i { width: 100%; height: 0.7cqw; background: #5879a5; }
+	.data-bridge { display: flex; flex-direction: column; justify-content: center; gap: 3cqw; }
+	.data-bridge i { height: 1px; background: #6399e6; }
+	.data-bridge i + i { opacity: 0.4; }
+	.data-store-title { display: flex; align-items: center; gap: 1.5cqw; font-size: 2.7cqw; }
+	.data-store-title :global(svg) { width: 4cqw; height: 4cqw; color: #79aff9; }
+	.data-records { margin-top: 3cqw; display: grid; }
+	.data-records span { display: flex; align-items: center; gap: 1.5cqw; padding: 1.5cqw 0; border-block-start: 1px solid #7186a535; }
+	.data-records b { width: 7cqw; color: #9faec5; font-weight: 400; font-size: 2cqw; }
+	.data-records i { width: 6cqw; height: 0.6cqw; background: #62789a; }
+	.data-records i + i { width: 3cqw; opacity: 0.6; }
+	.backend-services, .ops-signals { position: absolute; inset-inline: 0; bottom: 0; display: flex; justify-content: space-between; gap: 2cqw; color: #9aaecb; font-size: 2.3cqw; }
+	.backend-services span, .ops-signals span { display: flex; align-items: center; gap: 1cqw; }
+	.backend-services i, .ops-signals i { width: 0.8cqw; aspect-ratio: 1; border-radius: 50%; background: #75aafa; }
+
+	.delivery-track { position: relative; display: flex; justify-content: space-between; padding-inline: 3cqw; }
+	.delivery-line { position: absolute; inset: 1.4cqw 7cqw auto; height: 1px; background: #6296dd; }
+	.delivery-step { position: relative; display: grid; justify-items: center; gap: 1.3cqw; font-size: 2.1cqw; color: #b9cce6; }
+	.delivery-step i { display: block; width: 2.8cqw; aspect-ratio: 1; border: 1px solid #78aeef; border-radius: 50%; background: #183358; box-shadow: 0 0 0 0.7cqw #0f2039; }
+	.delivery-step i::after { content: ''; display: block; width: 1cqw; height: 0.6cqw; margin: 0.8cqw auto; border-left: 1px solid #bddaff; border-bottom: 1px solid #bddaff; transform: rotate(-45deg); }
+	.observability { margin-top: 4cqw; padding: 3cqw 3cqw 1.5cqw; border: 1px solid #789ac94d; border-radius: 1.8cqw; background: #050b1555; }
+	.observability-heading { display: flex; justify-content: space-between; align-items: center; gap: 2cqw; font-size: 2.5cqw; }
+	.chart-key { display: flex; gap: 2cqw; color: #90a5c4; font-size: 1.7cqw; }
+	.chart-key span { display: flex; align-items: center; gap: 0.7cqw; }
+	.chart-key i { width: 1.5cqw; height: 1px; background: #6ba9ff; }
+	.chart-key span + span i { background: #b8c8df; }
+	.telemetry-chart { display: block; width: 100%; height: auto; margin-top: 2cqw; overflow: visible; }
+	.chart-grid { stroke: #50709d30; stroke-width: 1; }
+	.chart-area { fill: #1269e820; }
+	.chart-signal { stroke: #71b0ff; stroke-width: 2.5; stroke-linecap: round; }
+	.chart-response { stroke: #b8c8df; stroke-width: 1.5; stroke-linecap: round; }
+	.draw { stroke-dasharray: 1; stroke-dashoffset: 0; }
+	.chart-axis { display: block; text-align: right; color: #6f86a7; font-size: 1.6cqw; }
+
+	.access-heading { display: flex; align-items: center; gap: 2cqw; color: #e5edfa; font-size: 4cqw; font-weight: 550; letter-spacing: -0.035em; }
+	.access-heading :global(svg) { width: 6cqw; height: 6cqw; color: #7eb5ff; }
+	.permission-matrix { position: relative; display: grid; grid-template-columns: 1.4fr repeat(3, 1fr); margin-top: 4cqw; }
+	.permission-labels, .permission-column { display: grid; grid-template-rows: 6cqw repeat(3, 7cqw); align-items: center; }
+	.permission-labels > span, .permission-column > span { color: #8595af; font-size: 2.1cqw; }
+	.permission-labels > b { color: #c7d4e8; font-size: 2.6cqw; font-weight: 450; }
+	.permission-column { justify-items: center; border-inline-start: 1px solid #6d87ae2e; }
+	.permission-column > i { width: 1.5cqw; height: 1px; background: #526079; }
+	.permission-column > i.permission-granted { width: 2cqw; height: 1.1cqw; border-left: 2px solid #82b8ff; border-bottom: 2px solid #82b8ff; background: none; transform: rotate(-45deg); }
+	.permission-boundary { position: absolute; inset: 6cqw -2cqw 0; border: 1px solid #4784d24d; border-radius: 1.5cqw; }
+	.policy-chain { position: absolute; inset-inline: 12%; bottom: 0; display: flex; align-items: center; gap: 2cqw; color: #819ec5; font-size: 2.2cqw; }
+	.policy-chain i { flex: 1; height: 1px; background: #5d8bca55; }
+
+	/* Detail animation is a subscore of the shared six-beat scene. No independent
+	   timers: the same scroll position always reconstructs the same illustration.
+	   Keep timeline and animation longhands separate: the production minifier can
+	   otherwise emit a timeline-containing shorthand not yet parsed by browsers. */
+	@supports (animation-timeline: view()) and (animation-range: contain 0% contain 100%) {
+		@media (prefers-reduced-motion: no-preference) and (forced-colors: none) {
+			.build { animation-name: panel-build; }
+			.browser-shell { animation-name: panel-surface; }
+			.browser-bar { --enter-x: 0cqw; --enter-y: -5cqw; }
+			.preview-title { animation-name: panel-type; }
+			.design-tokens { --enter-x: 8cqw; --enter-y: 0cqw; }
+			.request-node { --enter-x: -3cqw; --enter-y: 0cqw; }
+			.data-store { --enter-x: 5cqw; --enter-y: 0cqw; }
+			.wipe { animation-name: panel-wipe; }
+			.draw { animation-name: panel-draw; }
+			.blueprint { animation-name: panel-blueprint; }
+			.build, .wipe, .draw, .blueprint { animation-duration: auto; animation-timing-function: cubic-bezier(0.2, 0.65, 0.3, 1); animation-fill-mode: both; }
+			.blueprint, .draw, .chart-area, .delivery-line { animation-timing-function: linear; }
+			@media (min-width: 901px) and (min-height: 700px) {
+				.build, .wipe, .draw { animation-timeline: --scope-layers; animation-range: contain calc(var(--build-start) + var(--step) * 1.35%) contain calc(var(--build-start) + var(--step) * 1.35% + var(--build-span, 3%)); }
+				.blueprint { animation-timeline: --scope-layers; animation-range: contain 8% contain 23%; }
+			}
+			@media (max-width: 900px), (max-height: 699px) {
+				.scope-panel { view-timeline: --panel-reveal block; }
+				.build, .wipe, .draw { animation-timeline: --panel-reveal; animation-range: entry calc(5% + var(--step) * 10%) entry calc(35% + var(--step) * 10%); }
+				.blueprint { animation-timeline: --panel-reveal; animation-range: entry 0% entry 85%; }
+			}
+		}
+	}
+	@keyframes panel-build { from { opacity: 0; transform: translate(var(--enter-x, 0cqw), var(--enter-y, 3cqw)) scale(0.97); } to { opacity: 1; transform: translate(0, 0) scale(1); } }
+	@keyframes panel-surface { from { opacity: 0; clip-path: inset(0 0 100% 0 round 2cqw); } to { opacity: 1; clip-path: inset(0 round 2cqw); } }
+	@keyframes panel-type { from { opacity: 0; transform: translateY(5cqw); clip-path: inset(0 0 100%); } to { opacity: 1; transform: translateY(0); clip-path: inset(0); } }
+	@keyframes panel-wipe { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
+	@keyframes panel-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+	@keyframes panel-blueprint { 0%, 100% { opacity: 0; } 15%, 60% { opacity: 0.7; } }
+</style>

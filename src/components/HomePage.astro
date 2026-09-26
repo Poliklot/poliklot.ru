@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ScopeLayers from './ScopeLayers.astro';
 import {GravityIcon, GravityLinkButton, ToolCloud} from './GravityUI';
 import {homepageArticles} from '../data/articles';
 import {copy, HH_URL, type Locale} from '../data/site';
@@ -30,9 +31,7 @@ const t = copy[locale];
 					<h2>{t.scopeTitle}</h2>
 					<p>{t.scopeLead}</p>
 				</div>
-				<div class="scope-wordflow" aria-label={t.scopeWords.join(', ')}>
-					{t.scopeWords.map((word, index) => <span class:list={{'scope-word_active': index === 5}}>{word}</span>)}
-				</div>
+				<ScopeLayers locale={locale} />
 			</div>
 		</section>
 

@@ -142,8 +142,8 @@ export function ToolCloud({items}: {items: readonly string[]}) {
                 const specialIcon = name === 'MCP' ? LogoMcp : (name === 'OpenAI API' || name === 'Codex') ? Cpu : undefined;
                 return (
                     <li key={name} className={brand || customBrand || specialIcon ? 'tool-cloud_brand' : undefined}>
-                        {brand && <svg viewBox="0 0 24 24" aria-hidden="true"><path d={brand.path} /></svg>}
-                        {customBrand && <img src={customBrand.src} width="24" height="24" alt="" />}
+                        {brand && <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d={brand.path} /></svg>}
+                        {customBrand && <img src={customBrand.src} width="24" height="24" alt="" aria-hidden="true" draggable={false} />}
                         {specialIcon && <Icon data={specialIcon} size={18} />}
                         <span>{name}</span>
                     </li>
