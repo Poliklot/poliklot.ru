@@ -30,7 +30,7 @@ const description = 'Статьи и практические инструкци
 		<ArticleSearch />
 		<p class="articles-subscribe"><a href="/rss.xml">Подписаться через RSS</a> — новые статьи в вашей читалке, без регистрации и рассылок.</p>
 
-		<div class="articles-list" aria-label="Статьи">
+		<div class="articles-list" id="articles-list" aria-label="Статьи">
 			{publishedArticles.map((article) => (
 				<a class="articles-item" href={`/articles/${article.slug}/`}>
 					<time datetime={article.publishedAt}>{article.publishedLabel}</time>

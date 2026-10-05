@@ -32,15 +32,16 @@ When the social artwork changes, publish it under a new filename and update `ogI
 - local variable Onest font
 - PhotoSwipe 5: screenshot viewer with lazy-loaded core and original-image fallback links
 - Chart.js 4: calculator chart loaded only with the interactive island
-- Pagefind: build-time full-text index; search UI and index load on opening search
+- Fuse.js: local article search with an immediately visible native input; no WebAssembly or CSP exceptions
 - `@astrojs/rss`: `/rss.xml`, generated from the same published article metadata
 
 ## Article tools
 
-- `/articles/#search` searches article content, not navigation, the homepage or calculator values. It runs locally without sending queries to a search service. The index is generated after every Astro build.
+- `/articles/#search` filters the existing article cards by title, summary and full text. Search is case-insensitive, treats `ё` as `е`, accepts small spelling variations and requires every query word to match. On the first query it fetches only the published article pages on this site, extracts their marked content, excludes navigation and calculator values, and caches it in memory. Queries never leave the browser. If a page fails to load, title/summary search remains usable. Emptying the input restores all articles. No WebAssembly, external search service or relaxed CSP is required.
 - `/rss.xml` contains stable canonical article links, original publication dates and summaries. Feed autodiscovery is in every page's head, with visible subscription links in the footer and articles index.
 - The Metrika guide's screenshots open in PhotoSwipe with keyboard navigation, zoom and Russian controls. The original links still work without JavaScript. The core loads on opening a screenshot; animations respect reduced motion.
 - `/articles/ephemeral-github-actions/#calculator` compares permanent and per-build machines with editable rates, preparation time and per-launch billing rounding. It is an estimate, not a provider quote; storage, IP, GitHub preparation jobs and maintenance are excluded. No form data leaves the browser.
+- Calculator changes animate the existing Chart.js instance and numeric results together over 320 ms. Rapid edits retarget from the current displayed values. Reduced-motion preferences disable animation; screen readers receive final values only. Invalid input removes stale results and cancels animation.
 - Technology profiler badges are not acceptance criteria for functional correctness: detection depends on the profiler version, the page and whether a lazy feature has been opened. No unused frameworks, fake globals or third-party CDN scripts are included.
 
 ## Local development
@@ -59,7 +60,7 @@ npm run build
 npm run preview
 ```
 
-Use `npm run dev -- --background` for the background Astro development server. Pagefind search needs the built output: test it with `npm run build` followed by `npm run preview`, not the development server.
+Use `npm run dev -- --background` for the background Astro development server. Search works in development and in the built output; use `npm run build` followed by `npm run preview` for production checks.
 
 ## Deployment
 

@@ -93,6 +93,7 @@
 }
 
 .articles-item:hover h2 { color: var(--blue); }
+.articles-item[hidden] { display: none; }
 .articles-item:hover > span { text-decoration: underline; }
 
 @media (max-width: 680px) {

@@ -12,7 +12,7 @@
 .ci-calc-tariffs { margin-top: 20px; }
 .ci-calc-tariffs summary { padding: 8px 0; color: var(--ci-blue); font-size: 13px; cursor: pointer; }
 .ci-calculator .ci-calc-tariffs p { margin-top: 12px; color: var(--ci-muted); font-size: 12px; line-height: 1.6; }
-.ci-calc-results { margin: 24px 0 0; font-size: 14px; line-height: 1.6; }
+.ci-calc-results { margin: 24px 0 0; font-size: 14px; line-height: 1.6; font-variant-numeric: tabular-nums; }
 .ci-calc-results > div { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 16px; padding: 10px 0; border-top: 1px solid var(--ci-line); }
 .ci-calc-results dt { color: var(--ci-muted); }
 .ci-calc-results dd { margin: 0; font-weight: 600; text-align: right; }

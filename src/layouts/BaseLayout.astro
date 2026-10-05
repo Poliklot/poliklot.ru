@@ -156,7 +156,7 @@ const structuredData = [
 		<link rel="manifest" href="/site.webmanifest" />
 		{structuredData.map((entry) => <script is:inline type="application/ld+json" set:html={JSON.stringify(entry)}></script>)}
 		{import.meta.env.PROD && <script is:inline data-goatcounter="/analytics/count" async src="/analytics/count.js"></script>}
-		<title data-pagefind-meta={pageType === 'article' ? 'title' : undefined}>{title}</title>
+		<title>{title}</title>
 	</head>
 	<body class={rootClassName}>
 		<a class="skip-link" href="#content">{locale === 'ru' ? 'К содержанию' : 'Skip to content'}</a>
@@ -172,7 +172,7 @@ const structuredData = [
 				<HeaderActions language={t.alternateLabel} languageHref={languageHref} resumeLabel={t.headerResume} />
 			</div>
 		</header>
-		<main id="content" data-pagefind-body={pageType === 'article' ? true : undefined}><slot /></main>
+		<main id="content" data-search-body={pageType === 'article' ? true : undefined}><slot /></main>
 		<footer class="site-footer">
 			<div class="page-width footer-inner"><p>© {new Date().getFullYear()} Igor / Poliklot</p><nav class="footer-links" aria-label={locale === 'ru' ? 'Материалы и подписка' : 'Articles and subscription'}><a href="/articles/#search">{locale === 'ru' ? 'Поиск по статьям' : 'Search articles (RU)'}</a><a href="/rss.xml">RSS</a></nav><p>{t.footer}</p></div>
 		</footer>

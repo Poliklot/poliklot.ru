@@ -1,79 +1,96 @@
-<details class="article-search" id="search">
-	<summary>Поиск по статьям</summary>
-	<div class="article-search-panel">
-		<p class="article-search-status" role="status" data-search-status></p>
-		<div id="pagefind-search"></div>
-		<button type="button" data-search-retry hidden>Повторить загрузку поиска</button>
-		<noscript>Для поиска нужен JavaScript. Все материалы доступны в списке ниже.</noscript>
+<search class="article-search" id="search" aria-label="Поиск по статьям">
+	<label class="article-search-label" for="article-search-input">Поиск по статьям</label>
+	<div class="article-search-field">
+		<svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.7" /><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" /></svg>
+		<input id="article-search-input" type="search" placeholder="Поиск по статьям" autocomplete="off" spellcheck="false" maxlength="160" aria-controls="articles-list" />
+		<button type="button" aria-label="Очистить поиск" data-search-clear hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" /></svg></button>
 	</div>
-</details>
+	<p class="article-search-status" role="status" data-search-status hidden></p>
+	<noscript>Для поиска нужен JavaScript. Все материалы доступны в списке ниже.</noscript>
+</search>
 
 <script>
-	interface PagefindWindow extends Window {
-		PagefindUI?: new (options: { element: string; showImages: boolean; showSubResults: boolean; resetStyles: boolean }) => unknown;
+	import { searchArticles, type SearchArticle } from '../lib/article-search';
+	const input = document.querySelector<HTMLInputElement>('#article-search-input');
+	const clear = document.querySelector<HTMLButtonElement>('[data-search-clear]');
+	const status = document.querySelector<HTMLElement>('[data-search-status]');
+	const list = document.querySelector<HTMLElement>('#articles-list');
+	const cards = Array.from(list?.querySelectorAll<HTMLAnchorElement>('.articles-item') ?? []);
+	const articles: SearchArticle[] = cards.map((card) => ({
+		url: card.pathname,
+		title: card.querySelector('h2')?.textContent ?? '',
+		description: card.querySelector('p')?.textContent ?? '',
+	}));
+	let contentPromise: Promise<boolean> | undefined;
+	let request = 0;
+
+	function loadContent() {
+		if (!contentPromise) {
+			contentPromise = Promise.allSettled(articles.map(async (article) => {
+				if (article.body !== undefined) return;
+				const response = await fetch(article.url, { credentials: 'omit', signal: AbortSignal.timeout(8000) });
+				if (!response.ok) throw new Error('Article unavailable');
+				const document = new DOMParser().parseFromString(await response.text(), 'text/html');
+				const body = document.querySelector('[data-search-body]');
+				if (!body) throw new Error('Article content missing');
+				body.querySelectorAll('[data-search-ignore], script, style, nav, noscript').forEach((element) => element.remove());
+				article.body = body.textContent?.replace(/\s+/g, ' ').trim() ?? '';
+			})).then((results) => {
+				const complete = results.every((result) => result.status === 'fulfilled');
+				if (!complete) contentPromise = undefined;
+				return complete;
+			});
+		}
+		return contentPromise;
 	}
-	const details = document.querySelector<HTMLDetailsElement>('.article-search');
-	const status = details?.querySelector<HTMLElement>('[data-search-status]');
-	const retry = details?.querySelector<HTMLButtonElement>('[data-search-retry]');
-	let initialized = false;
-	let loading = false;
-	async function initializeSearch() {
-		if (!details || !status || !retry || initialized || loading) return;
-		loading = true;
-		status.textContent = 'Загрузка поиска…';
-		retry.hidden = true;
-		try {
-			const pagefindWindow = window as PagefindWindow;
-			if (!pagefindWindow.PagefindUI) {
-				await new Promise<void>((resolve, reject) => {
-					const script = document.createElement('script');
-					script.src = '/pagefind/pagefind-ui.js';
-					script.onload = () => resolve();
-					script.onerror = () => { script.remove(); reject(new Error('Search bundle unavailable')); };
-					document.head.append(script);
-				});
-			}
-			if (!pagefindWindow.PagefindUI) throw new Error('Search UI unavailable');
-			// Verify the index and WASM before showing a usable search field.
-			const indexUrl = '/pagefind/pagefind.js';
-			const index = await import(/* @vite-ignore */ indexUrl);
-			try { await index.filters(); }
-			catch (error) { await index.destroy(); throw error; }
-			if (!document.querySelector('link[data-pagefind-styles]')) {
-				const styles = document.createElement('link');
-				styles.rel = 'stylesheet';
-				styles.href = '/pagefind/pagefind-ui.css';
-				styles.dataset.pagefindStyles = '';
-				document.head.append(styles);
-			}
-			new pagefindWindow.PagefindUI({ element: '#pagefind-search', showImages: false, showSubResults: false, resetStyles: true });
-			initialized = true;
-			status.textContent = 'Поиск работает на этом сайте. Запросы не отправляются сторонним сервисам.';
-			if (details.open) details.querySelector<HTMLInputElement>('input')?.focus();
-		} catch {
-			status.textContent = import.meta.env.DEV
-				? 'Индекс поиска появляется после npm run build. Для проверки откройте npm run preview.'
-				: 'Поиск не загрузился. Попробуйте ещё раз или выберите материал из списка ниже.';
-			retry.hidden = false;
-		} finally { loading = false; }
+
+	function render(query: string) {
+		const matches = new Set(searchArticles(articles, query));
+		cards.forEach((card) => { card.hidden = !matches.has(card.pathname); });
+		return matches.size;
 	}
-	details?.addEventListener('toggle', () => { if (details.open) void initializeSearch(); });
-	retry?.addEventListener('click', () => { void initializeSearch(); });
-	function openFromHash() { if (details && location.hash === '#search') details.open = true; }
-	window.addEventListener('hashchange', openFromHash);
-	openFromHash();
+
+	async function updateSearch() {
+		if (!input || !clear || !status || !list) return;
+		const current = ++request;
+		const query = input.value.trim();
+		clear.hidden = input.value === '';
+		status.hidden = query === '';
+		render(query);
+		if (!query) { list.removeAttribute('aria-busy'); return; }
+		status.textContent = 'Ищем…';
+		list.setAttribute('aria-busy', 'true');
+		const complete = await loadContent();
+		if (current !== request) return;
+		const count = render(query);
+		list.removeAttribute('aria-busy');
+		status.textContent = count ? `Найдено статей: ${count}` : 'Ничего не найдено. Попробуйте другое слово.';
+		if (!complete) status.textContent += ' Полный текст некоторых статей не загрузился; поиск по названиям и описаниям работает.';
+	}
+	input?.addEventListener('input', () => { void updateSearch(); });
+	input?.addEventListener('search', () => { void updateSearch(); });
+	clear?.addEventListener('click', () => {
+		if (!input) return;
+		input.value = '';
+		input.focus();
+		void updateSearch();
+	});
+	void updateSearch();
 </script>
 
 <style>
-	.article-search { max-width: 68rem; margin: 2.5rem auto 0; border-block: 1px solid var(--line); --pagefind-ui-primary: var(--blue); --pagefind-ui-text: var(--ink); --pagefind-ui-background: #fff; --pagefind-ui-border: var(--line); --pagefind-ui-border-radius: 8px; --pagefind-ui-font: var(--font); --pagefind-ui-scale: .9; }
-	summary { padding: 1rem 0; color: var(--blue); font-size: 1rem; font-weight: 550; cursor: pointer; }
-	.article-search { scroll-margin-top: 6rem; }
-	.article-search-panel { padding: .25rem 0 1.5rem; }
-	.article-search-status, noscript { display: block; margin-bottom: 1rem; color: var(--muted); font-size: .8rem; line-height: 1.6; }
-	button { padding: .6rem .9rem; border: 1px solid var(--line); border-radius: 6px; background: var(--soft); color: var(--ink); font: inherit; font-size: .85rem; cursor: pointer; }
-	button[hidden] { display: none; }
-	.article-search :global(.pagefind-ui__search-input:focus-visible) { outline: 2px solid var(--blue); outline-offset: 2px; }
-	.article-search :global(.pagefind-ui__search-input) { font-size: 1rem; font-weight: 450; }
-	.article-search :global(.pagefind-ui__result-excerpt) { max-width: 48rem; font-size: .9rem; line-height: 1.65; }
+	.article-search { max-width: 68rem; margin: 2.5rem auto 0; scroll-margin-top: 6rem; }
+	.article-search-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+	.article-search-field { position: relative; display: flex; align-items: center; }
+	.article-search-field > svg { position: absolute; left: 1.1rem; color: var(--muted); pointer-events: none; }
+	input { width: 100%; height: 56px; padding: 0 3.5rem 0 3rem; border: 1px solid #b8bcc4; border-radius: 8px; background: #fff; color: var(--ink); font: inherit; font-size: 1rem; appearance: none; transition: border-color .1s; }
+	input::placeholder { color: var(--muted); opacity: 1; }
+	input:focus-visible { border-color: var(--blue); outline: 2px solid var(--blue); outline-offset: 2px; }
+	input::-webkit-search-cancel-button { appearance: none; }
+	button { position: absolute; right: 6px; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 6px; background: transparent; color: var(--muted); cursor: pointer; transition: color .1s, background-color .1s; }
+	button:hover { background: var(--soft); color: var(--ink); }
+	button:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+	.article-search-status, noscript { margin: .85rem 0 0; color: var(--muted); font-size: .85rem; line-height: 1.6; }
+	[hidden] { display: none; }
 	@media print { .article-search { display: none; } }
 </style>
