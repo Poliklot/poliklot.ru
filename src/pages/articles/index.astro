@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import {publishedArticles} from '../../data/articles';
+import {articlesUpdatedAt, publishedArticles} from '../../data/articles';
 import '../../styles/articles.css';
 
 const title = 'Материалы — Игорь / Poliklot';
@@ -13,6 +13,7 @@ const description = 'Статьи и практические инструкци
 	locale="ru"
 	path="/articles/"
 	pageType="collection"
+	dateModified={articlesUpdatedAt}
 >
 	<section class="articles-index page-width">
 		<nav class="articles-breadcrumbs" aria-label="Хлебные крошки">

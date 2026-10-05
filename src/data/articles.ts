@@ -9,6 +9,13 @@ export interface ArticleSummary {
 
 const articles: readonly ArticleSummary[] = [
 	{
+		slug: 'yandex-metrika-handoff',
+		publishedAt: '2026-10-05',
+		publishedLabel: '5 октября 2026',
+		title: 'Как создать Яндекс Метрику и передать её разработчикам',
+		description: 'Пять коротких шагов со скриншотами: создать счётчик Яндекс Метрики и передать код разработчикам. Без передачи пароля.',
+	},
+	{
 		slug: 'ephemeral-github-actions',
 		publishedAt: '2026-09-20',
 		publishedLabel: '20 сентября 2026',
@@ -27,3 +34,8 @@ const articles: readonly ArticleSummary[] = [
 
 export const publishedArticles = [...articles].sort((left, right) => right.publishedAt.localeCompare(left.publishedAt));
 export const homepageArticles = publishedArticles.slice(0, 10);
+
+export const articlesUpdatedAt = publishedArticles.reduce((latest, article) => {
+	const modifiedAt = article.updatedAt ?? article.publishedAt;
+	return modifiedAt > latest ? modifiedAt : latest;
+}, '2026-09-09');

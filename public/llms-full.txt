@@ -46,6 +46,10 @@ Igor reconstructs context, localizes risk, and carries a change through source c
 
 [Материалы](https://poliklot.ru/articles/) is the canonical index of Igor / Poliklot's Russian-language articles and practical instructions.
 
+### Yandex Metrika setup and developer handoff
+
+[Как создать Яндекс Метрику и передать её разработчикам](https://poliklot.ru/articles/yandex-metrika-handoff/) is a short Russian-language visual guide for website owners, with five steps and privacy-safe interface screenshots. It covers signing in with an owner-controlled account, creating a counter, entering site settings, completing or skipping the optional profile, and handing the full installation code to developers. An expandable section explains individual counter access. The profile screenshot illustrates an earlier interface version. Account passwords are not part of the handoff; developers should confirm that visits reach the counter after installation.
+
 ### Temporary GitHub Actions servers
 
 [GitHub Actions: платим за сборки, а не за простой](https://poliklot.ru/articles/ephemeral-github-actions/) explains temporary self-hosted runners on Timeweb Cloud for a Russian-speaking audience. Part 1 covers ruble payments, an illustrative cost comparison, one-job servers, and cleanup failure handling. Cost examples are estimates, not benchmark results; the implementation walkthrough is planned for part 2.
@@ -59,6 +63,7 @@ Igor reconstructs context, localizes risk, and carries a change through source c
 - Canonical website: https://poliklot.ru/
 - English profile: https://poliklot.ru/en/
 - Articles: https://poliklot.ru/articles/
+- Yandex Metrika setup and handoff: https://poliklot.ru/articles/yandex-metrika-handoff/
 - Temporary GitHub Actions servers: https://poliklot.ru/articles/ephemeral-github-actions/
 - Mobile app testing guide: https://poliklot.ru/articles/mobile-app-testing/
 - GitHub: https://github.com/Poliklot

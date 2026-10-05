@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ScopeLayers from './ScopeLayers.astro';
 import {GravityIcon, GravityLinkButton, ToolCloud} from './GravityUI';
-import {homepageArticles} from '../data/articles';
+import {articlesUpdatedAt, homepageArticles} from '../data/articles';
 import {copy, HH_URL, type Locale} from '../data/site';
 
 interface Props { locale: Locale; }
@@ -10,7 +10,7 @@ const {locale} = Astro.props;
 const t = copy[locale];
 ---
 
-<BaseLayout title={`${t.name} — ${t.role}`} description={t.lead} locale={locale} path={locale === 'ru' ? '/' : '/en/'} alternatePath={locale === 'ru' ? '/en/' : '/'}>
+<BaseLayout title={`${t.name} — ${t.role}`} description={t.lead} locale={locale} path={locale === 'ru' ? '/' : '/en/'} alternatePath={locale === 'ru' ? '/en/' : '/'} dateModified={locale === 'ru' ? articlesUpdatedAt : '2026-09-08'}>
 	<div class="landing">
 		<section class="launch-hero page-width">
 			<p class="hero-overline">{t.name}<span>{t.heroOverline}</span></p>

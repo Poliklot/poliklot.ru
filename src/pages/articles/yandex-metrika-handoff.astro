@@ -1,0 +1,190 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import {publishedArticles} from '../../data/articles';
+import '../../styles/article.css';
+
+const article = publishedArticles.find(({slug}) => slug === 'yandex-metrika-handoff')!;
+const screenshotsPath = '/articles/yandex-metrika-handoff';
+---
+
+<BaseLayout
+	title={`${article.title} — Poliklot`}
+	description={article.description}
+	locale="ru"
+	path="/articles/yandex-metrika-handoff/"
+	pageType="article"
+	ogImagePath="/og-yandex-metrika-handoff-2026-10.jpg"
+	ogImageAlt="Яндекс Метрика: создать счётчик и передать код разработчикам без передачи пароля."
+	datePublished={article.publishedAt}
+	dateModified={article.updatedAt ?? article.publishedAt}
+>
+	<article class="guide metrika-guide">
+		<header class="guide-hero page-width">
+			<nav class="guide-breadcrumbs" aria-label="Хлебные крошки">
+				<a href="/">Главная</a><span aria-hidden="true">/</span><a href="/articles/">Материалы</a>
+			</nav>
+			<div class="guide-hero-copy">
+				<p class="guide-kicker">Инструкция для владельца сайта</p>
+				<h1>Создать Метрику.<br />Передать разработчикам.</h1>
+				<p class="guide-lead">Пять коротких шагов со скриншотами. Счётчик — в вашем аккаунте, разработчикам — код, а не пароль.</p>
+				<div class="guide-meta">
+					<span>Игорь / Poliklot</span>
+					<time datetime={article.publishedAt}>{article.publishedLabel}</time>
+					<span>2 минуты</span>
+				</div>
+			</div>
+		</header>
+
+		<div class="guide-body page-width">
+			<div class="guide-content">
+				<p class="metrika-hint">Нажмите на скриншот, чтобы увеличить.</p>
+				<section class="role-section" id="account" aria-labelledby="account-title">
+					<div class="role-heading"><span aria-hidden="true">01</span><h2 id="account-title">Войдите в Яндекс Метрику</h2></div>
+					<div class="section-copy">
+						<p>Откройте <a href="https://metrika.yandex.ru/list" target="_blank" rel="noopener noreferrer">metrika.yandex.ru</a> и войдите в <strong>свой аккаунт Яндекса</strong> — не в аккаунт разработчика.</p>
+					</div>
+				</section>
+
+				<section class="role-section" id="counter" aria-labelledby="counter-title">
+					<div class="role-heading"><span aria-hidden="true">02</span><h2 id="counter-title">Нажмите «Добавить счётчик»</h2></div>
+					<div class="section-copy">
+						<p>Кнопка находится слева над списком счётчиков.</p>
+						<figure class="metrika-shot" style="--shot-width: 460px">
+							<a href={`${screenshotsPath}/01-add-counter.jpg`} target="_blank" rel="noopener noreferrer" aria-label="Увеличить скриншот: кнопка Добавить счётчик">
+								<img src={`${screenshotsPath}/01-add-counter.jpg`} width="460" height="116" alt="Слева под логотипом Метрики — жёлтая кнопка «Добавить счётчик»." decoding="async" />
+							</a>
+						</figure>
+						<p class="note"><strong>Счётчик уже есть?</strong> Не создавайте дубликат. Откройте его и переходите к <a href="#handoff">шагу 5</a>.</p>
+					</div>
+				</section>
+
+				<section class="role-section" id="settings" aria-labelledby="settings-title">
+					<div class="role-heading"><span aria-hidden="true">03</span><h2 id="settings-title">Заполните данные сайта</h2></div>
+					<div class="section-copy">
+						<ul class="metrika-fields">
+							<li><strong>Имя счётчика</strong> — любое понятное вам название.</li>
+							<li><strong>Адрес сайта</strong> — ваш домен, например <code>example.ru</code>.</li>
+							<li><strong>Часовой пояс и валюта</strong> — подходящие вашему бизнесу.</li>
+						</ul>
+						<p>Вебвизор и поддомены согласуйте с разработчиком. Прочитайте условия, примите их, если согласны, и нажмите <strong>«Продолжить»</strong>.</p>
+						<figure class="metrika-shot" style="--shot-width: 560px">
+							<a href={`${screenshotsPath}/02-settings.jpg`} target="_blank" rel="noopener noreferrer" aria-label="Увеличить скриншот: форма создания счётчика">
+								<img src={`${screenshotsPath}/02-settings.jpg`} width="560" height="816" alt="Форма «Новый счётчик»: имя «Мой сайт», пример домена example.ru, часовой пояс, валюта и дополнительные настройки. Внизу — согласие с условиями и кнопка «Продолжить»." loading="lazy" decoding="async" />
+							</a>
+							<figcaption>Данные — для примера. Вебвизор записывает действия посетителей: включайте его осознанно.</figcaption>
+						</figure>
+					</div>
+				</section>
+
+				<section class="role-section" id="profile" aria-labelledby="profile-title">
+					<div class="role-heading"><span aria-hidden="true">04</span><h2 id="profile-title">Профиль можно заполнить позже</h2></div>
+					<div class="section-copy">
+						<p>Если появится экран профиля, заполните известные поля или перейдите дальше без заполнения. Не знаете CMS или CRM — ничего не выбирайте наугад.</p>
+						<figure class="metrika-shot" style="--shot-width: 560px">
+							<a href={`${screenshotsPath}/03-profile.jpg`} target="_blank" rel="noopener noreferrer" aria-label="Увеличить скриншот: необязательный профиль">
+								<img src={`${screenshotsPath}/03-profile.jpg`} width="695" height="674" alt="Пустой профиль: тип сайта, индустрия, CMS, CRM и роль в проекте. Стрелка указывает на кнопку «Продолжить», рядом написано «Можно заполнить позже в настройках»." loading="lazy" decoding="async" />
+							</a>
+							<figcaption>Пример из предыдущей версии интерфейса. Кнопка может называться «Продолжить» или «Пропустить».</figcaption>
+						</figure>
+					</div>
+				</section>
+
+				<section class="role-section" id="handoff" aria-labelledby="handoff-title">
+					<div class="role-heading"><span aria-hidden="true">05</span><h2 id="handoff-title">Скопируйте код и отправьте разработчику</h2></div>
+					<div class="section-copy">
+						<p>На шаге установки найдите <strong>«Код счётчика»</strong> и нажмите кнопку копирования. У уже созданного счётчика: <strong>«Настройки» → «Счётчик»</strong>, ниже на странице.</p>
+						<figure class="metrika-shot" style="--shot-width: 628px">
+							<a href={`${screenshotsPath}/04-code.jpg`} target="_blank" rel="noopener noreferrer" aria-label="Увеличить скриншот: копирование кода счётчика">
+								<img src={`${screenshotsPath}/04-code.jpg`} width="628" height="240" alt="Блок «Код счётчика» в настройках Метрики. Справа вверху — жёлтая кнопка «Скопировать код»." loading="lazy" decoding="async" />
+							</a>
+							<figcaption>Кнопка копирует весь код. На скриншоте показана только верхняя часть блока.</figcaption>
+						</figure>
+						<p>Отправьте <strong>весь скопированный код текстом или файлом <code>.txt</code></strong>, вместе с адресом сайта. Не скриншотом: разработчику нужно вставить код на сайт.</p>
+						<p class="note"><strong>Пароль от Яндекса и коды входа передавать не нужно.</strong></p>
+					</div>
+				</section>
+
+				<details class="metrika-extra" id="access">
+					<summary>Разработчик просит доступ к настройкам?</summary>
+					<div class="metrika-extra-copy">
+						<p>Для установки готового кода доступ обычно не нужен. Для настройки целей или счётчика выдайте <strong>индивидуальный доступ</strong>:</p>
+						<ol>
+							<li>Попросите логин Яндекса разработчика.</li>
+							<li>Откройте <strong>«Настройки» → «Доступ» → «Добавить пользователя»</strong>.</li>
+							<li>Введите логин. Для изменения настроек выберите <strong>«Редактирование»</strong> — только для доверенного исполнителя.</li>
+							<li>Нажмите <strong>«Добавить»</strong>, затем <strong>«Сохранить»</strong>.</li>
+						</ol>
+						<figure class="metrika-shot" style="--shot-width: 570px">
+							<a href={`${screenshotsPath}/05-access.jpg`} target="_blank" rel="noopener noreferrer" aria-label="Увеличить скриншот: индивидуальный доступ">
+								<img src={`${screenshotsPath}/05-access.jpg`} width="570" height="284" alt="Окно «Новый пользователь» с пустым логином и раскрытым списком прав: «Просмотр», «Аналитика», «Редактирование». Внизу — кнопка «Добавить»." loading="lazy" decoding="async" />
+							</a>
+						</figure>
+						<p>«Просмотр» — отчёты, «Аналитика» — создание целей без изменения настроек, «Редактирование» — широкие права на настройки и доступы. Публичный доступ не включайте; после работ уберите лишние права.</p>
+						<a class="source-link" href="https://yandex.ru/support/metrica/ru/general/access" target="_blank" rel="noopener noreferrer">Подробнее о правах в справке Яндекса</a>
+					</div>
+				</details>
+
+				<footer class="guide-end" id="check">
+					<p><strong>Готово.</strong> После установки попросите разработчика подтвердить, что визиты поступают в ваш счётчик.</p>
+				</footer>
+				<p class="metrika-checked">Интерфейс проверен 5 октября 2026. Личные данные исключены из скриншотов. <a href="https://yandex.ru/support/metrica/ru/general/creating-counter" target="_blank" rel="noopener noreferrer">Справка Яндекса</a>.</p>
+			</div>
+		</div>
+	</article>
+</BaseLayout>
+
+<style>
+	.metrika-guide {
+		--guide-hero-copy-gap: 1.75rem;
+		--guide-hero-end: 1.75rem;
+		--guide-section-gap: 2.75rem;
+		--guide-copy-gap: 1.1rem;
+		--guide-end-gap: 2.5rem;
+		--guide-body-end: 4rem;
+	}
+	.metrika-guide .guide-hero-copy,
+	.metrika-guide .guide-content { max-width: 48rem; }
+	.metrika-guide .guide-hero-copy { text-align: left; }
+	.metrika-guide .guide-hero h1 { max-width: 21ch; margin-left: 0; font-size: clamp(2.5rem, 3.7vw, 3.25rem); line-height: 1.05; }
+	.metrika-guide .guide-lead { margin: 1.3rem 0 0; font-size: 1.1rem; text-wrap: initial; }
+	.metrika-guide .guide-meta { justify-content: flex-start; margin-top: 1.25rem; }
+	.metrika-guide a { text-underline-offset: 0.2em; }
+	.metrika-guide .section-copy a,
+	.metrika-extra a,
+	.metrika-checked a { color: var(--guide-blue); }
+	.metrika-guide a:focus-visible,
+	.metrika-extra summary:focus-visible { outline: 2px solid var(--guide-blue); outline-offset: 4px; }
+	.metrika-guide code { padding: 0.12em 0.3em; border-radius: 4px; background: var(--guide-soft); font-size: 0.85em; overflow-wrap: anywhere; }
+	.metrika-guide .role-section,
+	.metrika-extra,
+	.metrika-guide .guide-end { scroll-margin-top: 6rem; }
+	.metrika-guide .role-heading { grid-template-columns: 2rem 1fr; gap: 0.75rem; padding-top: 1.2rem; border-top-color: var(--guide-line); }
+	.metrika-guide .role-heading h2 { max-width: none; font-size: clamp(1.45rem, 2.3vw, 1.85rem); line-height: 1.2; letter-spacing: -0.035em; }
+	.metrika-guide .section-copy { margin-left: 2.75rem; }
+	.metrika-guide .section-copy > p { font-size: 0.98rem; line-height: 1.65; }
+	.metrika-guide .section-copy .note { padding: 0.9rem 1rem; font-size: 0.87rem; }
+	.metrika-guide .metrika-fields { margin: 0; padding-left: 1.1rem; }
+	.metrika-guide .metrika-fields li { padding-block: 0.2rem; }
+	.metrika-hint { margin-bottom: 1.25rem; color: var(--guide-muted); font-size: 0.8rem; }
+	.metrika-shot { width: 100%; max-width: var(--shot-width); margin: 1.25rem 0 0; }
+	.metrika-shot a { display: block; overflow: hidden; border: 1px solid var(--guide-line); border-radius: 0.65rem; cursor: zoom-in; }
+	.metrika-shot img { display: block; width: 100%; height: auto; }
+	.metrika-shot figcaption { margin-top: 0.6rem; color: var(--guide-muted); font-size: 0.78rem; line-height: 1.55; }
+	.metrika-extra { margin-top: 2.75rem; border-block: 1px solid var(--guide-line); }
+	.metrika-extra summary { padding: 1.2rem 0; font-size: 1rem; font-weight: 600; cursor: pointer; }
+	.metrika-extra-copy { padding: 0 0 1.5rem; color: #515154; font-size: 0.92rem; line-height: 1.65; }
+	.metrika-extra-copy ol { margin: 1rem 0 0; padding-left: 1.3rem; }
+	.metrika-extra-copy li { padding-block: 0.2rem; }
+	.metrika-extra-copy .metrika-shot + p { margin-top: 1rem; }
+	.metrika-guide .guide-end > p { max-width: none; font-size: 0.98rem; }
+	.metrika-checked { margin-top: 1.2rem; color: var(--guide-muted); font-size: 0.75rem; line-height: 1.6; }
+	@media (max-width: 680px) {
+		.metrika-guide .guide-hero h1 { font-size: clamp(2.1rem, 8.7vw, 3rem); }
+		.metrika-guide .guide-lead { font-size: 1rem; }
+		.metrika-guide .section-copy { margin-left: 0; }
+	}
+	@media print {
+		.metrika-hint { display: none; }
+		.metrika-shot { break-inside: avoid; }
+	}
+</style>
