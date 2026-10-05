@@ -34,6 +34,11 @@
 				});
 			}
 			if (!pagefindWindow.PagefindUI) throw new Error('Search UI unavailable');
+			// Verify the index and WASM before showing a usable search field.
+			const indexUrl = '/pagefind/pagefind.js';
+			const index = await import(/* @vite-ignore */ indexUrl);
+			try { await index.filters(); }
+			catch (error) { await index.destroy(); throw error; }
 			if (!document.querySelector('link[data-pagefind-styles]')) {
 				const styles = document.createElement('link');
 				styles.rel = 'stylesheet';
