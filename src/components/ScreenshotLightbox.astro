@@ -1,0 +1,57 @@
+<p class="screenshot-lightbox-error" role="status" hidden>Просмотр не загрузился. Нажмите на скриншот ещё раз, чтобы открыть исходное изображение.</p>
+
+<script>
+	import PhotoSwipeLightbox from 'photoswipe/lightbox';
+	import 'photoswipe/style.css';
+	const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+	const lightbox = new PhotoSwipeLightbox({
+		children: 'a[data-pswp-width]',
+		paddingFn: () => ({ top: 48, bottom: window.innerWidth < 600 ? 100 : 64, left: 16, right: 16 }),
+		closeTitle: 'Закрыть', zoomTitle: 'Увеличить или уменьшить',
+		arrowPrevTitle: 'Предыдущий скриншот', arrowNextTitle: 'Следующий скриншот',
+		errorMsg: 'Изображение не загрузилось. Закройте просмотр и откройте исходный скриншот.',
+		showHideAnimationType: 'fade', showAnimationDuration: reducedMotion ? 0 : 100,
+		hideAnimationDuration: reducedMotion ? 0 : 100, zoomAnimationDuration: reducedMotion ? 0 : 100,
+	});
+	const gallery = document.querySelector<HTMLElement>('[data-screenshot-gallery]');
+	let loading = false;
+	async function openScreenshot(event: MouseEvent) {
+		const link = (event.target as Element).closest<HTMLAnchorElement>('a[data-pswp-width]');
+		if (!gallery || !link || event.button !== 0 || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
+		event.preventDefault();
+		if (loading) return;
+		loading = true;
+		try {
+			// Resolve the core before opening so a network failure never leaves a broken viewer.
+			const { default: PhotoSwipe } = await import('photoswipe');
+			lightbox.options.pswpModule = PhotoSwipe;
+			const links = Array.from(gallery.querySelectorAll('a[data-pswp-width]'));
+			lightbox.loadAndOpen(links.indexOf(link), { gallery });
+		} catch {
+			gallery.removeEventListener('click', openScreenshot);
+			const status = document.querySelector<HTMLElement>('.screenshot-lightbox-error');
+			if (status) status.hidden = false;
+		} finally { loading = false; }
+	}
+	gallery?.addEventListener('click', openScreenshot);
+	lightbox.on('uiRegister', () => {
+		lightbox.pswp?.ui?.registerElement({
+			name: 'screenshot-caption', order: 9, isButton: false, appendTo: 'root',
+			onInit: (element, pswp) => {
+				const update = () => {
+					const source = pswp.currSlide?.data.element;
+					element.textContent = source?.closest('figure')?.querySelector('figcaption')?.textContent ?? pswp.currSlide?.data.alt ?? '';
+				};
+				pswp.on('change', update);
+				update();
+			},
+		});
+	});
+	lightbox.init();
+</script>
+
+<style is:global>
+	.pswp__screenshot-caption { position: absolute; bottom: 0; left: 0; width: 100%; padding: 12px 24px; background: #000b; color: #fff; font-family: var(--font); font-size: 13px; line-height: 1.6; text-align: center; pointer-events: none; }
+	.screenshot-lightbox-error { margin-top: 1rem; color: #8c332b; font-size: .85rem; }
+	.screenshot-lightbox-error[hidden] { display: none; }
+</style>

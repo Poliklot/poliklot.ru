@@ -174,6 +174,8 @@ ul { margin: 0; padding: 0; }
 
 .site-footer { background: var(--black); color: #86868b; }
 .footer-inner { min-height: 5.5rem; display: flex; justify-content: space-between; align-items: center; gap: 2rem; border-top: 1px solid #29292c; font-size: 0.75rem; }
+.footer-links { display: flex; flex-wrap: wrap; gap: 1rem; }
+.footer-links a { color: #c5c5ca; }
 .not-found { min-height: 70vh; padding-top: 8rem; padding-bottom: 8rem; }
 .not-found > p { color: var(--blue); font-weight: 700; }
 .not-found h1 { max-width: 12ch; margin: 1rem 0 2rem; font-size: clamp(3rem, 7vw, 7rem); line-height: 0.95; letter-spacing: -0.065em; }
@@ -261,6 +263,7 @@ ul { margin: 0; padding: 0; }
 	.contact-actions { flex-direction: column; }
 	.footer-inner { padding: 1.6rem 0; display: block; }
 	.footer-inner p + p { margin-top: 0.45rem; }
+	.footer-links { margin-block: .8rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

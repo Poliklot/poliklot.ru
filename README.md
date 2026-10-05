@@ -9,7 +9,7 @@ Source for [poliklot.ru](https://poliklot.ru): a bilingual personal product land
 - AI agents shown as a practical speed multiplier backed by engineering judgement;
 - six technology chapters with recognizable product and infrastructure tooling;
 - commercial experience, product ownership and technical leadership before public profiles;
-- no remote fonts or client-side framework runtime;
+- no remote fonts; the homepage stays static, interactive article tools load only where needed;
 - Russian homepage with a complete English version under `/en/`.
 
 ## Search and link previews
@@ -28,9 +28,20 @@ When the social artwork changes, publish it under a new filename and update `ogI
 - Astro 7
 - TypeScript
 - Gravity UI UIKit 7 and the official Gravity UI icon set
-- React 19 components rendered to static HTML during the Astro build
+- React 19: static layout components and a visibility-hydrated CI cost calculator
 - local variable Onest font
-- static HTML and CSS without client hydration
+- PhotoSwipe 5: screenshot viewer with lazy-loaded core and original-image fallback links
+- Chart.js 4: calculator chart loaded only with the interactive island
+- Pagefind: build-time full-text index; search UI and index load on opening search
+- `@astrojs/rss`: `/rss.xml`, generated from the same published article metadata
+
+## Article tools
+
+- `/articles/#search` searches article content, not navigation, the homepage or calculator values. It runs locally without sending queries to a search service. The index is generated after every Astro build.
+- `/rss.xml` contains stable canonical article links, original publication dates and summaries. Feed autodiscovery is in every page's head, with visible subscription links in the footer and articles index.
+- The Metrika guide's screenshots open in PhotoSwipe with keyboard navigation, zoom and Russian controls. The original links still work without JavaScript. The core loads on opening a screenshot; animations respect reduced motion.
+- `/articles/ephemeral-github-actions/#calculator` compares permanent and per-build machines with editable rates, preparation time and per-launch billing rounding. It is an estimate, not a provider quote; storage, IP, GitHub preparation jobs and maintenance are excluded. No form data leaves the browser.
+- Technology profiler badges are not acceptance criteria for functional correctness: detection depends on the profiler version, the page and whether a lazy feature has been opened. No unused frameworks, fake globals or third-party CDN scripts are included.
 
 ## Local development
 
@@ -43,8 +54,12 @@ Validation and production build:
 
 ```bash
 npm run check
+npm test
 npm run build
+npm run preview
 ```
+
+Use `npm run dev -- --background` for the background Astro development server. Pagefind search needs the built output: test it with `npm run build` followed by `npm run preview`, not the development server.
 
 ## Deployment
 

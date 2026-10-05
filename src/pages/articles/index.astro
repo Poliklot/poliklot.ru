@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleSearch from '../../components/ArticleSearch.astro';
 import {articlesUpdatedAt, publishedArticles} from '../../data/articles';
 import '../../styles/articles.css';
 
@@ -25,6 +26,9 @@ const description = 'Статьи и практические инструкци
 			<h1>Статьи и практические инструкции</h1>
 			<p>Рабочие процессы, тестирование и выпуск цифровых продуктов — без лишней теории.</p>
 		</header>
+
+		<ArticleSearch />
+		<p class="articles-subscribe"><a href="/rss.xml">Подписаться через RSS</a> — новые статьи в вашей читалке, без регистрации и рассылок.</p>
 
 		<div class="articles-list" aria-label="Статьи">
 			{publishedArticles.map((article) => (

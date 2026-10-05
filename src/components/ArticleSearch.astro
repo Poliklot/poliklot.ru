@@ -1,0 +1,74 @@
+<details class="article-search" id="search">
+	<summary>Поиск по статьям</summary>
+	<div class="article-search-panel">
+		<p class="article-search-status" role="status" data-search-status></p>
+		<div id="pagefind-search"></div>
+		<button type="button" data-search-retry hidden>Повторить загрузку поиска</button>
+		<noscript>Для поиска нужен JavaScript. Все материалы доступны в списке ниже.</noscript>
+	</div>
+</details>
+
+<script>
+	interface PagefindWindow extends Window {
+		PagefindUI?: new (options: { element: string; showImages: boolean; showSubResults: boolean; resetStyles: boolean }) => unknown;
+	}
+	const details = document.querySelector<HTMLDetailsElement>('.article-search');
+	const status = details?.querySelector<HTMLElement>('[data-search-status]');
+	const retry = details?.querySelector<HTMLButtonElement>('[data-search-retry]');
+	let initialized = false;
+	let loading = false;
+	async function initializeSearch() {
+		if (!details || !status || !retry || initialized || loading) return;
+		loading = true;
+		status.textContent = 'Загрузка поиска…';
+		retry.hidden = true;
+		try {
+			const pagefindWindow = window as PagefindWindow;
+			if (!pagefindWindow.PagefindUI) {
+				await new Promise<void>((resolve, reject) => {
+					const script = document.createElement('script');
+					script.src = '/pagefind/pagefind-ui.js';
+					script.onload = () => resolve();
+					script.onerror = () => { script.remove(); reject(new Error('Search bundle unavailable')); };
+					document.head.append(script);
+				});
+			}
+			if (!pagefindWindow.PagefindUI) throw new Error('Search UI unavailable');
+			if (!document.querySelector('link[data-pagefind-styles]')) {
+				const styles = document.createElement('link');
+				styles.rel = 'stylesheet';
+				styles.href = '/pagefind/pagefind-ui.css';
+				styles.dataset.pagefindStyles = '';
+				document.head.append(styles);
+			}
+			new pagefindWindow.PagefindUI({ element: '#pagefind-search', showImages: false, showSubResults: false, resetStyles: true });
+			initialized = true;
+			status.textContent = 'Поиск работает на этом сайте. Запросы не отправляются сторонним сервисам.';
+			if (details.open) details.querySelector<HTMLInputElement>('input')?.focus();
+		} catch {
+			status.textContent = import.meta.env.DEV
+				? 'Индекс поиска появляется после npm run build. Для проверки откройте npm run preview.'
+				: 'Поиск не загрузился. Попробуйте ещё раз или выберите материал из списка ниже.';
+			retry.hidden = false;
+		} finally { loading = false; }
+	}
+	details?.addEventListener('toggle', () => { if (details.open) void initializeSearch(); });
+	retry?.addEventListener('click', () => { void initializeSearch(); });
+	function openFromHash() { if (details && location.hash === '#search') details.open = true; }
+	window.addEventListener('hashchange', openFromHash);
+	openFromHash();
+</script>
+
+<style>
+	.article-search { max-width: 68rem; margin: 2.5rem auto 0; border-block: 1px solid var(--line); --pagefind-ui-primary: var(--blue); --pagefind-ui-text: var(--ink); --pagefind-ui-background: #fff; --pagefind-ui-border: var(--line); --pagefind-ui-border-radius: 8px; --pagefind-ui-font: var(--font); --pagefind-ui-scale: .9; }
+	summary { padding: 1rem 0; color: var(--blue); font-size: 1rem; font-weight: 550; cursor: pointer; }
+	.article-search { scroll-margin-top: 6rem; }
+	.article-search-panel { padding: .25rem 0 1.5rem; }
+	.article-search-status, noscript { display: block; margin-bottom: 1rem; color: var(--muted); font-size: .8rem; line-height: 1.6; }
+	button { padding: .6rem .9rem; border: 1px solid var(--line); border-radius: 6px; background: var(--soft); color: var(--ink); font: inherit; font-size: .85rem; cursor: pointer; }
+	button[hidden] { display: none; }
+	.article-search :global(.pagefind-ui__search-input:focus-visible) { outline: 2px solid var(--blue); outline-offset: 2px; }
+	.article-search :global(.pagefind-ui__search-input) { font-size: 1rem; font-weight: 450; }
+	.article-search :global(.pagefind-ui__result-excerpt) { max-width: 48rem; font-size: .9rem; line-height: 1.65; }
+	@media print { .article-search { display: none; } }
+</style>

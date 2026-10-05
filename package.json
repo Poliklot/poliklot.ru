@@ -7,16 +7,20 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && pagefind --site dist",
     "preview": "astro preview",
     "check": "astro check",
+    "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "astro": "astro"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.5",
+    "@astrojs/rss": "^4.0.19",
     "@gravity-ui/icons": "^2.22.0",
     "@gravity-ui/uikit": "^7.49.0",
     "astro": "^7.2.10",
+    "chart.js": "^4.5.1",
+    "photoswipe": "^5.4.4",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "simple-icons": "^16.29.0"
@@ -26,6 +30,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "pagefind": "^1.5.2",
     "typescript": "^6.0.3"
   }
 }

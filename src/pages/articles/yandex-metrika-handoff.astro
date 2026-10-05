@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ScreenshotLightbox from '../../components/ScreenshotLightbox.astro';
 import {publishedArticles} from '../../data/articles';
 import '../../styles/article.css';
 
@@ -27,7 +28,7 @@ const screenshotsPath = '/articles/yandex-metrika-handoff';
 				<p class="guide-kicker">Инструкция для владельца сайта</p>
 				<h1>Создать Метрику.<br />Передать разработчикам.</h1>
 				<p class="guide-lead">Пять коротких шагов со скриншотами. Счётчик — в вашем аккаунте, разработчикам — код, а не пароль.</p>
-				<div class="guide-meta">
+				<div class="guide-meta" data-pagefind-ignore>
 					<span>Игорь / Poliklot</span>
 					<time datetime={article.publishedAt}>{article.publishedLabel}</time>
 					<span>2 минуты</span>
@@ -36,7 +37,7 @@ const screenshotsPath = '/articles/yandex-metrika-handoff';
 		</header>
 
 		<div class="guide-body page-width">
-			<div class="guide-content">
+			<div class="guide-content" data-screenshot-gallery>
 				<p class="metrika-hint">Нажмите на скриншот, чтобы увеличить.</p>
 				<section class="role-section" id="account" aria-labelledby="account-title">
 					<div class="role-heading"><span aria-hidden="true">01</span><h2 id="account-title">Войдите в Яндекс Метрику</h2></div>
@@ -50,8 +51,8 @@ const screenshotsPath = '/articles/yandex-metrika-handoff';
 					<div class="section-copy">
 						<p>Кнопка находится слева над списком счётчиков.</p>
 						<figure class="metrika-shot" style="--shot-width: 460px">
-							<a href={`${screenshotsPath}/01-add-counter.jpg`} target="_blank" rel="noopener noreferrer" aria-label="Увеличить скриншот: кнопка Добавить счётчик">
-								<img src={`${screenshotsPath}/01-add-counter.jpg`} width="460" height="116" alt="Слева под логотипом Метрики — жёлтая кнопка «Добавить счётчик»." decoding="async" />
+							<a href={`${screenshotsPath}/01-add-counter.jpg`} data-pswp-width="460" data-pswp-height="116" target="_blank" rel="noopener noreferrer" aria-label="Увеличить скриншот: кнопка Добавить счётчик">
+								<img draggable="false" src={`${screenshotsPath}/01-add-counter.jpg`} width="460" height="116" alt="Слева под логотипом Метрики — жёлтая кнопка «Добавить счётчик»." decoding="async" />
 							</a>
 						</figure>
 						<p class="note"><strong>Счётчик уже есть?</strong> Не создавайте дубликат. Откройте его и переходите к <a href="#handoff">шагу 5</a>.</p>
@@ -68,8 +69,8 @@ const screenshotsPath = '/articles/yandex-metrika-handoff';
 						</ul>
 						<p>Вебвизор и поддомены согласуйте с разработчиком. Прочитайте условия, примите их, если согласны, и нажмите <strong>«Продолжить»</strong>.</p>
 						<figure class="metrika-shot" style="--shot-width: 560px">
-							<a href={`${screenshotsPath}/02-settings.jpg`} target="_blank" rel="noopener noreferrer" aria-label="Увеличить скриншот: форма создания счётчика">
-								<img src={`${screenshotsPath}/02-settings.jpg`} width="560" height="816" alt="Форма «Новый счётчик»: имя «Мой сайт», пример домена example.ru, часовой пояс, валюта и дополнительные настройки. Внизу — согласие с условиями и кнопка «Продолжить»." loading="lazy" decoding="async" />
+							<a href={`${screenshotsPath}/02-settings.jpg`} data-pswp-width="560" data-pswp-height="816" target="_blank" rel="noopener noreferrer" aria-label="Увеличить скриншот: форма создания счётчика">
+								<img draggable="false" src={`${screenshotsPath}/02-settings.jpg`} width="560" height="816" alt="Форма «Новый счётчик»: имя «Мой сайт», пример домена example.ru, часовой пояс, валюта и дополнительные настройки. Внизу — согласие с условиями и кнопка «Продолжить»." loading="lazy" decoding="async" />
 							</a>
 							<figcaption>Данные — для примера. Вебвизор записывает действия посетителей: включайте его осознанно.</figcaption>
 						</figure>
@@ -81,8 +82,8 @@ const screenshotsPath = '/articles/yandex-metrika-handoff';
 					<div class="section-copy">
 						<p>Если появится экран профиля, заполните известные поля или перейдите дальше без заполнения. Не знаете CMS или CRM — ничего не выбирайте наугад.</p>
 						<figure class="metrika-shot" style="--shot-width: 560px">
-							<a href={`${screenshotsPath}/03-profile.jpg`} target="_blank" rel="noopener noreferrer" aria-label="Увеличить скриншот: необязательный профиль">
-								<img src={`${screenshotsPath}/03-profile.jpg`} width="695" height="674" alt="Пустой профиль: тип сайта, индустрия, CMS, CRM и роль в проекте. Стрелка указывает на кнопку «Продолжить», рядом написано «Можно заполнить позже в настройках»." loading="lazy" decoding="async" />
+							<a href={`${screenshotsPath}/03-profile.jpg`} data-pswp-width="695" data-pswp-height="674" target="_blank" rel="noopener noreferrer" aria-label="Увеличить скриншот: необязательный профиль">
+								<img draggable="false" src={`${screenshotsPath}/03-profile.jpg`} width="695" height="674" alt="Пустой профиль: тип сайта, индустрия, CMS, CRM и роль в проекте. Стрелка указывает на кнопку «Продолжить», рядом написано «Можно заполнить позже в настройках»." loading="lazy" decoding="async" />
 							</a>
 							<figcaption>Пример из предыдущей версии интерфейса. Кнопка может называться «Продолжить» или «Пропустить».</figcaption>
 						</figure>
@@ -94,8 +95,8 @@ const screenshotsPath = '/articles/yandex-metrika-handoff';
 					<div class="section-copy">
 						<p>На шаге установки найдите <strong>«Код счётчика»</strong> и нажмите кнопку копирования. У уже созданного счётчика: <strong>«Настройки» → «Счётчик»</strong>, ниже на странице.</p>
 						<figure class="metrika-shot" style="--shot-width: 628px">
-							<a href={`${screenshotsPath}/04-code.jpg`} target="_blank" rel="noopener noreferrer" aria-label="Увеличить скриншот: копирование кода счётчика">
-								<img src={`${screenshotsPath}/04-code.jpg`} width="628" height="240" alt="Блок «Код счётчика» в настройках Метрики. Справа вверху — жёлтая кнопка «Скопировать код»." loading="lazy" decoding="async" />
+							<a href={`${screenshotsPath}/04-code.jpg`} data-pswp-width="628" data-pswp-height="240" target="_blank" rel="noopener noreferrer" aria-label="Увеличить скриншот: копирование кода счётчика">
+								<img draggable="false" src={`${screenshotsPath}/04-code.jpg`} width="628" height="240" alt="Блок «Код счётчика» в настройках Метрики. Справа вверху — жёлтая кнопка «Скопировать код»." loading="lazy" decoding="async" />
 							</a>
 							<figcaption>Кнопка копирует весь код. На скриншоте показана только верхняя часть блока.</figcaption>
 						</figure>
@@ -115,8 +116,8 @@ const screenshotsPath = '/articles/yandex-metrika-handoff';
 							<li>Нажмите <strong>«Добавить»</strong>, затем <strong>«Сохранить»</strong>.</li>
 						</ol>
 						<figure class="metrika-shot" style="--shot-width: 570px">
-							<a href={`${screenshotsPath}/05-access.jpg`} target="_blank" rel="noopener noreferrer" aria-label="Увеличить скриншот: индивидуальный доступ">
-								<img src={`${screenshotsPath}/05-access.jpg`} width="570" height="284" alt="Окно «Новый пользователь» с пустым логином и раскрытым списком прав: «Просмотр», «Аналитика», «Редактирование». Внизу — кнопка «Добавить»." loading="lazy" decoding="async" />
+							<a href={`${screenshotsPath}/05-access.jpg`} data-pswp-width="570" data-pswp-height="284" target="_blank" rel="noopener noreferrer" aria-label="Увеличить скриншот: индивидуальный доступ">
+								<img draggable="false" src={`${screenshotsPath}/05-access.jpg`} width="570" height="284" alt="Окно «Новый пользователь» с пустым логином и раскрытым списком прав: «Просмотр», «Аналитика», «Редактирование». Внизу — кнопка «Добавить»." loading="lazy" decoding="async" />
 							</a>
 						</figure>
 						<p>«Просмотр» — отчёты, «Аналитика» — создание целей без изменения настроек, «Редактирование» — широкие права на настройки и доступы. Публичный доступ не включайте; после работ уберите лишние права.</p>
@@ -128,6 +129,7 @@ const screenshotsPath = '/articles/yandex-metrika-handoff';
 					<p><strong>Готово.</strong> После установки попросите разработчика подтвердить, что визиты поступают в ваш счётчик.</p>
 				</footer>
 				<p class="metrika-checked">Интерфейс проверен 5 октября 2026. Личные данные исключены из скриншотов. <a href="https://yandex.ru/support/metrica/ru/general/creating-counter" target="_blank" rel="noopener noreferrer">Справка Яндекса</a>.</p>
+				<ScreenshotLightbox />
 			</div>
 		</div>
 	</article>

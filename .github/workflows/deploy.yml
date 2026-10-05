@@ -31,7 +31,7 @@ jobs:
         run: npm ci
 
       - name: Validate project
-        run: npm run check
+        run: npm run check && npm test
 
       - name: Build static site
         run: npm run build
@@ -67,3 +67,7 @@ jobs:
           curl --fail --retry 3 --retry-delay 2 --max-time 15 https://poliklot.ru/analytics/count.js --output /dev/null
           curl --fail --retry 3 --retry-delay 2 --max-time 15 https://poliklot.ru/og-poliklot-2026-09.jpg --output /dev/null
           curl --fail --retry 3 --retry-delay 2 --max-time 15 https://poliklot.ru/llms.txt --output /dev/null
+          curl --fail --retry 3 --retry-delay 2 --max-time 15 https://poliklot.ru/rss.xml --output /dev/null
+          curl --fail --retry 3 --retry-delay 2 --max-time 15 https://poliklot.ru/pagefind/pagefind-ui.js --output /dev/null
+          curl --fail --retry 3 --retry-delay 2 --max-time 15 https://poliklot.ru/articles/ephemeral-github-actions/ --output /dev/null
+          curl --fail --retry 3 --retry-delay 2 --max-time 15 https://poliklot.ru/articles/yandex-metrika-handoff/ --output /dev/null
