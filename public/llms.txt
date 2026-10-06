@@ -7,7 +7,7 @@
 - [Русская версия](https://poliklot.ru/): Возможности, рабочий подход, технологический стек и коммерческий опыт.
 - [English version](https://poliklot.ru/en/): Capabilities, delivery approach, technology stack, and commercial experience.
 - [Материалы](https://poliklot.ru/articles/): Статьи и практические инструкции о разработке, тестировании и выпуске цифровых продуктов.
-- [Как создать Яндекс Метрику и передать её разработчикам](https://poliklot.ru/articles/yandex-metrika-handoff/): Пять шагов от входа в аккаунт до передачи кода счётчика; индивидуальные доступы и проверка установки без передачи пароля.
+- [Как создать Яндекс Метрику и передать её разработчикам](https://poliklot.ru/articles/yandex-metrika-handoff/): Шесть шагов от входа в аккаунт до передачи кода и завершения создания счётчика кнопкой «Начать пользоваться»; индивидуальные доступы и проверка установки без передачи пароля.
 - [GitHub Actions: платим за сборки, а не за простой](https://poliklot.ru/articles/ephemeral-github-actions/): Часть 1 — временные серверы, оплата в рублях, пример расчёта и защита от забытых машин.
 - [Как пройти обязательное тестирование в Google Play](https://poliklot.ru/articles/mobile-app-testing/): Пошаговая инструкция для новых личных аккаунтов — 12 тестировщиков, 14 дней, личные отзывы, регионы и правильная тестовая версия.
 - [GitHub](https://github.com/Poliklot): Public engineering profile and repositories.
