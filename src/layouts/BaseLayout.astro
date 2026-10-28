@@ -2,7 +2,7 @@
 import '@gravity-ui/uikit/styles/styles.css';
 import '../styles/global.css';
 import { getRootClassName } from '@gravity-ui/uikit/server';
-import { HeaderActions } from '../components/GravityUI';
+import { HeaderActions, LinkArrow } from '../components/GravityUI';
 import type { Locale } from '../data/site';
 import { copy, HH_URL } from '../data/site';
 
@@ -194,7 +194,7 @@ const structuredData = [
 						<path d="m18.5 26-1 5 3.5-2 3.5 2-1-5" />
 					</svg>
 					<span class="footer-nickname-copy"><strong>poliklot</strong><span>{locale === 'ru' ? 'Сертификат MyNickname' : 'MyNickname certificate'}</span></span>
-					<span class="footer-nickname-arrow" aria-hidden="true">↗</span>
+					<span class="footer-nickname-arrow" aria-hidden="true"><LinkArrow /></span>
 				</a>
 			</div>
 		</footer>

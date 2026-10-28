@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ScopeLayers from './ScopeLayers.astro';
-import {GravityIcon, GravityLinkButton, ToolCloud} from './GravityUI';
+import {GravityIcon, GravityLinkButton, LinkArrow, ToolCloud} from './GravityUI';
 import {articlesUpdatedAt, homepageArticles} from '../data/articles';
 import {copy, HH_URL, type Locale} from '../data/site';
 
@@ -120,14 +120,14 @@ const t = copy[locale];
 				<div class="page-width materials-inner">
 					<div class="materials-heading">
 						<h2>Материалы</h2>
-						<a href="/articles/">Все материалы <span aria-hidden="true">↗</span></a>
+						<a href="/articles/">Все материалы <LinkArrow /></a>
 					</div>
 					<div class="materials-list">
 						{homepageArticles.map((article) => (
 							<a class="material-feature" href={`/articles/${article.slug}/`}>
 								<time datetime={article.publishedAt}>{article.publishedLabel}</time>
 								<div><h3>{article.title}</h3><span>{article.description}</span></div>
-								<b>Читать <span aria-hidden="true">↗</span></b>
+								<b>Читать <LinkArrow /></b>
 							</a>
 						))}
 					</div>

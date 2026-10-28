@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import {LinkArrow} from '../../components/GravityUI';
 import '../../styles/article.css';
 
 const title = 'Как пройти обязательное тестирование в Google Play перед первой публикацией';
@@ -69,7 +70,7 @@ const playCountryUrl = 'https://support.google.com/googleplay/answer/7431675?hl=
 								<div><strong>14</strong><span>дней непрерывного участия</span></div>
 							</div>
 							<p>После выполнения условий нужно отдельно подать заявку на доступ к рабочей версии. Истечение 14 дней не означает автоматическое одобрение.</p>
-							<a class="source-link" href={requirementsUrl} target="_blank" rel="noreferrer" data-goatcounter-click="open-google-play-testing-requirements">Официальные требования Google Play <span aria-hidden="true">↗</span></a>
+							<a class="source-link" href={requirementsUrl} target="_blank" rel="noreferrer" data-goatcounter-click="open-google-play-testing-requirements">Официальные требования Google Play <LinkArrow /></a>
 						</div>
 					</section>
 
@@ -117,7 +118,7 @@ const playCountryUrl = 'https://support.google.com/googleplay/answer/7431675?hl=
 								<li><span>Сообщите координатору, что вступление, установка и запуск прошли успешно.</span></li>
 							</ol>
 							<p class="note">Если вы участвуете во внутреннем тестировании этого приложения, сначала выйдите из него. После этого вступайте в закрытое.</p>
-							<a class="source-link" href={testingSetupUrl} target="_blank" rel="noreferrer">Как устроено тестирование Google Play <span aria-hidden="true">↗</span></a>
+							<a class="source-link" href={testingSetupUrl} target="_blank" rel="noreferrer">Как устроено тестирование Google Play <LinkArrow /></a>
 						</div>
 					</section>
 
@@ -165,7 +166,7 @@ const playCountryUrl = 'https://support.google.com/googleplay/answer/7431675?hl=
 							</ol>
 							<p class="note"><strong>Руководитель может попросить оставить или обновить личный отзыв в ходе теста.</strong> Дополнительная честная обратная связь даёт владельцу аккаунта больше фактов для сводки о вовлечённости и результатах тестирования в заявке. Интерфейс Google Play может отличаться: если блока для личного отзыва нет, попробуйте оба способа, проверьте выбранный Google-аккаунт и сообщите координатору. Не ставьте выдуманные положительные оценки и не копируйте одинаковый текст.</p>
 							<p class="note"><strong>Перед Google отдельно отчитывается владелец аккаунта.</strong> После 14 дней он заполняет заявку в Play Console и передаёт сводку отзывов, проведённых проверок и внесённых изменений. Тестировщики эту итоговую заявку не заполняют.</p>
-							<a class="source-link" href={testerFeedbackUrl} target="_blank" rel="noreferrer">Официальная инструкция для тестировщика <span aria-hidden="true">↗</span></a>
+							<a class="source-link" href={testerFeedbackUrl} target="_blank" rel="noreferrer">Официальная инструкция для тестировщика <LinkArrow /></a>
 						</div>
 					</section>
 
@@ -189,8 +190,8 @@ const playCountryUrl = 'https://support.google.com/googleplay/answer/7431675?hl=
 							</ol>
 							<p class="note"><strong>Не меняйте страну Google Play на вымышленную.</strong> Google разрешает выбрать новый регион только при фактическом нахождении в нём и наличии местного способа оплаты. После выбора страны и между последующими изменениями нужно ждать не менее 90 дней, а обновление профиля может занять до 48 часов. Если добавить страну в тест нельзя, безопаснее заменить участника.</p>
 							<div class="source-links">
-								<a class="source-link" href={countryTargetingUrl} target="_blank" rel="noreferrer">Страны закрытого теста <span aria-hidden="true">↗</span></a>
-								<a class="source-link" href={playCountryUrl} target="_blank" rel="noreferrer">Страна профиля Google Play <span aria-hidden="true">↗</span></a>
+								<a class="source-link" href={countryTargetingUrl} target="_blank" rel="noreferrer">Страны закрытого теста <LinkArrow /></a>
+								<a class="source-link" href={playCountryUrl} target="_blank" rel="noreferrer">Страна профиля Google Play <LinkArrow /></a>
 							</div>
 						</div>
 					</section>
@@ -287,7 +288,7 @@ const playCountryUrl = 'https://support.google.com/googleplay/answer/7431675?hl=
 								<li>почему приложение готово к публикации.</li>
 							</ul>
 							<p>Дождитесь решения Google. После одобрения отдельно создайте выпуск рабочей версии.</p>
-							<a class="source-link" href={requirementsUrl} target="_blank" rel="noreferrer">Порядок получения доступа <span aria-hidden="true">↗</span></a>
+							<a class="source-link" href={requirementsUrl} target="_blank" rel="noreferrer">Порядок получения доступа <LinkArrow /></a>
 						</div>
 					</section>
 				</section>
@@ -310,8 +311,8 @@ const playCountryUrl = 'https://support.google.com/googleplay/answer/7431675?hl=
 								<li>Передайте координатору ссылку для вступления, номер версии и известные ограничения.</li>
 							</ul>
 							<div class="source-links">
-								<a class="source-link" href={testingSetupUrl} target="_blank" rel="noreferrer">Настройка закрытого тестирования <span aria-hidden="true">↗</span></a>
-								<a class="source-link" href={countryTargetingUrl} target="_blank" rel="noreferrer">Настройка стран и регионов <span aria-hidden="true">↗</span></a>
+								<a class="source-link" href={testingSetupUrl} target="_blank" rel="noreferrer">Настройка закрытого тестирования <LinkArrow /></a>
+								<a class="source-link" href={countryTargetingUrl} target="_blank" rel="noreferrer">Настройка стран и регионов <LinkArrow /></a>
 							</div>
 						</div>
 					</section>

@@ -1,6 +1,7 @@
 import React from 'react';
 import {Button, Icon} from '@gravity-ui/uikit';
 import {
+    ArrowUpRight,
     ArrowUpRightFromSquare,
     Briefcase,
     Cpu,
@@ -131,6 +132,10 @@ export function HeaderActions({language, languageHref, resumeLabel}: {language: 
 
 export function GravityLinkButton({href, children}: {href: string; children: React.ReactNode}) {
     return <Button href={href} target="_blank" rel="noreferrer" view="action" size="xl">{children}<Icon data={ArrowUpRightFromSquare} size={16} /></Button>;
+}
+
+export function LinkArrow() {
+    return <ArrowUpRight width="1em" height="1em" className="link-arrow" aria-hidden="true" focusable="false" />;
 }
 
 export function ToolCloud({items}: {items: readonly string[]}) {

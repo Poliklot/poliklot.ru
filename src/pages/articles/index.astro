@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ArticleSearch from '../../components/ArticleSearch.astro';
+import {LinkArrow} from '../../components/GravityUI';
 import {articlesUpdatedAt, publishedArticles} from '../../data/articles';
 import '../../styles/articles.css';
 
@@ -38,7 +39,7 @@ const description = 'Статьи и практические инструкци
 						<h2>{article.title}</h2>
 						<p>{article.description}</p>
 					</div>
-					<span>Читать <span aria-hidden="true">↗</span></span>
+					<span>Читать <LinkArrow /></span>
 				</a>
 			))}
 		</div>
