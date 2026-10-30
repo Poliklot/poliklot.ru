@@ -1,0 +1,92 @@
+---
+import {type Locale} from '../data/site';
+import {productStory} from '../data/productStory';
+import ScopePanel from './ScopePanel.astro';
+
+interface Props {locale: Locale; staticView?: boolean;}
+const {locale, staticView = false} = Astro.props;
+const ru = locale === 'ru';
+const {brief, points} = productStory[locale];
+const offsets = [['-5cqw', '-10cqw'], ['53cqw', '-14cqw'], ['-7cqw', '8cqw'], ['48cqw', '-3cqw']];
+// Target geometry is in percentages of the same paper: two above, two below the wordmark.
+const cards = [{x: 2, y: 10, w: 44, h: 31}, {x: 51, y: 14, w: 47, h: 30}, {x: 1, y: 66, w: 48, h: 32}, {x: 54, y: 63, w: 44, h: 31}];
+// Keep the existing plan connected to the newly positioned sources, pending its redesign.
+const links = cards.map((card, i) => {
+	const x = card.x * .86 - 1, y = (card.y + card.h / 2) * .86 - 9;
+	const taskY = [45.5, 59.3, 73, 86.8][i];
+	return `M${x} ${y}C${x - 6} ${y} 16 ${taskY} 26.2 ${taskY}`;
+});
+---
+
+<!-- Answers stay in their own paper fragments when the sheet separates. Tasks are derivatives,
+     connected by point keys; neither the person nor the frontend is replaced. -->
+<product-morph class:list={['product-model', {'product-model_static': staticView}]} data-story-motion aria-hidden="true">
+	{staticView && <div class="product-static-screen"><ScopePanel kind="frontend" locale={locale} /></div>}
+	{!staticView && <>
+		<svg class="product-brief" data-story-motion viewBox="0 0 100 71.4286" text-anchor="middle" focusable="false">
+			<text class="brief-label" x="50" y="15">{brief.label}</text>
+			{brief.lines.map((line, i) => <text class="brief-line" x="50" y={27 + i * 9}>{line}</text>)}
+		</svg>
+		<canvas class="product-particles"></canvas>
+		<div class="product-person" data-story-motion>
+			<svg class="product-face" data-story-motion viewBox="0 0 120 120" fill="none" focusable="false">
+				<circle class="product-head" cx="60" cy="61" r="39" />
+				<g class="product-eyes" data-story-motion><circle cx="47" cy="55" r="3.5" /><circle cx="73" cy="55" r="3.5" /></g>
+				<path class="product-brow" data-story-motion d="M39 43Q46 37 53 42" />
+				<path class="product-mouth" data-story-motion d="M46 74Q60 62 74 74" />
+				<path class="product-hand" data-story-motion d="M76 101V88L66 84Q62 82 65 78Q67 76 71 78L79 80V71Q79 67 83 68L91 82Q94 87 92 94L89 101" />
+				<g class="product-thought" data-story-motion><circle cx="99" cy="30" r="15" /><path d="M95 26C95 20 104 20 104 26C104 30 99 29 99 33M99 38v.1" /></g>
+				<path class="product-insight" data-story-motion d="M102 9V17M114 17L108 23M119 31H111" />
+			</svg>
+		</div>
+		<div class="product-spec" data-story-motion>
+			<div class="product-answer-header" data-story-motion>
+				<div class="answer-header-paper"></div>
+				<div class="product-spec-heading"><strong>{ru ? 'Ответы на вопросы' : 'Questions answered'}</strong><span>{ru ? 'Кабинет заказчика' : 'Client portal'}</span></div>
+			</div>
+			{points.map((point, i) => <div class:list={['product-fragment', {'product-fragment_last': i === points.length - 1}]} data-story-motion style={`--i: ${i}; --split-left: ${cards[i].x}%; --split-top: ${cards[i].y}%; --split-width: ${cards[i].w}%; --split-height: ${cards[i].h}%; --compact-copy-width: ${cards[i].w * .847826 - 3}cqw`}>
+				<div class="fragment-paper" data-story-motion></div>
+				<div class="product-note" data-point={point.key} data-story-motion style={`--note-x: ${offsets[i][0]}; --note-y: ${offsets[i][1]}`}>
+					<div class="note-heading-row">
+						<i class="note-anchor" data-story-motion></i>
+						<div class="note-heading" data-story-motion><div class="question-reel" data-story-motion><span class="story-seed">{point.seed}</span><span class="story-question">{point.question}</span></div></div>
+						<strong class="spec-title" data-story-motion>{point.spec.title}</strong>
+					</div>
+					<div class="discovery-answer" data-story-motion><div class="story-answer" data-story-motion>{point.requirement}</div></div>
+					<div class="spec-copy" data-story-motion>
+						<strong>{point.spec.summary}</strong>
+						<small class="spec-artifact">{point.spec.artifact}</small>
+					</div>
+				</div>
+			</div>)}
+			<div class="product-spec-brand" data-story-motion>
+				<strong>OpenSpec</strong>
+				<img src="/brands/openspec.svg" width="640" height="80" alt="" />
+			</div>
+		</div>
+		<svg class="product-derivations" viewBox="0 0 100 100" preserveAspectRatio="none" fill="none" data-story-motion>
+			{links.map((d, i) => <path d={d} pathLength="1" data-story-motion style={`--i: ${i}`} />)}
+		</svg>
+		<div class="product-plan" data-story-motion>
+			<div class="product-plan-paper" data-story-motion></div>
+			<div class="product-plan-heading" data-story-motion><strong>{ru ? 'План работы' : 'Implementation plan'}</strong><span>{ru ? 'Из требований — в задачи' : 'From requirements to tasks'}</span></div>
+			{points.map((point, i) => <div class="product-task" data-point={point.key} data-story-motion style={`--i: ${i}`}><i class="task-marker" data-story-motion></i><span>{point.task}</span></div>)}
+		</div>
+	</>}
+	<div class="product-layer product-logic" data-story-motion>
+		<svg viewBox="0 0 24 24" fill="none"><path d="M5 5H12V12H19M5 19H12V12" /><circle cx="4" cy="5" r="2" /><circle cx="4" cy="19" r="2" /><circle cx="20" cy="12" r="2" /></svg>
+		<span>{ru ? 'Логика' : 'Logic'}</span><small>{ru ? 'Правила и сценарии' : 'Rules and workflows'}</small>
+	</div>
+	<div class="product-layer product-data" data-story-motion>
+		<svg viewBox="0 0 24 24" fill="none"><ellipse cx="12" cy="5" rx="8" ry="3" /><path d="M4 5V19C4 23 20 23 20 19V5M4 12C4 16 20 16 20 12" /></svg>
+		<span>{ru ? 'Данные' : 'Data'}</span><small>{ru ? 'Состояние и история' : 'State and history'}</small>
+	</div>
+	<svg class="product-route" viewBox="0 0 100 100" fill="none" preserveAspectRatio="none" focusable="false" data-story-motion>
+		<path class="product-route-line" d="M90 42H96V106H90M10 106H4V42H10" vector-effect="non-scaling-stroke" />
+		<path class="product-flow" pathLength="1" d="M90 42H96V106H10H4V42H10" data-story-motion />
+	</svg>
+</product-morph>
+
+<script>
+	import '../lib/productMorph';
+</script>

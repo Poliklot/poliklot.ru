@@ -1,0 +1,202 @@
+/* A three-screen story owns the opening; the original timeline owns the rest.
+   Wrappers become neutral at the handoff, rather than replacing the frontend. */
+.product-phases { list-style: none; display: grid; margin: 1.65rem 0 0; padding: 0; max-width: 25rem; }
+.product-phases li { padding: .55rem 0 .55rem 1rem; border-left: 1px solid #354152; color: #9ba5b5; }
+.product-phases strong { display: block; font-size: .88rem; font-weight: 550; }
+.product-phases span { display: block; margin-top: .2rem; font-size: .78rem; line-height: 1.45; }
+.product-model { position: absolute; inset: 0; transform-style: preserve-3d; container-type: inline-size; pointer-events: none; }
+.product-brief { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; fill: #eef2f8; transform: translateZ(14px); }
+.brief-label { fill: #a7b3c6; font-size: 2.8px; }
+.brief-line { font-size: 6.8px; font-weight: 550; letter-spacing: -.2px; }
+.product-particles { display: none; position: absolute; inset: 0; width: 100%; height: 100%; transform: translateZ(14px); }
+.product-model[data-particle-ready] .product-particles { display: block; }
+.product-model[data-particle-ready] .product-brief { animation-name: none; opacity: var(--particle-text-opacity, 1); }
+.product-person { --entry-x: 1.28; --entry-y: 1.6; --entry-scale: 1.4; --entry-angle: -8; --entry-eye-x: 3; --entry-eye-y: -3; --entry-brow-angle: -14; position: absolute; left: 7%; top: -22%; width: 24%; aspect-ratio: 1; transform: translateZ(14px); }
+.product-face { display: block; width: 100%; height: 100%; overflow: visible; color: #eef2f8; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.product-head, .product-hand { fill: #141d2a; }
+.product-eyes { fill: currentColor; stroke: none; }
+.product-brow, .product-mouth { transform-box: fill-box; transform-origin: center; }
+.product-thought circle { fill: #141d2a; stroke: #718097; stroke-width: 1.5; }
+.product-insight { stroke: #8bbaff; }
+
+.product-spec { position: absolute; inset: 0; transform: translateZ(6px); transform-style: preserve-3d; }
+.product-answer-header { position: absolute; inset: 0; }
+.answer-header-paper { position: absolute; top: 6%; left: 4%; width: 92%; height: 18%; background: #111924; border: 1px solid #65758c; border-bottom: 0; border-radius: 3cqw 3cqw 0 0; }
+.product-spec-heading { position: absolute; left: 11%; right: 11%; top: 14%; display: flex; justify-content: space-between; align-items: baseline; gap: 2cqw; line-height: 1.2; }
+.product-spec-heading strong { color: #eef2f8; font-size: clamp(.85rem, 3.2cqw, 1.2rem); font-weight: 550; }
+.product-spec-heading > span { color: #a7b3c6; font-size: clamp(.75rem, 2.5cqw, 1rem); }
+/* Contiguous paper strips form one sheet first. The text never changes owners. */
+.product-fragment { position: absolute; left: 4%; width: 92%; top: calc(24% + var(--i) * 17%); height: 17%; }
+.product-fragment_last { --joined-height: 19%; height: 19%; --joined-radius: 0 0 3cqw 3cqw; --bottom-edge: #65758c; }
+.fragment-paper { position: absolute; inset: -1px 0 0; background: #111924; border: 1px solid #65758c; border-block-color: transparent; border-radius: var(--joined-radius, 0); }
+.product-note { position: absolute; left: 7.6087%; width: 84.7826%; top: 2.85714cqw; height: auto; font-size: clamp(.75rem, 2.4cqw, .9rem); line-height: 1.4; }
+.note-heading-row { position: relative; display: grid; grid-template-columns: .9cqw minmax(0, 1fr); gap: 2.1cqw; align-items: center; }
+/* Only category → question uses a reel. Spec labels annotate the answers first,
+   then become card headings; no clipped-text morph during card movement. */
+.note-heading { height: 1.4em; overflow: hidden; color: #a7b3c6; font-size: inherit; line-height: inherit; }
+.question-reel > span { display: block; width: max-content; height: 1.4em; white-space: nowrap; }
+.spec-title { position: absolute; left: 3cqw; top: 0; width: max-content; white-space: nowrap; font-size: inherit; line-height: inherit; font-weight: 550; color: #8bbaff; }
+.spec-copy { position: absolute; left: 3cqw; top: calc(1.4em + .75cqw); width: var(--compact-copy-width); }
+.spec-copy > strong { display: block; font-size: clamp(.7rem, 2.55cqw, .96rem); line-height: 1.3; font-weight: 450; color: #eef2f8; }
+.spec-artifact { display: block; margin-top: 1cqw; font-size: clamp(.65rem, 2.1cqw, .8rem); line-height: 1.25; color: #a7b3c6; }
+.product-spec-brand { position: absolute; top: 49%; left: 4%; width: 92%; display: grid; justify-items: center; gap: 1cqw; color: #eef2f8; }
+.product-spec-brand strong { font-size: clamp(.9rem, 3.8cqw, 1.4rem); font-weight: 550; line-height: 1.1; }
+.product-spec-brand img { display: block; width: 28cqw; height: auto; }
+.story-seed { color: #c6d4e7; }
+.story-answer { display: block; margin: .75cqw 0 0 3cqw; color: #eef2f8; font-size: clamp(.75rem, 2.8cqw, 1.06rem); line-height: 1.3; font-weight: 450; white-space: nowrap; }
+.note-anchor { display: block; width: .9cqw; aspect-ratio: 1; border-radius: 50%; background: #8bbaff; }
+.product-derivations { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; transform: translateZ(11px); }
+.product-derivations path { stroke: #8bbaff; stroke-width: .3; stroke-dasharray: 1; }
+.product-plan { position: absolute; left: 18%; top: 18%; width: 78%; height: 86%; transform: translateZ(10px); transform-style: preserve-3d; }
+.product-plan-paper { position: absolute; inset: 0; border: 1px solid #6d7f98; border-radius: 3cqw; background: #192433; box-shadow: 0 3px 0 #0d131e; transform-origin: top; }
+.product-plan-heading { position: absolute; left: 9%; right: 7%; top: 8%; line-height: 1.25; }
+.product-plan-heading strong { display: block; font-weight: 550; color: #eef2f8; font-size: clamp(.85rem, 3cqw, 1.2rem); }
+.product-plan-heading > span { display: block; margin-top: 1cqw; color: #9eacc0; font-size: clamp(.7rem, 2.15cqw, .85rem); }
+.product-task { position: absolute; left: 9%; right: 7%; top: calc(26% + var(--i) * 16%); height: 12%; display: flex; align-items: center; gap: 2cqw; color: #e6edf8; font-size: clamp(.75rem, 2.7cqw, 1rem); line-height: 1.3; }
+.task-marker { width: 2.3cqw; min-width: 11px; aspect-ratio: 1; flex-shrink: 0; border: 1px solid #8396b1; border-radius: 50%; }
+
+.product-layer { position: absolute; left: 10%; width: 80%; height: 12%; display: flex; align-items: center; gap: 2cqw; padding: 0 3cqw; border: 1px solid #576478; border-radius: 1.6cqw; background: #202734; color: #eef2f8; box-shadow: 0 3px 0 #101722, 0 4px 0 #586477; transform-origin: left center; }
+.product-layer > svg { width: 3.5cqw; height: 3.5cqw; flex-shrink: 0; stroke: #a5bad7; stroke-width: 1.4; }
+.product-layer > span { font-size: clamp(.75rem, 2.7cqw, 1rem); font-weight: 550; }
+.product-layer > small { margin-left: auto; font-size: clamp(.75rem, 2.45cqw, .9rem); color: #b7c1d0; }
+.product-logic { top: 84%; transform: translateZ(12px); }
+.product-data { top: 100%; transform: translateZ(8px); background: #161d28; }
+.product-route { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; transform: translateZ(14px); }
+.product-route-line { stroke: #718097; stroke-width: 1.5px; opacity: .45; }
+.product-flow { stroke: #8bbaff; stroke-width: .5; stroke-dasharray: .06 .94; stroke-dashoffset: .06; opacity: 0; }
+
+/* The semantic process list stays readable; the fallback illustration is complete. */
+.product-fallback { width: 100%; max-width: 36rem; }
+.product-model_static { position: relative; display: grid; gap: .8rem; transform-style: flat; }
+.product-static-screen { position: relative; aspect-ratio: 1.4; border-radius: 1rem; overflow: hidden; }
+.product-model_static .product-layer { position: relative; inset: auto; width: 100%; height: auto; min-height: 10cqw; padding: 2.5cqw 3cqw; transform: none; }
+.product-model_static .product-route { display: none; }
+.product-model_static .build, .product-model_static .wipe, .product-model_static .draw { animation: none !important; }
+
+@supports (animation-timeline: view()) and (animation-range: contain 0% contain 100%) and (timeline-scope: --scope-layers) {
+	@media (prefers-reduced-motion: no-preference) and (forced-colors: none) and (min-width: 901px) and (min-height: 700px) {
+		.scope-presentation .product-fallback { display: none; }
+		.scope-presentation #scope-1 { height: calc(3 * var(--stage-height)); display: block; padding-top: calc(var(--stage-height) * .14); }
+		.scope-presentation #scope-1 .chapter-copy { position: sticky; top: calc(4.25rem + var(--stage-height) * .14); }
+		.scope-scene [data-story-motion] { animation-duration: auto; animation-timing-function: cubic-bezier(.45, 0, .2, 1); animation-fill-mode: both; animation-timeline: --product-story; animation-range: contain 0% contain 100%; }
+		.scope-scene .scope-opening-camera { animation-name: product-camera; }
+		.scope-scene .scope-surface_frontend { animation-name: product-screen; transform-origin: 25% 40%; }
+		.scope-scene .scope-surface:not(.scope-surface_frontend) { animation-name: product-foundation; }
+		.scope-scene .product-model { animation-name: product-internals-presence; }
+		.scope-scene .product-brief { animation-name: brief-fallback; }
+		.scope-scene .note-heading, .scope-scene .discovery-answer { animation-name: discovery-retire; animation-range: contain 31% contain 34%; animation-timing-function: cubic-bezier(.42, 0, .58, 1); }
+		.scope-scene .spec-title { animation-name: spec-title; animation-timing-function: cubic-bezier(.42, 0, .58, 1); }
+		.scope-scene .spec-copy { animation-name: product-answer; animation-range: contain 43% contain 45%; animation-timing-function: cubic-bezier(.42, 0, .58, 1); }
+		.scope-scene .product-person { animation-name: product-person; }
+		.scope-scene .product-face { animation-name: product-face; transform-origin: 50% 50%; }
+		.scope-scene .product-eyes { animation-name: product-eyes; }
+		.scope-scene .product-brow { animation-name: product-brow; }
+		.scope-scene .product-mouth { animation-name: product-mouth; }
+		.scope-scene .product-hand { animation-name: product-hand; transform-origin: 80px 88px; }
+		.scope-scene .product-thought { animation-name: product-thought; }
+		.scope-scene .product-insight { animation-name: product-insight; }
+		.scope-scene .product-spec { animation-name: product-spec; }
+		.scope-scene .product-answer-header { animation-name: answer-header; animation-timing-function: cubic-bezier(.42, 0, .58, 1); }
+		.scope-scene .product-fragment { animation-name: answer-fragment-spread, answer-fragment-place; animation-range: contain 34% contain 38.5%, contain 38% contain 43%; animation-timing-function: cubic-bezier(.42, 0, .58, 1); }
+		.scope-scene .fragment-paper { animation-name: answer-fragment-paper; animation-timing-function: cubic-bezier(.42, 0, .58, 1); }
+		.scope-scene .product-spec-brand { animation-name: product-answer; animation-range: contain 45% contain 47%; animation-timing-function: cubic-bezier(.42, 0, .58, 1); }
+		.scope-scene .product-note { animation-name: product-note; animation-range: contain calc(14% + var(--i) * .5%) contain calc(23% + var(--i) * .5%); }
+		.scope-scene .question-reel { animation-name: question-roll; animation-range: contain calc(16% + var(--i) * .5%) contain calc(22% + var(--i) * .5%); }
+		.scope-scene .story-answer { animation-name: product-answer; animation-range: contain calc(20% + var(--i) * 1%) contain calc(24% + var(--i) * 1%); }
+		.scope-scene .note-anchor { animation-name: product-appear; animation-range: contain calc(22% + var(--i) * 1%) contain calc(24% + var(--i) * 1%); }
+		.scope-scene .product-derivations { animation-name: product-derivations; }
+		.scope-scene .product-derivations path { animation-name: product-draw; animation-range: contain calc(52% + var(--i) * 3%) contain calc(55% + var(--i) * 3%); animation-timing-function: linear; }
+		.scope-scene .product-plan { animation-name: product-plan; }
+		.scope-scene .product-plan-paper { animation-name: product-plan-sheet; animation-range: contain 52% contain 68%; animation-timing-function: linear; }
+		.scope-scene .product-plan-heading { animation-name: product-appear; animation-range: contain 54% contain 58%; }
+		.scope-scene .product-task { animation-name: product-task; animation-range: contain calc(54% + var(--i) * 3%) contain calc(59% + var(--i) * 3%); }
+		.scope-scene .task-marker { animation-name: product-task-focus; animation-range: contain calc(68% + var(--i) * 5%) contain calc(74% + var(--i) * 5%); }
+		.scope-scene .product-logic { animation-name: product-logic; }
+		.scope-scene .product-data { animation-name: product-data; }
+		.scope-scene .product-route { animation-name: product-route; }
+		.scope-scene .product-flow { animation-name: product-flow; animation-timing-function: linear; }
+
+		/* These are the existing frontend elements, now built by the product story. */
+		.scope-scene .scope-panel_frontend .frontend-workbench .build { animation-name: product-detail; animation-timeline: --product-story; animation-range: contain 0% contain 100%; }
+		.scope-scene .scope-panel_frontend .frontend-workbench .browser-shell { animation-name: product-surface; }
+		.scope-scene .scope-panel_frontend .frontend-workbench .preview-title { animation-name: product-heading; }
+		.scope-scene .scope-panel_frontend .frontend-workbench .design-tokens { animation-name: product-tools; }
+		.scope-scene .scope-panel_frontend .frontend-workbench .blueprint { animation-name: product-grid; animation-timeline: --product-story; animation-range: contain 0% contain 100%; }
+
+		.product-phases li { animation-name: product-phase; animation-duration: auto; animation-timeline: --product-story; animation-range: contain var(--phase-start) contain var(--phase-end); animation-fill-mode: none; }
+		.product-phases li:nth-child(1) { --phase-start: 0%; --phase-end: 32%; }
+		.product-phases li:nth-child(2) { --phase-start: 32%; --phase-end: 52%; }
+		.product-phases li:nth-child(3) { --phase-start: 52%; --phase-end: 72%; }
+		.product-phases li:nth-child(4) { --phase-start: 72%; --phase-end: 100%; }
+	}
+}
+
+/* Shared local reveals, never a crossfade of complete scenes. */
+@keyframes product-appear { from { opacity: 0; } to { opacity: 1; } }
+@keyframes brief-fallback { 0%, 4% { opacity: 1; } 11.5%, 100% { opacity: 0; } }
+@keyframes question-roll { 0% { transform: translateY(0); } 100% { transform: translateY(-1.4em); } }
+@keyframes discovery-retire { 0% { opacity: 1; } 100% { opacity: 0; } }
+/* The old copy is gone before this annotation moves into its vacated position. */
+@keyframes spec-title {
+	0%, 30.5% { opacity: 0; left: 100%; transform: translateX(-100%); }
+	32.5%, 34% { opacity: 1; left: 100%; transform: translateX(-100%); }
+	40.5%, 100% { opacity: 1; left: 3cqw; transform: translateX(0); }
+}
+/* Overlap the end of the spread with the start of vertical travel: no stop-turn-start.
+   Distinct geometry properties keep both native animations independent. */
+@keyframes answer-fragment-spread {
+	0% { left: 4%; width: 92%; }
+	100% { left: var(--split-left); width: var(--split-width); }
+}
+@keyframes answer-fragment-place {
+	0% { top: calc(24% + var(--i) * 17%); height: var(--joined-height, 17%); }
+	100% { top: var(--split-top); height: var(--split-height); }
+}
+@keyframes answer-header { 0%, 27% { opacity: 0; transform: translateY(0); } 30%, 31% { opacity: 1; transform: translateY(0); } 34%, 100% { opacity: 0; transform: translateY(-2cqw); } }
+@keyframes answer-fragment-paper {
+	0%, 27% { opacity: 0; border-top-color: transparent; border-bottom-color: var(--bottom-edge, transparent); border-radius: var(--joined-radius, 0); }
+	30%, 31% { opacity: 1; border-top-color: transparent; border-bottom-color: var(--bottom-edge, transparent); border-radius: var(--joined-radius, 0); }
+	34%, 100% { opacity: 1; border-color: #65758c; border-radius: 2cqw; }
+}
+@keyframes product-draw { from { stroke-dashoffset: 1; opacity: 0; } 1% { opacity: 1; } to { stroke-dashoffset: 0; opacity: 1; } }
+@keyframes product-note { from { transform: translate(var(--note-x), var(--note-y)); } to { transform: translate(0, 0); } }
+@keyframes product-answer { from { opacity: 0; transform: translateY(1cqw); } to { opacity: 1; transform: translateY(0); } }
+@keyframes product-task { 0% { opacity: 0; transform: translate(-8cqw, -8cqw); } 30% { opacity: 0; } 100% { opacity: 1; transform: translate(0, 0); } }
+@keyframes product-plan-sheet { 0% { opacity: 0; transform: scaleY(.28); } 18% { opacity: 1; } 100% { opacity: 1; transform: scaleY(1); } }
+@keyframes product-task-focus { 0% { border-color: #8396b1; background: transparent; } 100% { border-color: #8bbaff; background: #8bbaff26; } }
+@keyframes product-phase { 0%, 100% { color: #eef2f8; border-color: #8bbaff; } }
+
+@keyframes product-internals-presence { 0%, 99.9% { visibility: visible; } 100% { visibility: hidden; } }
+@keyframes product-foundation { 0%, 99.8% { opacity: 0; } 100% { opacity: 1; } }
+@keyframes product-camera { 0%, 72% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(.94); } 82%, 90% { transform: rotateX(8deg) rotateY(-10deg) rotateZ(-2deg) scale(.94); } 100% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1); } }
+@keyframes product-screen { 0%, 70% { opacity: 0; transform: translateY(0) scale(.04); } 72% { opacity: 1; transform: translateY(0) scale(.04); } 82%, 90% { opacity: 1; transform: translateY(-16%) scale(.86); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes product-person {
+	0%, 13% { transform: translate(calc(var(--entry-x) * 100%), calc(var(--entry-y) * 100%)) translateZ(14px) scale(var(--entry-scale)); }
+	0%, 8% { opacity: var(--particle-face-opacity, 0); }
+	13%, 100% { opacity: var(--particle-face-opacity, 1); }
+	21%, 48% { transform: translate(0, 0) translateZ(14px) scale(.5); }
+	52%, 72% { transform: translate(-12%, -20%) translateZ(14px) scale(.5); }
+	90%, 100% { transform: translate(110%, 160%) translateZ(14px) scale(.3); }
+}
+@keyframes product-face { 0%, 13% { transform: rotate(calc(var(--entry-angle) * 1deg)); } 21% { transform: rotate(3deg); } 30%, 100% { transform: rotate(0deg); } }
+@keyframes product-eyes { 0%, 13% { transform: translate(calc(var(--entry-eye-x) * 1px), calc(var(--entry-eye-y) * 1px)); } 18% { transform: translate(5px, 1px); } 22% { transform: translate(-3px, 3px); } 30%, 100% { transform: translate(0, 0); } }
+@keyframes product-brow { 0%, 22% { transform: rotate(calc(var(--entry-brow-angle) * 1deg)); opacity: 1; } 30%, 100% { transform: rotate(0deg); opacity: .6; } }
+@keyframes product-mouth { 0%, 23% { transform: scaleY(1); } 30%, 100% { transform: scaleY(-1); } }
+@keyframes product-hand { 0%, 22% { opacity: 1; transform: translateY(0) rotate(0deg); } 28%, 100% { opacity: 0; transform: translateY(8px) rotate(12deg); } }
+@keyframes product-thought { 0%, 22% { opacity: 1; } 27%, 100% { opacity: 0; } }
+@keyframes product-insight { 0%, 27%, 36%, 100% { opacity: 0; } 30%, 33% { opacity: 1; } }
+@keyframes product-spec { 0%, 13% { opacity: 0; } 16%, 100% { opacity: 1; } 0%, 48% { transform: translate(0, 0) translateZ(6px) scale(1); } 52%, 72% { transform: translate(-8%, -16%) translateZ(6px) scale(.86); } 86%, 100% { transform: translate(0, -12%) translateZ(6px) scale(.62); } }
+@keyframes product-derivations { 0%, 51% { opacity: 0; } 52%, 70% { opacity: 1; } 72%, 100% { opacity: 0; } }
+@keyframes product-plan { 0%, 72% { transform: translate(0, 0) translateZ(10px) scale(1); } 84%, 100% { transform: translate(-4%, -23%) translateZ(10px) scale(.66); } }
+@keyframes product-logic { 0%, 77% { opacity: 0; transform: translate(18%, -250%) translateZ(12px) scale(.15); } 78% { opacity: 1; } 84%, 90% { opacity: 1; transform: translate(0, 0) translateZ(12px) scale(1); } 100% { opacity: 1; transform: translateY(-200%) translateZ(12px) scale(1); } }
+@keyframes product-data { 0%, 79% { opacity: 0; transform: translate(18%, -267%) translateZ(8px) scale(.15); } 80% { opacity: 1; } 86%, 90% { opacity: 1; transform: translate(0, 0) translateZ(8px) scale(1); } 100% { opacity: 1; transform: translateY(-400%) translateZ(8px) scale(1); } }
+@keyframes product-route { 0%, 85%, 95%, 100% { opacity: 0; } 86%, 90% { opacity: 1; } }
+@keyframes product-flow { 0%, 86% { opacity: 0; stroke-dashoffset: .06; } 86.01% { opacity: 1; stroke-dashoffset: .06; } 90% { opacity: 1; stroke-dashoffset: -.94; } 90.01%, 100% { opacity: 0; stroke-dashoffset: -.94; } }
+@keyframes product-detail { 0%, 78% { opacity: 0; transform: translate(0, 0) scale(1); } 85%, 90% { opacity: .7; transform: translate(0, 0) scale(1); } 100% { opacity: 1; transform: translate(0, 0) scale(1); } }
+@keyframes product-surface { 0%, 100% { opacity: 1; clip-path: inset(0 round 2cqw); } }
+@keyframes product-heading { 0%, 77% { opacity: 0; transform: translateY(0); clip-path: inset(0); } 84%, 100% { opacity: 1; transform: translateY(0); clip-path: inset(0); } }
+@keyframes product-tools { 0%, 92% { opacity: 0; transform: translate(3cqw, 0) scale(.97); } 100% { opacity: 1; transform: translate(0, 0) scale(1); } }
+@keyframes product-grid { 0%, 92%, 100% { opacity: 0; } 95%, 97% { opacity: .45; } }
+
+@media (forced-colors: active), print { .product-fallback { display: none; } .product-phases li { color: CanvasText; border-color: CanvasText; } }
+@media print { .scope-presentation #scope-1 { height: auto; padding-top: 0; } .scope-presentation #scope-1 .chapter-copy { position: static; } .product-phases li { animation: none !important; color: #1d1d1f; } }

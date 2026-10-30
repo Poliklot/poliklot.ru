@@ -182,7 +182,7 @@ const labels = {frontend: 'Frontend', backend: 'API & Data', devops: 'DevSecOps'
 	   timers: the same scroll position always reconstructs the same illustration.
 	   Keep timeline and animation longhands separate: the production minifier can
 	   otherwise emit a timeline-containing shorthand not yet parsed by browsers. */
-	@supports (animation-timeline: view()) and (animation-range: contain 0% contain 100%) {
+	@supports (animation-timeline: view()) and (animation-range: contain 0% contain 100%) and (timeline-scope: --scope-layers) {
 		@media (prefers-reduced-motion: no-preference) and (forced-colors: none) {
 			.build { animation-name: panel-build; }
 			.browser-shell { animation-name: panel-surface; }
