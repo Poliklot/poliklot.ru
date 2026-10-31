@@ -74,8 +74,18 @@ test('the marketplace brief becomes sampled particles, never rectangular text fr
 	assert.match(runtime, /progress === this.lastProgress/);
 	assert.match(runtime, /this.abort\?\.abort\(\)/);
 	assert.match(runtime, /this.observer\?\.disconnect\(\)/);
-	assert.match(runtime, /URL.revokeObjectURL/);
 	assert.doesNotMatch(runtime, /Math.random|setInterval|setTimeout|preventDefault|scrollTo|new Path2D/);
+});
+
+test('the face mask uses an encoded image URL allowed by the production CSP', () => {
+	const runtime = readFileSync(new URL('../src/lib/productMorph.ts', import.meta.url), 'utf8');
+	const caddy = readFileSync(new URL('../deploy/Caddyfile.example', import.meta.url), 'utf8');
+	const policies = [...caddy.matchAll(/Content-Security-Policy "([^"]+)"/g)];
+	assert.ok(policies.length > 0);
+	for (const [, policy] of policies) assert.match(policy, /img-src 'self' data:;/);
+	assert.match(runtime, /image\.src = `data:image\/svg\+xml;charset=utf-8,\$\{encodeURIComponent\(new XMLSerializer\(\)\.serializeToString\(copy\)\)\}`/);
+	assert.match(runtime, /await image\.decode\(\)/);
+	assert.doesNotMatch(runtime, /URL\.(?:create|revoke)ObjectURL|new Blob/);
 });
 
 test('concrete answers precede their sheet, separation, OpenSpec and the plan', () => {

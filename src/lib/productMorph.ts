@@ -61,15 +61,12 @@ async function faceImage(svg: SVGSVGElement, personCSS: CSSStyleDeclaration) {
 	clones[originals.indexOf(svg.querySelector('.product-insight')!)].remove();
 	copy.setAttribute('width', '120');
 	copy.setAttribute('height', '120');
-	const url = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(copy)], {type: 'image/svg+xml'}));
-	try {
-		const image = new Image();
-		image.src = url;
-		await image.decode();
-		return image;
-	} finally {
-		URL.revokeObjectURL(url);
-	}
+	// Production permits data: images, not blob: URLs. Keep the mask self-contained
+	// without broadening CSP or allocating an object URL that needs revocation.
+	const image = new Image();
+	image.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(new XMLSerializer().serializeToString(copy))}`;
+	await image.decode();
+	return image;
 }
 
 class ProductMorph extends HTMLElement {
