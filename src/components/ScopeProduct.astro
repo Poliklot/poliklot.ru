@@ -9,9 +9,15 @@ const ru = locale === 'ru';
 const {brief, points} = productStory[locale];
 const offsets = [['-5cqw', '-10cqw'], ['53cqw', '-14cqw'], ['-7cqw', '8cqw'], ['48cqw', '-3cqw']];
 // Target geometry is in percentages of the same paper: two above, two below the wordmark.
-const cards = [{x: 2, y: 10, w: 44, h: 31}, {x: 51, y: 14, w: 47, h: 30}, {x: 1, y: 66, w: 48, h: 32}, {x: 54, y: 63, w: 44, h: 31}];
+const cards = [{x: 2, y: 10, w: 44, h: 32}, {x: 54, y: 10, w: 44, h: 32}, {x: 2, y: 66, w: 44, h: 32}, {x: 54, y: 66, w: 44, h: 32}];
 // Make room for the derived action without crossing the central brand or the other column.
-const preparedTops = [-5, -2, 66, 63];
+const preparedTops = [-4, -4, 66, 66];
+// Physical SVG units: equal dx/dy makes the PCB corners exactly 45 degrees.
+const traces = ['M58.8 42V44L68.8 54H70', 'M81.2 42V44L71.2 54H70', 'M58.8 66V64L68.8 54H70', 'M81.2 66V64L71.2 54H70'];
+// Fan into two short queues in the row gap, then dock outside-in above the cards.
+const letterOrder = [0, 2, 4, 6, 7, 5, 3, 1];
+const letterSlots = [46, 51, 56, 61, 61, 56, 51, 46];
+const letterLanes = [46.1, 46.1, 46.1, 47.6, 50.25, 50.6, 50.6, 50.6];
 ---
 
 <!-- Each answer, spec section and planned action keeps the same paper fragment.
@@ -36,12 +42,10 @@ const preparedTops = [-5, -2, 66, 63];
 			</svg>
 		</div>
 		<div class="product-spec" data-story-motion>
-			<div class="product-answer-header" data-story-motion>
-				<div class="answer-header-paper"></div>
-				<div class="product-spec-heading"><strong>{ru ? 'Ответы на вопросы' : 'Questions answered'}</strong><span>{ru ? 'Кабинет заказчика' : 'Client portal'}</span></div>
-			</div>
 			{points.map((point, i) => <div class:list={['product-fragment', {'product-fragment_first': i === 0, 'product-fragment_last': i === points.length - 1}]} data-story-motion style={`--i: ${i}; --split-left: ${cards[i].x}%; --split-top: ${cards[i].y}%; --split-width: ${cards[i].w}%; --split-height: ${cards[i].h}%; --prepared-top: ${preparedTops[i]}%; --ordered-top: ${10 + i * 31}%; --plan-top: ${16 + i * 22}%; --compact-copy-width: ${cards[i].w * .847826 - 3}cqw`}>
-				<div class="fragment-paper" data-story-motion></div>
+				<div class="fragment-paper" data-story-motion>
+					{i === 0 && <div class="product-spec-heading" data-story-motion><strong>{ru ? 'Ответы на вопросы' : 'Questions answered'}</strong><span>{ru ? 'Кабинет заказчика' : 'Client portal'}</span></div>}
+				</div>
 				<div class="product-note" data-point={point.key} data-story-motion style={`--note-x: ${offsets[i][0]}; --note-y: ${offsets[i][1]}`}>
 					<div class="note-heading-row">
 						<i class="note-anchor" data-story-motion><span class="task-number" data-story-motion>{i + 1}</span></i>
@@ -56,11 +60,16 @@ const preparedTops = [-5, -2, 66, 63];
 					<div class="product-task" data-story-motion>{point.task}</div>
 				</div>
 			</div>)}
-			<div class="product-spec-brand" data-story-motion>
-				<strong class="spec-brand-name" data-story-motion>OpenSpec</strong>
-				<img src="/brands/openspec.svg" width="640" height="80" alt="" />
-				<div class="product-plan-heading" data-story-motion>{ru ? 'План работы' : 'Implementation plan'}</div>
+			<svg class="spec-circuits" data-story-motion viewBox="0 0 140 100" fill="none" focusable="false">
+				<defs>{traces.map((d, i) => <mask id={`spec-trace-${locale}-${i}`} maskUnits="userSpaceOnUse" x="0" y="0" width="140" height="100"><path class="spec-trace-reveal" data-story-motion d={d} pathLength="1" /></mask>)}</defs>
+				{traces.map((d, i) => <path class="spec-trace" d={d} mask={`url(#spec-trace-${locale}-${i})`} />)}
+			</svg>
+			<div class="product-spec-brand" data-story-motion aria-label="OpenSpec">
+				{letterOrder.map((order, i) => <svg class="spec-letter" data-story-motion viewBox={`${i * 80} 0 80 80`} focusable="false" style={`--letter-start: ${36 + i * 3.5}%; --letter-end: ${39 + i * 2.75}%; --letter-lane: ${letterLanes[i]}%; --letter-slot: ${letterSlots[i]}%; --letter-order: ${order}`}>
+					<image href="/brands/openspec.svg" width="640" height="80" />
+				</svg>)}
 			</div>
+			<div class="product-plan-heading" data-story-motion>{ru ? 'План работы' : 'Implementation plan'}</div>
 		</div>
 	</>}
 	<div class="product-layer product-logic" data-story-motion>

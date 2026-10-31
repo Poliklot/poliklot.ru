@@ -19,7 +19,7 @@ function frames(source, name) {
 		if (source[end] === '}') level--;
 		end++;
 	}
-	return [...source.slice(bodyStart, end - 1).matchAll(/([\d.% ,]+)\{([^}]+)\}/g)]
+	return [...source.slice(bodyStart, end - 1).replace(/\bfrom\b/g, '0%').replace(/\bto\b/g, '100%').matchAll(/([\d.% ,]+)\{([^}]+)\}/g)]
 		.flatMap(([, offsets, declarations]) => offsets.split(',').map(offset => ({
 			at: parseFloat(offset),
 			style: Object.fromEntries(declarations.trim().split(';').filter(s => s.trim()).map(s => {
@@ -49,8 +49,8 @@ test('four bilingual semantic chains feed one set of conclusions and derived tas
 	assert.equal((product.match(/\{point.requirement\}/g) || []).length, 1, 'reuse the conclusions inside the spec');
 	assert.equal((product.match(/data-point=\{point.key\}/g) || []).length, 1, 'the requirement and action share one owner');
 	assert.match(layers, /<ol class="product-phases">\{productStory\[locale\].phases.map/);
-	assert.match(product, /<strong class="spec-brand-name" data-story-motion>OpenSpec<\/strong>/);
-	assert.match(product, /src="\/brands\/openspec.svg"/);
+	assert.match(product, /class="product-spec-brand" data-story-motion aria-label="OpenSpec"/);
+	assert.match(product, /href="\/brands\/openspec.svg"/);
 	assert.match(productStory.ru.phases[0].description, /кабинет заказчика/);
 	assert.doesNotMatch(JSON.stringify(productStory), /Понятный путь к результату|Явные правила и состояния/);
 });
@@ -93,8 +93,8 @@ test('concrete answers precede their sheet, separation, OpenSpec and the plan', 
 	assert.equal(at('product-mouth', 23, 'transform'), 'scaleY(1)');
 	assert.equal(at('product-mouth', 30, 'transform'), 'scaleY(-1)');
 	assert.match(opening, /\.story-answer \{[^}]*contain calc\(20% \+ var\(--i\) \* 1%\) contain calc\(24% \+ var\(--i\) \* 1%\)/);
-	assert.equal(at('answer-header', 27), '0');
-	assert.equal(at('answer-header', 30), '1');
+	assert.equal(at('answer-fragment-paper', 27), '0');
+	assert.equal(at('answer-fragment-paper', 30), '1');
 	assert.match(product, /'Ответы на вопросы' : 'Questions answered'/);
 	assert.doesNotMatch(product, /'Спецификация' : 'Specification'/);
 	assert.match(opening, /\.product-fragment \{[^}]*contain 34% contain 38\.5%, contain 38% contain 43%/);
@@ -123,9 +123,9 @@ test('the answer sheet separates into its original fragments, not duplicate text
 	assert.equal(at('answer-fragment-spread', 0, 'left'), '4%');
 	assert.equal(at('answer-fragment-spread', 100, 'left'), 'var(--split-left)');
 	assert.equal(at('answer-fragment-place', 100, 'top'), 'var(--split-top)');
-	assert.equal(at('answer-fragment-paper', 31, 'border-top-color'), 'transparent');
+	assert.equal(at('answer-fragment-paper', 31, 'border-top-color'), 'var(--top-edge, transparent)');
 	assert.equal(at('answer-fragment-paper', 34, 'border-color'), '#65758c');
-	assert.equal(at('answer-header', 34, 'transform'), 'translateY(-2cqw)');
+	assert.equal(at('answer-header-pin', 100, 'transform'), 'translateY(-12.857143cqw)');
 	assert.doesNotMatch(product, /const links|product-derivations/);
 	const mark = readFileSync(new URL('../public/brands/openspec.svg', import.meta.url), 'utf8');
 	assert.match(mark, /viewBox="0 0 640 80"/);
@@ -137,10 +137,8 @@ test('each separated card receives exactly one spec artifact and the shared head
 	assert.equal((product.match(/\{point.spec.artifact\}/g) || []).length, 1);
 	assert.equal((product.match(/\{point.spec.summary\}/g) || []).length, 1);
 	assert.doesNotMatch(product + opening, /stage-label-shift|story-stage|answer-window|answer-reel|answer-to-spec/);
-	assert.match(product, /class="product-answer-header" data-story-motion>[\s\S]*class="answer-header-paper"[\s\S]*class="product-spec-heading"/);
-	assert.equal(at('answer-header', 31), '1');
-	assert.equal(at('answer-header', 34), '0');
-	assert.equal(at('answer-header', 100), '0');
+	assert.match(product, /class="fragment-paper"[^>]*>[\s\S]*i === 0 && <div class="product-spec-heading"/);
+	assert.doesNotMatch(product + opening, /product-answer-header|answer-header-paper/);
 	assert.match(opening, /\.discovery-answer \{[^}]*contain 31% contain 34%/);
 	assert.deepEqual(frames(opening, 'discovery-retire').map(f => f.style), [{opacity: '1'}, {opacity: '0'}]);
 	assert.equal(at('spec-title', 32.5), '1', 'new title exists before old copy retires');
@@ -250,9 +248,9 @@ test('overlapping card axes preserve closed edges, readable text and the later s
 	assert.equal(cards.length, 4);
 	assert.equal(cards.filter(c=>c.y<30).length, 2);
 	assert.equal(cards.filter(c=>c.y>60).length, 2);
-	assert.ok(cards.every(c=>c.w<=48));
-	assert.notEqual(cards[0].y, cards[1].y);
-	assert.notEqual(cards[2].y, cards[3].y);
+	assert.ok(cards.every(c=>c.w===cards[0].w && c.h===cards[0].h));
+	assert.equal(cards[0].y, cards[1].y);
+	assert.equal(cards[2].y, cards[3].y);
 	assert.match(opening, /\.product-fragment \{[^}]*contain 34% contain 38\.5%, contain 38% contain 43%/);
 	assert.match(opening, /\.product-spec-brand \{[^}]*contain 45% contain 47%/);
 	assert.equal(at('answer-fragment-paper', 34, 'border-color'), '#65758c');
@@ -296,6 +294,39 @@ function ease(t, [x1, y1, x2, y2]) {
 	return cubic((lo + hi) / 2, y1, y2);
 }
 
+test('the descending first paper edge clips a stationary header, without an opacity exit', () => {
+	assert.match(opening, /\.product-fragment_first \.fragment-paper \{[^}]*overflow: hidden/);
+	assert.deepEqual(ranges('product-spec-heading'), [[31, 34]]);
+	assert.match(opening, /\.product-spec-heading \{[^}]*white-space: nowrap/, 'clipped copy must not wrap back into the first card');
+	assert.match(opening, /\.product-fragment_first \.fragment-paper \{[^}]*contain 31% contain 34%/);
+	assert.equal(at('answer-header-edge', 0, 'top'), 'calc(-12.857143cqw - 1px)');
+	assert.equal(at('answer-header-edge', 100, 'top'), '-1px');
+	assert.equal(at('answer-header-pin', 0, 'transform'), 'translateY(0)');
+	assert.equal(at('answer-header-pin', 100, 'transform'), 'translateY(-12.857143cqw)');
+	for (const name of ['answer-header-edge', 'answer-header-pin']) assert.ok(frames(opening, name).every(f => !('opacity' in f.style)));
+	assert.doesNotMatch(opening, /\.product-note \{[^}]*overflow: hidden/);
+});
+
+test('four aspect-correct dashed traces reach the center before OpenSpec appears', () => {
+	const paths = [...product.match(/const traces = ([^;]+);/)[1].matchAll(/'M([\d.]+) ([\d.]+)V([\d.]+)L([\d.]+) ([\d.]+)H([\d.]+)'/g)];
+	assert.equal(paths.length, 4);
+	assert.match(product, /class="spec-circuits"[^>]*viewBox="0 0 140 100"/);
+	for (const [, sx, sy, bendY, bendX, endY, endX] of paths) {
+		assert.ok(Math.abs(Math.abs(+bendX - +sx) - Math.abs(+endY - +bendY)) < .0001, 'physical 45-degree corner');
+		assert.ok([42, 66].includes(+sy), 'source belongs to a card edge');
+		assert.equal(+endX, 70);
+		assert.equal(+endY, 54);
+	}
+	assert.match(product, /class="spec-trace-reveal"[^>]*pathLength="1"/);
+	assert.match(opening, /\.spec-trace \{[^}]*stroke-dasharray: 1.1 1/);
+	assert.equal(at('spec-trace-draw', 0, 'stroke-dashoffset'), '1');
+	assert.equal(at('spec-trace-draw', 100, 'stroke-dashoffset'), '0');
+	const trace = ranges('spec-trace-reveal')[0], brand = ranges('product-spec-brand')[0];
+	assert.ok(trace[0] >= ranges('product-fragment')[1][1]);
+	assert.ok(trace[1] <= brand[0]);
+	assert.equal(at('spec-circuits', 48), '0', 'fixed traces leave before their source cards move');
+});
+
 test('continuous card paths have clearance, bounded speed and no pause at the turn', () => {
 	const cards = [...product.matchAll(/\{x: (\d+), y: (\d+), w: (\d+), h: (\d+)\}/g)].map(([,x,y,w,h]) => ({x:+x,y:+y,w:+w,h:+h}));
 	const [horizontal, vertical] = ranges('product-fragment');
@@ -336,7 +367,7 @@ test('each existing fragment becomes one plan row, without duplicate paper or cl
 	assert.match(product, /--plan-top: \$\{16 \+ i \* 22\}%/);
 	assert.equal(at('plan-fragment-paper', 100, 'border-radius'), 'var(--plan-radius, 0)');
 	assert.equal(at('spec-title', 100), '1', 'section headings remain as source labels');
-	assert.equal((product.match(/src="\/brands\/openspec.svg"/g) || []).length, 1);
+	assert.equal((product.match(/href="\/brands\/openspec.svg"/g) || []).length, 1);
 });
 
 test('actions are fully readable before their source retires and move only after it has left', () => {
@@ -348,10 +379,10 @@ test('actions are fully readable before their source retires and move only after
 	assert.match(opening, /\.product-fragment \{[^}]*animation-fill-mode: both, both, forwards, forwards, forwards/);
 	assert.match(opening, /\.spec-title \{[^}]*animation-fill-mode: both, forwards/);
 	assert.match(opening, /\.spec-copy \{[^}]*animation-fill-mode: both, forwards/);
-	assert.equal(at('plan-brand-size', 0, 'width'), '28cqw', 'brand is unchanged before 48%');
+	assert.equal(at('spec-letter-fan', 0, 'width'), '3.5cqw', 'eight original glyphs form the 28cqw wordmark');
 });
 
-test('OpenSpec-to-plan geometry has no intersections, abrupt jumps or stop at axis handoffs', () => {
+function planGeometry() {
 	const cards = [...product.matchAll(/\{x: (\d+), y: (\d+), w: (\d+), h: (\d+)\}/g)].map(([,x,y,w,h])=>({x:+x,y:+y,w:+w,h:+h}));
 	const prepared = JSON.parse(product.match(/const preparedTops = (\[[^;]+\]);/)[1]);
 	const series = name => product.match(new RegExp(`--${name}: \\$\\{([\\d.]+) \\+ i \\* ([\\d.]+)\\}%`)).slice(1).map(Number);
@@ -373,6 +404,11 @@ test('OpenSpec-to-plan geometry has no intersections, abrupt jumps or stop at ax
 		if (p >= join[0]) { y=mix(ordered[0]+i*ordered[1],joined[0]+i*joined[1],t(p,...join)); h=mix(orderedHeight,finalHeight,t(p,...join)); }
 		return {x:mix(c.x,finalX,t(p,...align)),y,w:mix(c.w,finalWidth,t(p,...align)),h};
 	});
+	return {pose, verticalStart, join};
+}
+
+test('OpenSpec-to-plan geometry has no intersections, abrupt jumps or stop at axis handoffs', () => {
+	const {pose, verticalStart, join} = planGeometry();
 	let maxSpeed=0;
 	for(let p=48;p<=72;p+=.01){
 		const current=pose(p), next=pose(p+.01);
@@ -387,4 +423,65 @@ test('OpenSpec-to-plan geometry has no intersections, abrupt jumps or stop at ax
 	}
 	assert.ok(maxSpeed<20,`plan edge speed ${maxSpeed} exceeds the opening's smoothness budget`);
 	assert.deepEqual(pose(70),pose(72),'hold before the existing frontend handoff');
+});
+
+test('the eight original logo glyphs travel through gutters, never through cards or each other', () => {
+	const {pose: cards} = planGeometry();
+	const order = JSON.parse(product.match(/const letterOrder = (\[[^;]+\]);/)[1]);
+	assert.deepEqual([...order].sort((a,b)=>a-b), [0,1,2,3,4,5,6,7]);
+	assert.match(product, /viewBox=\{`\$\{i \* 80\} 0 80 80`\}/);
+	assert.match(product, /<image href="\/brands\/openspec.svg" width="640" height="80"/);
+	const series = name => product.match(new RegExp(`--letter-${name}: \\$\\{([\\d.]+) \\+ i \\* ([\\d.]+)\\}%`)).slice(1).map(Number);
+	const start = series('start'), end = series('end');
+	const lanes = JSON.parse(product.match(/const letterLanes = (\[[^;]+\]);/)[1]);
+	const slots = JSON.parse(product.match(/const letterSlots = (\[[^;]+\]);/)[1]);
+	const rule = opening.match(/\.spec-letter \{[^}]*animation-range:[^}]*contain calc\(([\d.]+)% \+ var\(--letter-order\) \* ([\d.]+)%\) contain calc\(([\d.]+)% \+ var\(--letter-order\) \* ([\d.]+)%\)[^}]*cubic-bezier\(([^)]+)\)/);
+	assert.ok(rule);
+	const [, from, delay, to, endDelay, easing] = rule;
+	const curve = easing.split(',').map(Number);
+	const scores = ['spec-letter-fan','spec-letter-gather','spec-letter-flight'].map(name=>frames(opening,name));
+	assert.ok(scores.flat().every(f => !('opacity' in f.style)), 'glyphs remain opaque throughout flight');
+	function property(score, name, p, vars) {
+		const stops = score.filter(f => name in f.style);
+		const value = f => parseFloat(vars[f.style[name]] ?? f.style[name]);
+		if (p <= stops[0].at) return value(stops[0]);
+		for (let i=1;i<stops.length;i++) if (p<=stops[i].at) {
+			const a=stops[i-1], b=stops[i];
+			return value(a)+(value(b)-value(a))*ease((p-a.at)/(b.at-a.at),curve);
+		}
+		return value(stops.at(-1));
+	}
+	const [fan, gather] = ranges('spec-letter');
+	const letters = p => order.map((rank,i) => {
+		const flightStart=+from+rank*+delay, flightEnd=+to+rank*+endDelay;
+		const t = (p-flightStart)/(flightEnd-flightStart)*100;
+		const vars = {'var(--letter-start)':start[0]+i*start[1], 'var(--letter-end)':end[0]+i*end[1], 'var(--letter-lane)':lanes[i], 'var(--letter-slot)':slots[i]};
+		const fanTime=(p-fan[0])/(fan[1]-fan[0])*100, gatherTime=(p-gather[0])/(gather[1]-gather[0])*100;
+		const w=property(scores[0],'width',fanTime,vars);
+		const x=p<flightStart?property(scores[1],'left',gatherTime,vars):property(scores[2],'left',t,vars);
+		const y=p<flightStart?property(scores[0],'top',fanTime,vars):property(scores[2],'top',t,vars);
+		// The official 80-unit cells have a 64-unit glyph (last C: 48), then whitespace.
+		return {x,y,w:w*(i===7?.6:.8),h:w*1.4};
+	});
+	const intersects = (a,b) => Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x)>.001 && Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y)>.001;
+	for (let p=48;p<=65;p+=.01) {
+		const glyphs=letters(p), papers=cards(p);
+		for (let i=0;i<8;i++) {
+			for (let j=0;j<4;j++) assert.ok(!intersects(glyphs[i],papers[j]),`glyph ${i} touches card ${j} at ${p}`);
+			for (let j=i+1;j<8;j++) assert.ok(!intersects(glyphs[i],glyphs[j]),`glyphs ${i}/${j} touch at ${p}`);
+
+		}
+	}
+	assert.deepEqual(letters(65),letters(66),'wordmark is complete before the plan heading');
+});
+
+test('transition lighting is gated, reversible and quiet before the later stages', () => {
+	for (const name of ['product-light-left','product-light-right']) {
+		assert.equal(at(name,27),'0');
+		assert.equal(at(name,70),'0');
+		assert.equal(at(name,100),'0');
+		assert.ok(frames(opening,name).every(f => Object.keys(f.style).every(k=>['opacity','transform'].includes(k))));
+	}
+	assert.match(opening, /\.scope-light::before,[^}]*animation-timeline: --product-story; animation-range: contain 0% contain 100%/);
+	assert.doesNotMatch(opening, /animation-iteration-count:\s*infinite/);
 });
