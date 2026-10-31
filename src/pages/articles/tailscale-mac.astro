@@ -29,6 +29,16 @@ const shots = '/articles/tailscale-mac';
 		</header>
 		<div class="guide-body page-width">
 			<div class="guide-content" data-screenshot-gallery>
+				<section class="guide-intro" id="about" aria-labelledby="about-title">
+					<h2 id="about-title">Зачем нужен Tailscale</h2>
+					<p>Mac может стоять у вас в офисе, а разработчик — работать из другого города. Ему нужно запускать сборки, забирать готовые приложения, загружать файлы и обслуживать рабочее окружение. Для этого нужен постоянный доступ к компьютеру, а не созвон с демонстрацией экрана.</p>
+					<h3>Как это работает</h3>
+					<p><strong>Tailscale устанавливается на оба компьютера и связывает их через интернет.</strong> Разработчик подключается к вашему Mac по его адресу в Tailscale, как к компьютеру в локальной сети. Соединение зашифровано — в том числе если данные идут через промежуточный сервер. <a href="https://tailscale.com/docs/concepts/tailscale-encryption" target="_blank" rel="noopener noreferrer">Подробнее о защите соединения</a>.</p>
+					<p>Вы отправляете приглашение через <strong>Share</strong>, разработчик принимает его и получает доступ к выбранному Mac. Остальные устройства этим приглашением не открываются. <a href="https://tailscale.com/docs/features/sharing" target="_blank" rel="noopener noreferrer">Так работает доступ к отдельному устройству</a>.</p>
+					<p><strong>Tailscale отвечает за соединение, а macOS — за разрешённые действия.</strong> Поэтому после установки нужно включить «Удалённый вход» для команд и файлов. Управление экраном настраивается отдельно.</p>
+					<p>Mac должен оставаться включённым, не спать и иметь доступ к интернету. Работу после перезагрузки разработчик проверит отдельно. Ниже — подготовка первого подключения.</p>
+				</section>
+
 				<section id="install" aria-labelledby="install-title">
 					<h2 id="install-title"><span>01</span> Установите Tailscale</h2>
 					<ol>
@@ -141,8 +151,10 @@ const shots = '/articles/tailscale-mac';
 	.guide-content a { color: var(--guide-blue); text-underline-offset: .2em; }
 	a:focus-visible, summary:focus-visible { outline: 2px solid var(--guide-blue); outline-offset: 4px; }
 	section { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--guide-line); scroll-margin-top: 6rem; }
+	.guide-intro { margin-top: 0; padding-top: 0; border-top: 0; }
 	h2 { margin: 0 0 1.25rem; font-size: clamp(1.5rem, 2.5vw, 2rem); line-height: 1.2; letter-spacing: -.035em; }
 	h2 span { color: var(--guide-muted); font-size: .75em; margin-right: .4rem; font-weight: 400; }
+	h3 { margin: 1.5rem 0 .75rem; font-size: 1.15rem; line-height: 1.4; }
 	ul, ol { margin: 1rem 0; padding-left: 1.4rem; }
 	li { padding: .25rem 0 .25rem .15rem; }
 	.guide-content .small { font-size: .83rem; line-height: 1.65; color: var(--guide-muted); }
