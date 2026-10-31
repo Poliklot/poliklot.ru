@@ -12,6 +12,7 @@ const articles: readonly ArticleSummary[] = [
 		slug: 'tailscale-mac',
 		publishedAt: '2026-10-31',
 		publishedLabel: '31 октября 2026',
+		updatedAt: '2026-11-01',
 		title: 'Как дать разработчику доступ к Mac через Tailscale',
 		description: 'Пошаговая инструкция со скриншотами для владельца Mac. Установка Tailscale, доступ разработчику, удалённый вход, файлы, сон и проверка после перезагрузки. Без команд в терминале для владельца.',
 	},
