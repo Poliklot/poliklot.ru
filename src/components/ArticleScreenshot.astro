@@ -11,7 +11,7 @@ const {src, width, height, alt, caption, displayWidth = width} = Astro.props;
 ---
 
 <figure style={`max-width: ${displayWidth}px`}>
-	<a href={src} data-pswp-width={width} data-pswp-height={height} target="_blank" rel="noopener noreferrer" aria-label={`Увеличить скриншот — ${alt}`}>
+	<a href={src} data-pswp-width={width} data-pswp-height={height} target="_blank" rel="noopener noreferrer" aria-label={`Увеличить изображение — ${alt}`}>
 		<img src={src} width={width} height={height} alt={alt} loading="lazy" decoding="async" draggable="false" />
 	</a>
 	<figcaption>{caption}</figcaption>
