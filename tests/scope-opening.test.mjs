@@ -47,9 +47,9 @@ test('four bilingual semantic chains feed one set of conclusions and derived tas
 		}
 	}
 	assert.equal((product.match(/\{point.requirement\}/g) || []).length, 1, 'reuse the conclusions inside the spec');
-	assert.equal((product.match(/data-point=\{point.key\}/g) || []).length, 2, 'connect requirements and tasks by identity');
+	assert.equal((product.match(/data-point=\{point.key\}/g) || []).length, 1, 'the requirement and action share one owner');
 	assert.match(layers, /<ol class="product-phases">\{productStory\[locale\].phases.map/);
-	assert.match(product, /<strong>OpenSpec<\/strong>/);
+	assert.match(product, /<strong class="spec-brand-name" data-story-motion>OpenSpec<\/strong>/);
 	assert.match(product, /src="\/brands\/openspec.svg"/);
 	assert.match(productStory.ru.phases[0].description, /кабинет заказчика/);
 	assert.doesNotMatch(JSON.stringify(productStory), /Понятный путь к результату|Явные правила и состояния/);
@@ -99,9 +99,8 @@ test('concrete answers precede their sheet, separation, OpenSpec and the plan', 
 	assert.doesNotMatch(product, /'Спецификация' : 'Specification'/);
 	assert.match(opening, /\.product-fragment \{[^}]*contain 34% contain 38\.5%, contain 38% contain 43%/);
 	assert.match(opening, /\.product-spec-brand \{[^}]*contain 45% contain 47%/);
-	assert.match(opening, /\.product-plan-paper \{[^}]*contain 52% contain 68%/);
-	assert.equal(at('product-plan-sheet', 0, 'transform'), 'scaleY(.28)');
-	assert.equal(at('product-plan-sheet', 100, 'transform'), 'scaleY(1)');
+	assert.ok(ranges('product-fragment')[2][0] >= 48, 'plan starts after the original OpenSpec hold');
+	assert.ok(ranges('product-fragment').at(-1)[1] <= 70, 'plan settles before the existing frontend entrance');
 	assert.equal(at('product-screen', 70), '0');
 	assert.equal(at('product-screen', 72), '1');
 	assert.equal(at('product-logic', 77), '0');
@@ -127,7 +126,7 @@ test('the answer sheet separates into its original fragments, not duplicate text
 	assert.equal(at('answer-fragment-paper', 31, 'border-top-color'), 'transparent');
 	assert.equal(at('answer-fragment-paper', 34, 'border-color'), '#65758c');
 	assert.equal(at('answer-header', 34, 'transform'), 'translateY(-2cqw)');
-	assert.match(product, /const links = cards.map/);
+	assert.doesNotMatch(product, /const links|product-derivations/);
 	const mark = readFileSync(new URL('../public/brands/openspec.svg', import.meta.url), 'utf8');
 	assert.match(mark, /viewBox="0 0 640 80"/);
 	assert.doesNotMatch(mark, /<script|href=|<foreignObject/);
@@ -156,11 +155,9 @@ test('each separated card receives exactly one spec artifact and the shared head
 	assert.match(opening, /\.spec-copy \{[^}]*contain 43% contain 45%/);
 });
 
-test('requirement links finish before sources move; one nonrepeating signal connects the parts', () => {
-	assert.match(opening, /\.product-derivations path \{[^}]*contain calc\(52% \+ var\(--i\) \* 3%\) contain calc\(55% \+ var\(--i\) \* 3%\)/);
-	assert.equal(at('product-derivations', 70), '1');
-	assert.equal(at('product-derivations', 72), '0');
-	assert.equal(at('product-plan', 72, 'transform'), 'translate(0, 0) translateZ(10px) scale(1)');
+test('the plan has no derivation wires; the later nonrepeating product signal is unchanged', () => {
+	assert.doesNotMatch(product + opening, /product-derivations|product-plan-paper|product-plan-sheet/);
+	assert.equal(at('product-spec', 72, 'transform'), 'translate(0, 0) translateZ(10px) scale(1)');
 	assert.equal(at('product-flow', 86), '0');
 	assert.equal(at('product-flow', 90, 'stroke-dashoffset'), '-.94');
 	assert.equal(at('product-flow', 100), '0');
@@ -172,8 +169,10 @@ test('requirement links finish before sources move; one nonrepeating signal conn
 
 test('compact parts and documents are covered before the neutral frontend handoff', () => {
 	assert.match(opening, /\.product-layer \{[^}]*height: 12%/);
-	assert.equal(at('product-spec', 86, 'transform'), 'translate(0, -12%) translateZ(6px) scale(.62)');
-	assert.equal(at('product-plan', 84, 'transform'), 'translate(-4%, -23%) translateZ(10px) scale(.66)');
+	assert.equal(at('product-spec', 84, 'transform'), 'translate(-3.12%, -19.78%) translateZ(10px) scale(.66)');
+	assert.match(opening, /\.product-spec \{[^}]*transform-origin: 57% 61%/);
+	assert.equal(78 * -.04, -3.12, 'same horizontal retreat as the former 78%-wide panel');
+	assert.equal(86 * -.23, -19.78, 'same vertical retreat as the former 86%-tall panel');
 	assert.equal(at('product-internals-presence', 100, 'visibility'), 'hidden');
 	assert.equal(at('product-foundation', 100), '1');
 	assert.equal(at('product-screen', 100), '1');
@@ -322,4 +321,70 @@ test('continuous card paths have clearance, bounded speed and no pause at the tu
 		const a = pose(p)[1], b = pose(p+.01)[1];
 		assert.ok(Math.hypot(b.x-a.x,b.y-a.y) > .001, 'right-hand card must not stop during the turn');
 	}
+});
+
+test('each existing fragment becomes one plan row, without duplicate paper or clipped actions', () => {
+	assert.equal((product.match(/\{point.task\}/g) || []).length, 1);
+	assert.match(product, /class="spec-copy"[\s\S]*\{point.spec.summary\}[\s\S]*class="product-task" data-story-motion>\{point.task\}/);
+	assert.doesNotMatch(product, /class="product-plan"|product-plan-paper/);
+	assert.doesNotMatch(opening, /\.product-task \{[^}]*(?:overflow: hidden|clip-path|;\s*height:)/);
+	assert.match(product, /class="note-anchor"[^>]*><span class="task-number"[^>]*>\{i \+ 1\}/);
+	assert.equal(at('plan-fragment-align', 100, 'left'), '18%');
+	assert.equal(at('plan-fragment-align', 100, 'width'), '78%');
+	assert.equal(at('plan-fragment-join', 100, 'top'), 'var(--plan-top)');
+	assert.equal(at('plan-fragment-join', 100, 'height'), '22%');
+	assert.match(product, /--plan-top: \$\{16 \+ i \* 22\}%/);
+	assert.equal(at('plan-fragment-paper', 100, 'border-radius'), 'var(--plan-radius, 0)');
+	assert.equal(at('spec-title', 100), '1', 'section headings remain as source labels');
+	assert.equal((product.match(/src="\/brands\/openspec.svg"/g) || []).length, 1);
+});
+
+test('actions are fully readable before their source retires and move only after it has left', () => {
+	const [reveal, place] = ranges('product-task');
+	const [, retire] = ranges('spec-copy');
+	assert.ok(reveal[1] <= retire[0]);
+	assert.ok(retire[1] <= place[0]);
+	assert.ok(ranges('product-fragment')[2][0] < reveal[0], 'make space before revealing more text');
+	assert.match(opening, /\.product-fragment \{[^}]*animation-fill-mode: both, both, forwards, forwards, forwards/);
+	assert.match(opening, /\.spec-title \{[^}]*animation-fill-mode: both, forwards/);
+	assert.match(opening, /\.spec-copy \{[^}]*animation-fill-mode: both, forwards/);
+	assert.equal(at('plan-brand-size', 0, 'width'), '28cqw', 'brand is unchanged before 48%');
+});
+
+test('OpenSpec-to-plan geometry has no intersections, abrupt jumps or stop at axis handoffs', () => {
+	const cards = [...product.matchAll(/\{x: (\d+), y: (\d+), w: (\d+), h: (\d+)\}/g)].map(([,x,y,w,h])=>({x:+x,y:+y,w:+w,h:+h}));
+	const prepared = JSON.parse(product.match(/const preparedTops = (\[[^;]+\]);/)[1]);
+	const series = name => product.match(new RegExp(`--${name}: \\$\\{([\\d.]+) \\+ i \\* ([\\d.]+)\\}%`)).slice(1).map(Number);
+	const ordered = series('ordered-top'), joined = series('plan-top');
+	const [, , order, align, join] = ranges('product-fragment');
+	const curve = opening.match(/\.product-fragment \{[^}]*cubic-bezier\(([^)]+)\)/)[1].split(',').map(Number);
+	const time = stop => order[0] + (order[1] - order[0]) * stop / 100;
+	const preparationEnd = time(25), verticalStart = time(37.5), shrinkStart = time(81.25);
+	const mix = (a,b,t) => a+(b-a)*t;
+	const t = (p,a,b) => ease((p-a)/(b-a),curve);
+	const preparedHeight = parseFloat(at('plan-fragment-order',25,'height'));
+	const orderedHeight = parseFloat(at('plan-fragment-order',100,'height'));
+	const finalHeight = parseFloat(at('plan-fragment-join',100,'height'));
+	const finalX = parseFloat(at('plan-fragment-align',100,'left'));
+	const finalWidth = parseFloat(at('plan-fragment-align',100,'width'));
+	const pose = p => cards.map((c,i) => {
+		let y = p < verticalStart ? mix(c.y,prepared[i],t(p,order[0],preparationEnd)) : mix(prepared[i],ordered[0]+i*ordered[1],t(p,verticalStart,order[1]));
+		let h = p < shrinkStart ? mix(c.h,preparedHeight,t(p,order[0],preparationEnd)) : mix(preparedHeight,orderedHeight,t(p,shrinkStart,order[1]));
+		if (p >= join[0]) { y=mix(ordered[0]+i*ordered[1],joined[0]+i*joined[1],t(p,...join)); h=mix(orderedHeight,finalHeight,t(p,...join)); }
+		return {x:mix(c.x,finalX,t(p,...align)),y,w:mix(c.w,finalWidth,t(p,...align)),h};
+	});
+	let maxSpeed=0;
+	for(let p=48;p<=72;p+=.01){
+		const current=pose(p), next=pose(p+.01);
+		for(let i=0;i<4;i++){
+			for(let j=i+1;j<4;j++){
+				const a=current[i],b=current[j];
+				assert.ok(Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x)<.001 || Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y)<.001,`plan rows ${i}/${j} intersect at ${p}`);
+			}
+			for(const edge of [c=>c.x,c=>c.x+c.w,c=>c.y,c=>c.y+c.h]) maxSpeed=Math.max(maxSpeed,Math.abs(edge(next[i])-edge(current[i]))/.01);
+			if(p>verticalStart && p<join[1]-.01) assert.ok(Math.hypot(next[i].x-current[i].x,next[i].y-current[i].y,next[i].w-current[i].w,next[i].h-current[i].h)>.000001,`row ${i} stops at ${p}`);
+		}
+	}
+	assert.ok(maxSpeed<20,`plan edge speed ${maxSpeed} exceeds the opening's smoothness budget`);
+	assert.deepEqual(pose(70),pose(72),'hold before the existing frontend handoff');
 });

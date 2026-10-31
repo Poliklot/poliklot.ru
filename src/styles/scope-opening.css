@@ -19,7 +19,7 @@
 .product-thought circle { fill: #141d2a; stroke: #718097; stroke-width: 1.5; }
 .product-insight { stroke: #8bbaff; }
 
-.product-spec { position: absolute; inset: 0; transform: translateZ(6px); transform-style: preserve-3d; }
+.product-spec { position: absolute; inset: 0; transform: translateZ(6px); transform-origin: 57% 61%; transform-style: preserve-3d; }
 .product-answer-header { position: absolute; inset: 0; }
 .answer-header-paper { position: absolute; top: 6%; left: 4%; width: 92%; height: 18%; background: #111924; border: 1px solid #65758c; border-bottom: 0; border-radius: 3cqw 3cqw 0 0; }
 .product-spec-heading { position: absolute; left: 11%; right: 11%; top: 14%; display: flex; justify-content: space-between; align-items: baseline; gap: 2cqw; line-height: 1.2; }
@@ -28,6 +28,8 @@
 /* Contiguous paper strips form one sheet first. The text never changes owners. */
 .product-fragment { position: absolute; left: 4%; width: 92%; top: calc(24% + var(--i) * 17%); height: 17%; }
 .product-fragment_last { --joined-height: 19%; height: 19%; --joined-radius: 0 0 3cqw 3cqw; --bottom-edge: #65758c; }
+.product-fragment_first { --plan-radius: 3cqw 3cqw 0 0; --plan-top-edge: #65758c; }
+.product-fragment_last { --plan-radius: 0 0 3cqw 3cqw; --plan-bottom-edge: #65758c; }
 .fragment-paper { position: absolute; inset: -1px 0 0; background: #111924; border: 1px solid #65758c; border-block-color: transparent; border-radius: var(--joined-radius, 0); }
 .product-note { position: absolute; left: 7.6087%; width: 84.7826%; top: 2.85714cqw; height: auto; font-size: clamp(.75rem, 2.4cqw, .9rem); line-height: 1.4; }
 .note-heading-row { position: relative; display: grid; grid-template-columns: .9cqw minmax(0, 1fr); gap: 2.1cqw; align-items: center; }
@@ -44,16 +46,12 @@
 .product-spec-brand img { display: block; width: 28cqw; height: auto; }
 .story-seed { color: #c6d4e7; }
 .story-answer { display: block; margin: .75cqw 0 0 3cqw; color: #eef2f8; font-size: clamp(.75rem, 2.8cqw, 1.06rem); line-height: 1.3; font-weight: 450; white-space: nowrap; }
-.note-anchor { display: block; width: .9cqw; aspect-ratio: 1; border-radius: 50%; background: #8bbaff; }
-.product-derivations { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; transform: translateZ(11px); }
-.product-derivations path { stroke: #8bbaff; stroke-width: .3; stroke-dasharray: 1; }
-.product-plan { position: absolute; left: 18%; top: 18%; width: 78%; height: 86%; transform: translateZ(10px); transform-style: preserve-3d; }
-.product-plan-paper { position: absolute; inset: 0; border: 1px solid #6d7f98; border-radius: 3cqw; background: #192433; box-shadow: 0 3px 0 #0d131e; transform-origin: top; }
-.product-plan-heading { position: absolute; left: 9%; right: 7%; top: 8%; line-height: 1.25; }
-.product-plan-heading strong { display: block; font-weight: 550; color: #eef2f8; font-size: clamp(.85rem, 3cqw, 1.2rem); }
-.product-plan-heading > span { display: block; margin-top: 1cqw; color: #9eacc0; font-size: clamp(.7rem, 2.15cqw, .85rem); }
-.product-task { position: absolute; left: 9%; right: 7%; top: calc(26% + var(--i) * 16%); height: 12%; display: flex; align-items: center; gap: 2cqw; color: #e6edf8; font-size: clamp(.75rem, 2.7cqw, 1rem); line-height: 1.3; }
-.task-marker { width: 2.3cqw; min-width: 11px; aspect-ratio: 1; flex-shrink: 0; border: 1px solid #8396b1; border-radius: 50%; }
+.note-anchor { position: relative; display: block; width: .9cqw; aspect-ratio: 1; border-radius: 50%; background: #8bbaff; }
+.task-number { position: absolute; inset: 0; display: grid; place-items: center; border-radius: inherit; font-size: clamp(.6rem, 2cqw, .75rem); line-height: 1; font-style: normal; color: #b7d3ff; opacity: 0; }
+.product-plan-heading { position: absolute; top: calc(100% + 1.5cqw); width: 100%; text-align: center; font-weight: 550; color: #eef2f8; font-size: clamp(.85rem, 3cqw, 1.2rem); line-height: 1.25; opacity: 0; }
+/* The action is revealed below its source, then takes its place only after the
+   source body retires. Natural-height text can reflow; it is never clipped. */
+.product-task { position: absolute; left: 3cqw; top: calc(1.4em + 14cqw); width: calc(100% - 3cqw); color: #eef2f8; font-size: clamp(.75rem, 2.55cqw, .96rem); line-height: 1.3; opacity: 0; }
 
 .product-layer { position: absolute; left: 10%; width: 80%; height: 12%; display: flex; align-items: center; gap: 2cqw; padding: 0 3cqw; border: 1px solid #576478; border-radius: 1.6cqw; background: #202734; color: #eef2f8; box-shadow: 0 3px 0 #101722, 0 4px 0 #586477; transform-origin: left center; }
 .product-layer > svg { width: 3.5cqw; height: 3.5cqw; flex-shrink: 0; stroke: #a5bad7; stroke-width: 1.4; }
@@ -85,8 +83,8 @@
 		.scope-scene .product-model { animation-name: product-internals-presence; }
 		.scope-scene .product-brief { animation-name: brief-fallback; }
 		.scope-scene .note-heading, .scope-scene .discovery-answer { animation-name: discovery-retire; animation-range: contain 31% contain 34%; animation-timing-function: cubic-bezier(.42, 0, .58, 1); }
-		.scope-scene .spec-title { animation-name: spec-title; animation-timing-function: cubic-bezier(.42, 0, .58, 1); }
-		.scope-scene .spec-copy { animation-name: product-answer; animation-range: contain 43% contain 45%; animation-timing-function: cubic-bezier(.42, 0, .58, 1); }
+		.scope-scene .spec-title { animation-name: spec-title, plan-title-indent; animation-range: contain 0% contain 100%, contain 62% contain 68%; animation-fill-mode: both, forwards; animation-timing-function: cubic-bezier(.42, 0, .58, 1); }
+		.scope-scene .spec-copy { animation-name: product-answer, spec-source-retire; animation-range: contain 43% contain 45%, contain 54% contain 57%; animation-fill-mode: both, forwards; animation-timing-function: cubic-bezier(.42, 0, .58, 1); }
 		.scope-scene .product-person { animation-name: product-person; }
 		.scope-scene .product-face { animation-name: product-face; transform-origin: 50% 50%; }
 		.scope-scene .product-eyes { animation-name: product-eyes; }
@@ -97,20 +95,18 @@
 		.scope-scene .product-insight { animation-name: product-insight; }
 		.scope-scene .product-spec { animation-name: product-spec; }
 		.scope-scene .product-answer-header { animation-name: answer-header; animation-timing-function: cubic-bezier(.42, 0, .58, 1); }
-		.scope-scene .product-fragment { animation-name: answer-fragment-spread, answer-fragment-place; animation-range: contain 34% contain 38.5%, contain 38% contain 43%; animation-timing-function: cubic-bezier(.42, 0, .58, 1); }
-		.scope-scene .fragment-paper { animation-name: answer-fragment-paper; animation-timing-function: cubic-bezier(.42, 0, .58, 1); }
-		.scope-scene .product-spec-brand { animation-name: product-answer; animation-range: contain 45% contain 47%; animation-timing-function: cubic-bezier(.42, 0, .58, 1); }
-		.scope-scene .product-note { animation-name: product-note; animation-range: contain calc(14% + var(--i) * .5%) contain calc(23% + var(--i) * .5%); }
+		.scope-scene .product-fragment { animation-name: answer-fragment-spread, answer-fragment-place, plan-fragment-order, plan-fragment-align, plan-fragment-join; animation-range: contain 34% contain 38.5%, contain 38% contain 43%, contain 48% contain 64%, contain 63% contain 69%, contain 66% contain 70%; animation-fill-mode: both, both, forwards, forwards, forwards; animation-timing-function: cubic-bezier(.42, 0, .58, 1); }
+		.scope-scene .fragment-paper { animation-name: answer-fragment-paper, plan-fragment-paper; animation-range: contain 0% contain 100%, contain 66% contain 70%; animation-fill-mode: both, forwards; animation-timing-function: cubic-bezier(.42, 0, .58, 1); }
+		.scope-scene .product-spec-brand { animation-name: product-answer, plan-brand-lift; animation-range: contain 45% contain 47%, contain 52% contain 57%; animation-fill-mode: both, forwards; animation-timing-function: cubic-bezier(.42, 0, .58, 1); }
+		.scope-scene .spec-brand-name { animation-name: spec-source-retire; animation-range: contain 49% contain 52%; animation-timing-function: cubic-bezier(.42, 0, .58, 1); }
+		.scope-scene .product-spec-brand img { animation: plan-brand-size auto cubic-bezier(.42, 0, .58, 1) both; animation-timeline: --product-story; animation-range: contain 0% contain 100%; }
+		.scope-scene .product-note { animation-name: product-note, plan-note-padding; animation-range: contain calc(14% + var(--i) * .5%) contain calc(23% + var(--i) * .5%), contain 62% contain 68%; animation-fill-mode: both, forwards; }
 		.scope-scene .question-reel { animation-name: question-roll; animation-range: contain calc(16% + var(--i) * .5%) contain calc(22% + var(--i) * .5%); }
 		.scope-scene .story-answer { animation-name: product-answer; animation-range: contain calc(20% + var(--i) * 1%) contain calc(24% + var(--i) * 1%); }
-		.scope-scene .note-anchor { animation-name: product-appear; animation-range: contain calc(22% + var(--i) * 1%) contain calc(24% + var(--i) * 1%); }
-		.scope-scene .product-derivations { animation-name: product-derivations; }
-		.scope-scene .product-derivations path { animation-name: product-draw; animation-range: contain calc(52% + var(--i) * 3%) contain calc(55% + var(--i) * 3%); animation-timing-function: linear; }
-		.scope-scene .product-plan { animation-name: product-plan; }
-		.scope-scene .product-plan-paper { animation-name: product-plan-sheet; animation-range: contain 52% contain 68%; animation-timing-function: linear; }
-		.scope-scene .product-plan-heading { animation-name: product-appear; animation-range: contain 54% contain 58%; }
-		.scope-scene .product-task { animation-name: product-task; animation-range: contain calc(54% + var(--i) * 3%) contain calc(59% + var(--i) * 3%); }
-		.scope-scene .task-marker { animation-name: product-task-focus; animation-range: contain calc(68% + var(--i) * 5%) contain calc(74% + var(--i) * 5%); }
+		.scope-scene .note-anchor { animation-name: product-appear, plan-marker; animation-range: contain calc(22% + var(--i) * 1%) contain calc(24% + var(--i) * 1%), contain 62% contain 68%; animation-fill-mode: both, forwards; }
+		.scope-scene .task-number { animation-name: plan-number, product-task-focus; animation-range: contain 65% contain 68%, contain calc(68% + var(--i) * 5%) contain calc(74% + var(--i) * 5%); animation-fill-mode: both, forwards; }
+		.scope-scene .product-plan-heading { animation-name: product-answer; animation-range: contain 65% contain 68%; }
+		.scope-scene .product-task { animation-name: plan-action-reveal, plan-action-place, plan-action-indent; animation-range: contain 51.5% contain 54%, contain 57% contain 61.5%, contain 62% contain 68%; animation-fill-mode: both, forwards, forwards; animation-timing-function: cubic-bezier(.42, 0, .58, 1); }
 		.scope-scene .product-logic { animation-name: product-logic; }
 		.scope-scene .product-data { animation-name: product-data; }
 		.scope-scene .product-route { animation-name: product-route; }
@@ -158,11 +154,38 @@
 	30%, 31% { opacity: 1; border-top-color: transparent; border-bottom-color: var(--bottom-edge, transparent); border-radius: var(--joined-radius, 0); }
 	34%, 100% { opacity: 1; border-color: #65758c; border-radius: 2cqw; }
 }
-@keyframes product-draw { from { stroke-dashoffset: 1; opacity: 0; } 1% { opacity: 1; } to { stroke-dashoffset: 0; opacity: 1; } }
 @keyframes product-note { from { transform: translate(var(--note-x), var(--note-y)); } to { transform: translate(0, 0); } }
 @keyframes product-answer { from { opacity: 0; transform: translateY(1cqw); } to { opacity: 1; transform: translateY(0); } }
-@keyframes product-task { 0% { opacity: 0; transform: translate(-8cqw, -8cqw); } 30% { opacity: 0; } 100% { opacity: 1; transform: translate(0, 0); } }
-@keyframes product-plan-sheet { 0% { opacity: 0; transform: scaleY(.28); } 18% { opacity: 1; } 100% { opacity: 1; transform: scaleY(1); } }
+/* Later geometry animations fill forwards only: they must not override the
+   existing Q&A → OpenSpec trajectory before their own range starts. */
+@keyframes plan-fragment-order {
+	0% { top: var(--split-top); height: var(--split-height); }
+	25%, 37.5% { top: var(--prepared-top); height: 48%; }
+	81.25% { height: 48%; }
+	100% { top: var(--ordered-top); height: 29%; }
+}
+@keyframes plan-fragment-align {
+	0% { left: var(--split-left); width: var(--split-width); }
+	100% { left: 18%; width: 78%; }
+}
+@keyframes plan-fragment-join {
+	0% { top: var(--ordered-top); height: 29%; }
+	100% { top: var(--plan-top); height: 22%; }
+}
+@keyframes plan-fragment-paper {
+	0% { border-radius: 2cqw; border-color: #65758c; }
+	100% { border-radius: var(--plan-radius, 0); border-top-color: var(--plan-top-edge, transparent); border-bottom-color: var(--plan-bottom-edge, #354152); }
+}
+@keyframes spec-source-retire { from { opacity: 1; } to { opacity: 0; } }
+@keyframes plan-action-reveal { from { opacity: 0; transform: translateY(.7cqw); } to { opacity: 1; transform: translateY(0); } }
+@keyframes plan-action-place { from { top: calc(1.4em + 14cqw); } to { top: calc(1.4em + .75cqw); } }
+@keyframes plan-title-indent { from { left: 3cqw; } to { left: 4.8cqw; } }
+@keyframes plan-action-indent { from { left: 3cqw; width: calc(100% - 3cqw); } to { left: 4.8cqw; width: calc(100% - 4.8cqw); } }
+@keyframes plan-note-padding { from { top: 2.85714cqw; } to { top: 2cqw; } }
+@keyframes plan-brand-lift { from { top: 49%; } to { top: -6%; } }
+@keyframes plan-brand-size { 0%, 49% { width: 28cqw; } 52%, 64% { width: 14cqw; } 68%, 100% { width: 22cqw; } }
+@keyframes plan-marker { from { width: .9cqw; background: #8bbaff; box-shadow: inset 0 0 0 0 #8bbaff; } to { width: 2.8cqw; background: transparent; box-shadow: inset 0 0 0 1px #8bbaff; } }
+@keyframes plan-number { from { opacity: 0; } to { opacity: 1; } }
 @keyframes product-task-focus { 0% { border-color: #8396b1; background: transparent; } 100% { border-color: #8bbaff; background: #8bbaff26; } }
 @keyframes product-phase { 0%, 100% { color: #eef2f8; border-color: #8bbaff; } }
 
@@ -185,9 +208,9 @@
 @keyframes product-hand { 0%, 22% { opacity: 1; transform: translateY(0) rotate(0deg); } 28%, 100% { opacity: 0; transform: translateY(8px) rotate(12deg); } }
 @keyframes product-thought { 0%, 22% { opacity: 1; } 27%, 100% { opacity: 0; } }
 @keyframes product-insight { 0%, 27%, 36%, 100% { opacity: 0; } 30%, 33% { opacity: 1; } }
-@keyframes product-spec { 0%, 13% { opacity: 0; } 16%, 100% { opacity: 1; } 0%, 48% { transform: translate(0, 0) translateZ(6px) scale(1); } 52%, 72% { transform: translate(-8%, -16%) translateZ(6px) scale(.86); } 86%, 100% { transform: translate(0, -12%) translateZ(6px) scale(.62); } }
-@keyframes product-derivations { 0%, 51% { opacity: 0; } 52%, 70% { opacity: 1; } 72%, 100% { opacity: 0; } }
-@keyframes product-plan { 0%, 72% { transform: translate(0, 0) translateZ(10px) scale(1); } 84%, 100% { transform: translate(-4%, -23%) translateZ(10px) scale(.66); } }
+/* Match the old plan's post-72% retreat: its 78×86 panel was centered at 57/61.
+   Translation is expressed against this full-size wrapper, not the removed panel. */
+@keyframes product-spec { 0%, 13% { opacity: 0; } 16%, 100% { opacity: 1; } 0%, 48% { transform: translate(0, 0) translateZ(6px) scale(1); } 68%, 72% { transform: translate(0, 0) translateZ(10px) scale(1); } 84%, 100% { transform: translate(-3.12%, -19.78%) translateZ(10px) scale(.66); } }
 @keyframes product-logic { 0%, 77% { opacity: 0; transform: translate(18%, -250%) translateZ(12px) scale(.15); } 78% { opacity: 1; } 84%, 90% { opacity: 1; transform: translate(0, 0) translateZ(12px) scale(1); } 100% { opacity: 1; transform: translateY(-200%) translateZ(12px) scale(1); } }
 @keyframes product-data { 0%, 79% { opacity: 0; transform: translate(18%, -267%) translateZ(8px) scale(.15); } 80% { opacity: 1; } 86%, 90% { opacity: 1; transform: translate(0, 0) translateZ(8px) scale(1); } 100% { opacity: 1; transform: translateY(-400%) translateZ(8px) scale(1); } }
 @keyframes product-route { 0%, 85%, 95%, 100% { opacity: 0; } 86%, 90% { opacity: 1; } }
