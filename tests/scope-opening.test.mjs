@@ -49,7 +49,7 @@ test('four bilingual semantic chains feed one set of conclusions and derived tas
 	assert.equal((product.match(/\{point.requirement\}/g) || []).length, 1, 'reuse the conclusions inside the spec');
 	assert.equal((product.match(/data-point=\{point.key\}/g) || []).length, 1, 'the requirement and action share one owner');
 	assert.match(layers, /<ol class="product-phases">\{productStory\[locale\].phases.map/);
-	assert.match(product, /class="product-spec-brand" data-story-motion aria-label="OpenSpec"/);
+	assert.match(product, /class="product-spec-brand" aria-label="OpenSpec"/);
 	assert.match(product, /href="\/brands\/openspec.svg"/);
 	assert.match(productStory.ru.phases[0].description, /кабинет заказчика/);
 	assert.doesNotMatch(JSON.stringify(productStory), /Понятный путь к результату|Явные правила и состояния/);
@@ -98,7 +98,7 @@ test('concrete answers precede their sheet, separation, OpenSpec and the plan', 
 	assert.match(product, /'Ответы на вопросы' : 'Questions answered'/);
 	assert.doesNotMatch(product, /'Спецификация' : 'Specification'/);
 	assert.match(opening, /\.product-fragment \{[^}]*contain 34% contain 38\.5%, contain 38% contain 43%/);
-	assert.match(opening, /\.product-spec-brand \{[^}]*contain 45% contain 47%/);
+	assert.match(opening, /\.spec-letter-ink \{[^}]*contain 46% contain 48%/);
 	assert.ok(ranges('product-fragment')[2][0] >= 48, 'plan starts after the original OpenSpec hold');
 	assert.ok(ranges('product-fragment').at(-1)[1] <= 70, 'plan settles before the existing frontend entrance');
 	assert.equal(at('product-screen', 70), '0');
@@ -252,7 +252,7 @@ test('overlapping card axes preserve closed edges, readable text and the later s
 	assert.equal(cards[0].y, cards[1].y);
 	assert.equal(cards[2].y, cards[3].y);
 	assert.match(opening, /\.product-fragment \{[^}]*contain 34% contain 38\.5%, contain 38% contain 43%/);
-	assert.match(opening, /\.product-spec-brand \{[^}]*contain 45% contain 47%/);
+	assert.match(opening, /\.spec-letter-ink \{[^}]*contain 46% contain 48%/);
 	assert.equal(at('answer-fragment-paper', 34, 'border-color'), '#65758c');
 	assert.equal(at('answer-fragment-paper', 34, 'border-radius'), '2cqw');
 	assert.equal(at('answer-fragment-spread', 100, 'width'), 'var(--split-width)');
@@ -261,13 +261,13 @@ test('overlapping card axes preserve closed edges, readable text and the later s
 	assert.equal(at('product-spec', 48, 'transform'), 'translate(0, 0) translateZ(6px) scale(1)');
 	assert.equal(at('product-person', 48, 'transform'), 'translate(0, 0) translateZ(14px) scale(.5)');
 	const horizontal = ranges('product-fragment')[0], vertical = ranges('product-fragment')[1];
-	const retire = ranges('discovery-answer')[0], body = ranges('spec-copy')[0], brand = ranges('product-spec-brand')[0];
+	const retire = ranges('discovery-answer')[0], body = ranges('spec-copy')[0], brand = ranges('spec-letter-ink')[0];
 	assert.ok(retire[1] <= horizontal[0], 'old copy retires before resizing');
 	assert.ok(34 <= horizontal[0], 'paper edges are closed before moving');
 	assert.ok(vertical[0] < horizontal[1], 'axes overlap instead of stop-turn-start');
 	assert.ok(vertical[1] <= body[0], 'body appears after all cards settle');
 	assert.ok(body[1] <= brand[0], 'OpenSpec follows readable cards');
-	assert.ok(brand[1] < 48, 'the hold before retreat remains');
+	assert.ok(brand[1] < ranges('spec-letter')[0][0], 'the assembled mark holds before its glyphs move');
 	assert.ok(horizontal[1] - horizontal[0] >= 4.5, 'no compressed horizontal burst');
 	assert.ok(vertical[1] - vertical[0] >= 5, 'vertical motion has room to decelerate');
 	assert.ok(body[1] - body[0] >= 2 && brand[1] - brand[0] >= 2, 'reveals are not one-step flashes');
@@ -307,24 +307,70 @@ test('the descending first paper edge clips a stationary header, without an opac
 	assert.doesNotMatch(opening, /\.product-note \{[^}]*overflow: hidden/);
 });
 
-test('four aspect-correct dashed traces reach the center before OpenSpec appears', () => {
-	const paths = [...product.match(/const traces = ([^;]+);/)[1].matchAll(/'M([\d.]+) ([\d.]+)V([\d.]+)L([\d.]+) ([\d.]+)H([\d.]+)'/g)];
-	assert.equal(paths.length, 4);
+// These authored arrays also generate both the SVG and its source contacts.
+function pointsFrom(name) {
+	const literal=product.match(new RegExp(`const ${name} = (\\[[\\s\\S]*?\\n\\]);`))[1];
+	return JSON.parse(literal.replace(/,\s*]/g, ']'));
+}
+
+test('four PCB routes start on different card edges and continue into one closed socket', () => {
+	const routes=pointsFrom('circuitRoutes'), rails=pointsFrom('socketRails');
+	const cards=[...product.matchAll(/\{x: (\d+), y: (\d+), w: (\d+), h: (\d+)\}/g)].map(([,x,y,w,h])=>({x:+x*1.4,y:+y,w:+w*1.4,h:+h}));
+	assert.equal(routes.length,4);
+	assert.equal(rails.length,4);
 	assert.match(product, /class="spec-circuits"[^>]*viewBox="0 0 140 100"/);
-	for (const [, sx, sy, bendY, bendX, endY, endX] of paths) {
-		assert.ok(Math.abs(Math.abs(+bendX - +sx) - Math.abs(+endY - +bendY)) < .0001, 'physical 45-degree corner');
-		assert.ok([42, 66].includes(+sy), 'source belongs to a card edge');
-		assert.equal(+endX, 70);
-		assert.equal(+endY, 54);
+	assert.match(product, /class="spec-socket"[^>]*viewBox="0 0 140 100"/);
+	const near=(a,b)=>Math.abs(a-b)<.0001;
+	const interior=([x,y],r)=>x>r.x+.0001&&x<r.x+r.w-.0001&&y>r.y+.0001&&y<r.y+r.h-.0001;
+	const edges=routes.map((route,i)=>{
+		const [x,y]=route[0],c=cards[i];
+		assert.ok(x>=c.x-.0001&&x<=c.x+c.w+.0001&&y>=c.y-.0001&&y<=c.y+c.h+.0001);
+		assert.deepEqual(route.at(-1),rails[i][0],'the arriving trace becomes the socket rail');
+		if(near(y,c.y+c.h))return 'bottom';
+		if(near(x,c.x))return 'left';
+		if(near(x,c.x+c.w))return 'right';
+		if(near(y,c.y))return 'top';
+		assert.fail('source must be on its paper border');
+	});
+	assert.deepEqual(edges,['bottom','left','right','top']);
+	for(const [routeIndex,route] of [...routes,...rails].entries())for(let i=1;i<route.length;i++){
+		const a=route[i-1],b=route[i],dx=b[0]-a[0],dy=b[1]-a[1];
+		assert.ok(near(dx,0)||near(dy,0)||near(Math.abs(dx),Math.abs(dy)),'only physical 45/90-degree routing');
+		for(let t=0;t<=1;t+=.01){
+			const point=[a[0]+dx*t,a[1]+dy*t];
+			assert.ok(cards.every(c=>!interior(point,c)),'no path cuts through a card');
+			if(routeIndex<4)assert.ok(!interior(point,{x:47,y:49,w:46,h:11}),'traces stop at the socket, never under the label');
+		}
 	}
+	const cycle=[0,1,3,2];
+	cycle.forEach((i,n)=>assert.deepEqual(rails[i].at(-1),rails[cycle[(n+1)%4]][0]));
+	assert.match(product,/circuitRoutes.map\(points => \(\{d: path\(points\), port: points\[0\]\}\)\)/);
+	assert.match(product,/class="spec-port" cx=\{port\[0\]\} cy=\{port\[1\]\}/);
+	assert.match(product,/socketOutline = `\$\{path\(\[0, 1, 3, 2\]/,'fill reuses the connected rails');
+});
+
+test('neon borders feed the traces, then the socket, then the original glyphs', () => {
+	assert.equal(at('answer-fragment-paper',44,'border-color'),'var(--spec-neon)');
+	assert.match(at('answer-fragment-paper',44,'box-shadow'),/#70baff/);
+	assert.equal(at('answer-fragment-paper',49,'border-color'),'#65758c');
+	assert.equal(at('answer-fragment-paper',49,'box-shadow'),'0 0 0 transparent, inset 0 0 0 transparent');
+	assert.match(opening,/\.spec-trace, \.spec-socket-rail, \.spec-socket-core \{[^}]*stroke: var\(--spec-neon\)/);
 	assert.match(product, /class="spec-trace-reveal"[^>]*pathLength="1"/);
 	assert.match(opening, /\.spec-trace \{[^}]*stroke-dasharray: 1.1 1/);
-	assert.equal(at('spec-trace-draw', 0, 'stroke-dashoffset'), '1');
-	assert.equal(at('spec-trace-draw', 100, 'stroke-dashoffset'), '0');
-	const trace = ranges('spec-trace-reveal')[0], brand = ranges('product-spec-brand')[0];
-	assert.ok(trace[0] >= ranges('product-fragment')[1][1]);
-	assert.ok(trace[1] <= brand[0]);
-	assert.equal(at('spec-circuits', 48), '0', 'fixed traces leave before their source cards move');
+	assert.equal(at('spec-trace-draw',0,'stroke-dashoffset'),'1');
+	assert.equal(at('spec-trace-draw',100,'stroke-dashoffset'),'0');
+	const trace=ranges('spec-trace-reveal')[0],socket=ranges('spec-socket-rail')[0],brand=ranges('spec-letter-ink')[0];
+	assert.ok(trace[0]>=ranges('product-fragment')[1][1]);
+	assert.ok(trace[1]<=socket[0]);
+	assert.ok(socket[1]<=brand[0]);
+	assert.doesNotMatch(opening, /\.product-spec-brand \{[^}]*animation-name/, 'the word is built by the glyph mask, not another opacity overlay');
+	assert.equal(at('spec-letter-develop',0,'clip-path'),'inset(50% 0)');
+	assert.equal(at('spec-letter-develop',100,'clip-path'),'inset(0% 0)');
+	assert.ok(brand[1]<ranges('spec-letter')[0][0],'mask opens fully before the existing glyph flight');
+	assert.equal(at('spec-circuits',48),'0','fixed traces leave before their source cards move');
+	assert.equal(at('spec-socket',49),'0','the empty socket does not follow the flying glyphs');
+	assert.equal(at('spec-socket-core',46.1),'.9','the light axis exists as the glyphs begin to develop');
+	assert.equal(at('spec-socket-core',47.5),'0','the axis does not strike through the complete wordmark');
 });
 
 test('continuous card paths have clearance, bounded speed and no pause at the turn', () => {
@@ -430,7 +476,7 @@ test('the eight original logo glyphs travel through gutters, never through cards
 	const order = JSON.parse(product.match(/const letterOrder = (\[[^;]+\]);/)[1]);
 	assert.deepEqual([...order].sort((a,b)=>a-b), [0,1,2,3,4,5,6,7]);
 	assert.match(product, /viewBox=\{`\$\{i \* 80\} 0 80 80`\}/);
-	assert.match(product, /<image href="\/brands\/openspec.svg" width="640" height="80"/);
+	assert.match(product, /<image class="spec-letter-ink" data-story-motion href="\/brands\/openspec.svg" width="640" height="80"/);
 	const series = name => product.match(new RegExp(`--letter-${name}: \\$\\{([\\d.]+) \\+ i \\* ([\\d.]+)\\}%`)).slice(1).map(Number);
 	const start = series('start'), end = series('end');
 	const lanes = JSON.parse(product.match(/const letterLanes = (\[[^;]+\]);/)[1]);
