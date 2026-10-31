@@ -14,6 +14,14 @@
 		hideAnimationDuration: reducedMotion ? 0 : 100, zoomAnimationDuration: reducedMotion ? 0 : 100,
 	});
 	const gallery = document.querySelector<HTMLElement>('[data-screenshot-gallery]');
+	lightbox.addFilter('domItemData', (itemData, _element, link) => {
+		// Use the same single-image mobile source as <picture>, including its aspect ratio.
+		const source = link?.querySelector<HTMLSourceElement>('picture source');
+		if (source && window.matchMedia(source.media).matches) {
+			return {...itemData, src: source.srcset, width: source.width, height: source.height, w: source.width, h: source.height};
+		}
+		return itemData;
+	});
 	let loading = false;
 	async function openScreenshot(event: MouseEvent) {
 		const link = (event.target as Element).closest<HTMLAnchorElement>('a[data-pswp-width]');

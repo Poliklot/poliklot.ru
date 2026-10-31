@@ -6,13 +6,17 @@ interface Props {
 	alt: string;
 	caption: string;
 	displayWidth?: number;
+	mobile?: {src: string; width: number; height: number};
 }
-const {src, width, height, alt, caption, displayWidth = width} = Astro.props;
+const {src, width, height, alt, caption, displayWidth = width, mobile} = Astro.props;
 ---
 
 <figure style={`max-width: ${displayWidth}px`}>
 	<a href={src} data-pswp-width={width} data-pswp-height={height} target="_blank" rel="noopener noreferrer" aria-label={`Увеличить изображение — ${alt}`}>
-		<img src={src} width={width} height={height} alt={alt} loading="lazy" decoding="async" draggable="false" />
+		<picture>
+			{mobile && <source media="(max-width: 680px)" srcset={mobile.src} width={mobile.width} height={mobile.height} />}
+			<img src={src} width={width} height={height} alt={alt} loading="lazy" decoding="async" draggable="false" />
+		</picture>
 	</a>
 	<figcaption>{caption}</figcaption>
 </figure>
