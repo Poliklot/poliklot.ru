@@ -4,6 +4,7 @@
 
 ## Main pages
 
+- [Как дать разработчику доступ к Mac через Tailscale](https://poliklot.ru/articles/tailscale-mac/) — Инструкция со скриншотами для владельца Mac. Первое подключение, отдельная учётная запись, удалённый вход, сон и границы автономной работы после перезагрузки.
 - [Русская версия](https://poliklot.ru/): Возможности, рабочий подход, технологический стек и коммерческий опыт.
 - [English version](https://poliklot.ru/en/): Capabilities, delivery approach, technology stack, and commercial experience.
 - [Материалы](https://poliklot.ru/articles/): Статьи и практические инструкции о разработке, тестировании и выпуске цифровых продуктов.

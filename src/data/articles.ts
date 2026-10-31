@@ -9,6 +9,13 @@ export interface ArticleSummary {
 
 const articles: readonly ArticleSummary[] = [
 	{
+		slug: 'tailscale-mac',
+		publishedAt: '2026-10-31',
+		publishedLabel: '31 октября 2026',
+		title: 'Как дать разработчику доступ к Mac через Tailscale',
+		description: 'Пошаговая инструкция со скриншотами для владельца Mac. Установка Tailscale, доступ разработчику, удалённый вход, файлы, сон и проверка после перезагрузки. Без команд в терминале для владельца.',
+	},
+	{
 		slug: 'yandex-metrika-handoff',
 		publishedAt: '2026-10-05',
 		publishedLabel: '5 октября 2026',

@@ -1,0 +1,154 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleScreenshot from '../../components/ArticleScreenshot.astro';
+import ScreenshotLightbox from '../../components/ScreenshotLightbox.astro';
+import {publishedArticles} from '../../data/articles';
+import '../../styles/article.css';
+
+const article = publishedArticles.find(({slug}) => slug === 'tailscale-mac')!;
+const shots = '/articles/tailscale-mac';
+---
+
+<BaseLayout title={`${article.title} — Poliklot`} description={article.description} locale="ru"
+	path="/articles/tailscale-mac/" pageType="article" datePublished={article.publishedAt}
+	ogImagePath="/og-tailscale-mac-2026-10.jpg" ogImageAlt="Tailscale для Mac. Подготовить компьютер. Работать удалённо."
+	dateModified={article.updatedAt ?? article.publishedAt}>
+	<article class="guide remote-guide">
+		<header class="guide-hero page-width">
+			<nav class="guide-breadcrumbs" aria-label="Хлебные крошки">
+				<a href="/">Главная</a><span aria-hidden="true">/</span><a href="/articles/">Материалы</a>
+			</nav>
+			<div class="guide-hero-copy">
+				<p class="guide-kicker">Инструкция для владельца Mac</p>
+				<h1>Как дать разработчику доступ к Mac через Tailscale</h1>
+				<p class="guide-lead">Шесть шагов для удалённой работы с проектами и файлами на Mac. Без подтверждения каждого подключения.</p>
+				<div class="guide-meta" data-search-ignore>
+					<span>Игорь / Poliklot</span><time datetime={article.publishedAt}>{article.publishedLabel}</time><span>6 шагов · Без терминала</span>
+				</div>
+			</div>
+		</header>
+		<div class="guide-body page-width">
+			<div class="guide-content" data-screenshot-gallery>
+				<section id="install" aria-labelledby="install-title">
+					<h2 id="install-title"><span>01</span> Установите Tailscale</h2>
+					<ol>
+						<li>Откройте <a href="https://tailscale.com/download/mac" target="_blank" rel="noopener noreferrer">tailscale.com/download/mac</a> и нажмите <strong>Download Tailscale for macOS</strong>.</li>
+						<li>Откройте скачанный <strong>.pkg</strong> из папки «Загрузки» и пройдите установщик.</li>
+						<li>Запустите Tailscale из «Программ». По его подсказкам разрешите расширение и добавление VPN-конфигурации. Если Mac попросит пароль администратора или Touch ID, подтвердите.</li>
+					</ol>
+					<ArticleScreenshot src={`${shots}/01-download.jpg`} width={1350} height={540} alt="Раздел macOS и кнопка Download Tailscale for macOS." caption="Скачивайте версию для macOS с официального сайта." />
+					<p class="small">Tailscale уже работает? Не переустанавливайте. Актуальная версия требует macOS 13 или новее. <a href="https://tailscale.com/docs/install/mac" target="_blank" rel="noopener noreferrer">Требования и установка</a>.</p>
+				</section>
+
+				<section id="sign-in" aria-labelledby="sign-in-title">
+					<h2 id="sign-in-title"><span>02</span> Войдите под своим аккаунтом</h2>
+					<ol>
+						<li>Нажмите значок Tailscale в верхней строке меню → <strong>Log in</strong>.</li>
+						<li>В браузере выберите свой Google, GitHub или Apple. Если аккаунта Tailscale ещё нет, завершите регистрацию, ознакомившись с условиями.</li>
+					</ol>
+					<ArticleScreenshot src={`${shots}/02-sign-in.jpg`} width={480} height={705} displayWidth={360} alt="Вход в Tailscale через Google, Microsoft, GitHub или Apple." caption="Выберите удобный способ входа." />
+					<p>Завершите подключение устройства. Откройте <a href="https://console.tailscale.com/admin/machines" target="_blank" rel="noopener noreferrer">Machines — список компьютеров</a>. Ваш Mac должен появиться со статусом <strong>Connected</strong>.</p>
+					<p>В приложении и браузере используйте один и тот же аккаунт.</p>
+				</section>
+
+				<section id="share" aria-labelledby="share-title">
+					<h2 id="share-title"><span>03</span> Отправьте разработчику приглашение</h2>
+					<ol>
+						<li>В <a href="https://console.tailscale.com/admin/machines" target="_blank" rel="noopener noreferrer">Machines</a> найдите свой Mac.</li>
+						<li>Справа в его строке нажмите <strong>⋯ → Share…</strong>.</li>
+						<li>Выберите вкладку <strong>Copy share link</strong>. Переключатель <strong>Reusable link</strong> оставьте выключенным.</li>
+						<li>Нажмите синюю кнопку <strong>Copy share link</strong> и отправьте ссылку разработчику в личный чат.</li>
+						<li>Попросите разработчика открыть ссылку, принять приглашение в своём Tailscale и подтвердить, что Mac появился в списке устройств.</li>
+					</ol>
+					<ArticleScreenshot src={`${shots}/09-share-link.jpg`} width={512} height={398} alt="Вкладка Copy share link с выключенным Reusable link." caption="Одноразовая ссылка для приглашения. После её принятия подключаться можно многократно." />
+					<p>Ссылку не публикуйте и не отправляйте в общий чат. После принятия проверьте получателя в окне Share.</p>
+					<p class="small">Нет пункта Share? Отправьте разработчику скриншот меню.</p>
+				</section>
+
+				<section id="remote-login" aria-labelledby="remote-login-title">
+					<h2 id="remote-login-title"><span>04</span> Разрешите вход в Mac</h2>
+					<p>Откройте <strong>«Системные настройки» → «Пользователи и группы» → «Добавить пользователя…»</strong>. Если рабочая учётная запись уже есть, используйте её.</p>
+					<ArticleScreenshot src={`${shots}/03-add-user.jpg`} width={690} height={75} alt="Кнопка «Добавить пользователя…» в macOS." caption="Создайте отдельную рабочую учётную запись. Пароль от вашей личной передавать не нужно." />
+					<ul>
+						<li><strong>Имя</strong> — например, «Разработчик».</li>
+						<li><strong>Имя учётной записи</strong> — например, <code>developer</code>. Запишите его.</li>
+						<li><strong>Пароль</strong> — отдельный, уникальный.</li>
+						<li><strong>Тип</strong> — согласуйте с разработчиком. Для полного обслуживания нужен администратор. Он сможет менять настройки и устанавливать программы. Для работы только в выделенной папке может хватить стандартного пользователя.</li>
+					</ul>
+					<p>Создайте пользователя, затем:</p>
+					<ol>
+						<li>Откройте <strong>«Основные» → «Общий доступ»</strong>.</li>
+						<li>Включите <strong>«Удалённый вход»</strong> и нажмите <strong>ⓘ</strong> справа.</li>
+						<li>Выберите <strong>«Только этим пользователям»</strong>. Через <strong>«+»</strong> добавьте рабочего пользователя и нажмите «Готово».</li>
+					</ol>
+					<ArticleScreenshot src={`${shots}/04-remote-login.jpg`} width={1108} height={365} alt="Переключатель «Удалённый вход» и кнопка информации справа." caption="Нужен «Удалённый вход», не «Удалённое управление»." />
+					<ArticleScreenshot src={`${shots}/05-permissions.jpg`} width={1035} height={465} alt="Список разрешённых пользователей удалённого входа и кнопка плюс." caption="На снимке разрешена группа «Администраторы». У себя добавьте конкретного рабочего пользователя." />
+					<p><strong>Полный доступ к диску</strong> включайте только по договорённости с разработчиком — он расширяет доступ к защищённым данным. Чужие действующие доступы не удаляйте.</p>
+					<p>Этого достаточно для команд и передачи файлов через SFTP. «Общий доступ к файлам» включать не нужно. Если потребуется экран, согласуйте настройку «Общего экрана» с разработчиком. <a href="https://support.apple.com/ru-ru/guide/mac-help/mchlp1066/mac" target="_blank" rel="noopener noreferrer">Справка Apple</a>.</p>
+					<p class="small">Удалённый вход действует не только через Tailscale. Попросите разработчика проверить сетевые ограничения. Порты на роутере не открывайте, брандмауэр не отключайте.</p>
+				</section>
+
+				<section id="power" aria-labelledby="power-title">
+					<h2 id="power-title"><span>05</span> Оставьте Mac включённым</h2>
+					<p>Подключите питание и интернет. Экран можно блокировать, но сам Mac не должен засыпать.</p>
+					<ul>
+						<li><strong>MacBook</strong> — «Системные настройки» → «Аккумулятор» → «Параметры…». Включите настройку на скриншоте. Пока оставьте крышку открытой.</li>
+						<li><strong>Настольный Mac</strong> — аналогичный запрет сна находится в «Энергопотреблении» или «Экономии энергии».</li>
+					</ul>
+					<ArticleScreenshot src={`${shots}/06-power.jpg`} width={1035} height={112} alt="Запрет автоматического сна при выключенном дисплее и питании от сети." caption="Здесь переключатель выключен. Для постоянной работы его нужно включить." />
+					<p><strong>Пока не выходите из пользователя macOS и не перезагружайте Mac.</strong> Сначала согласуйте с разработчиком настройку доступа после перезапуска.</p>
+				</section>
+
+				<section id="handoff" aria-labelledby="handoff-title">
+					<h2 id="handoff-title"><span>06</span> Передайте данные разработчику</h2>
+					<p>Пришлите в личный чат:</p>
+					<ul>
+						<li>Ссылку Share, если ещё не отправили.</li>
+						<li>Название Mac в Tailscale и имя рабочего пользователя macOS.</li>
+						<li>Какие права выдали и когда будете рядом для проверки.</li>
+					</ul>
+					<p>Рабочий пароль передайте отдельно согласованным защищённым способом. Пароли от личных аккаунтов, коды входа и ключ FileVault не передавайте.</p>
+					<p>Попросите разработчика <strong>проверить подключение, команды и передачу файлов</strong>, затем настроить вход по ключу и рабочие инструменты. Если застряли на любом шаге, отправьте ему скриншот без паролей.</p>
+				</section>
+
+				<details id="unattended">
+					<summary>Что будет после перезагрузки</summary>
+					<p>Обычное приложение Tailscale для Mac требует входа пользователя в macOS. Автозапуск после входа — не то же самое, что работа до входа. Для автономного запуска существует другой вариант Tailscale. Его настройку поручите разработчику. <a href="https://tailscale.com/docs/concepts/macos-variants" target="_blank" rel="noopener noreferrer">Различия версий</a>.</p>
+					<p>FileVault может потребовать разблокировать диск до запуска Tailscale. Не отключайте шифрование или пароль блокировки. Вместе с разработчиком проверьте перезапуск и договоритесь, как восстанавливать доступ. Уточните, потребуется ли человек рядом с Mac.</p>
+					<p>Попросите разработчика проверить срок авторизации устройства. <a href="https://tailscale.com/docs/features/access-control/key-expiry" target="_blank" rel="noopener noreferrer">Отключение срока действия ключа</a> согласуйте отдельно — это не обязательный шаг для первого подключения.</p>
+				</details>
+				<details id="revoke">
+					<summary>Как закрыть доступ</summary>
+					<p>В Tailscale откройте <strong>Machines → ⋯ → Share…</strong> у нужного Mac и отзовите доступ разработчика через <strong>Revoke</strong> / <strong>Revoke invite</strong>.</p>
+					<p>Это закроет соединение через Share, но не удалит пользователя Mac, SSH-ключи и другие настроенные способы входа. Их нужно отключить отдельно. Рабочую папку и учётную запись не удаляйте до сохранения нужных файлов.</p>
+				</details>
+				<p class="small">Скриншоты macOS и Tailscale от 31 октября 2026. Личные данные обрезаны, настройки ради снимков не менялись. Нажмите на изображение, чтобы увеличить.</p>
+				<ScreenshotLightbox />
+			</div>
+		</div>
+	</article>
+</BaseLayout>
+
+<style>
+	.remote-guide { --guide-hero-copy-gap: 2.75rem; --guide-hero-end: 2.5rem; --guide-end-gap: 2.5rem; --guide-body-end: 4rem; }
+	.guide-hero-copy, .guide-content { max-width: 48rem; }
+	.guide-hero-copy { text-align: left; }
+	.guide-hero h1 { margin-left: 0; max-width: 20ch; font-size: clamp(2.5rem, 4.5vw, 3.75rem); line-height: 1.07; }
+	.guide-lead { margin: 1.4rem 0 0; font-size: 1.12rem; text-wrap: initial; }
+	.guide-meta { justify-content: flex-start; flex-wrap: wrap; margin-top: 1.25rem; }
+	.guide-content { font-size: 1rem; line-height: 1.75; }
+	.guide-content p { margin: 1rem 0; }
+	.guide-content a { color: var(--guide-blue); text-underline-offset: .2em; }
+	a:focus-visible, summary:focus-visible { outline: 2px solid var(--guide-blue); outline-offset: 4px; }
+	section { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--guide-line); scroll-margin-top: 6rem; }
+	h2 { margin: 0 0 1.25rem; font-size: clamp(1.5rem, 2.5vw, 2rem); line-height: 1.2; letter-spacing: -.035em; }
+	h2 span { color: var(--guide-muted); font-size: .75em; margin-right: .4rem; font-weight: 400; }
+	ul, ol { margin: 1rem 0; padding-left: 1.4rem; }
+	li { padding: .25rem 0 .25rem .15rem; }
+	.guide-content .small { font-size: .83rem; line-height: 1.65; color: var(--guide-muted); }
+	code { padding: .12em .3em; background: var(--guide-soft); border-radius: 4px; font-size: .9em; overflow-wrap: anywhere; }
+	details { margin-top: 1.5rem; border-block: 1px solid var(--guide-line); padding: 1rem 0; }
+	summary { font-weight: 600; cursor: pointer; line-height: 1.5; }
+	@media (max-width: 680px) { .guide-lead { font-size: 1rem; } .guide-content { font-size: .96rem; } }
+	@media print { section { break-inside: auto; } h2 { break-after: avoid; } }
+</style>

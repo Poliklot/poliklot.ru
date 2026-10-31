@@ -44,6 +44,10 @@ Igor reconstructs context, localizes risk, and carries a change through source c
 
 ## Practical guides
 
+### Persistent remote access to a Mac
+
+[Как дать разработчику доступ к Mac через Tailscale](https://poliklot.ru/articles/tailscale-mac/) is a Russian-language illustrated guide for Mac owners preparing a computer for ongoing remote development, builds and file transfers. It separates the owner's GUI-only initial setup from the developer's subsequent configuration. It covers device sharing, a dedicated macOS account, Remote Login, optional screen sharing, sleep prevention, credential handling and access revocation. It explicitly distinguishes a successful first connection from unattended availability after logout, restart or FileVault unlock. Screenshots were captured on the author's Mac and in the browser on October 31, 2026, with private information cropped out.
+
 [Материалы](https://poliklot.ru/articles/) is the canonical index of Igor / Poliklot's Russian-language articles and practical instructions.
 
 ### Yandex Metrika setup and developer handoff

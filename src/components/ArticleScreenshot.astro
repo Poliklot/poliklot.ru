@@ -1,0 +1,26 @@
+---
+interface Props {
+	src: string;
+	width: number;
+	height: number;
+	alt: string;
+	caption: string;
+	displayWidth?: number;
+}
+const {src, width, height, alt, caption, displayWidth = width} = Astro.props;
+---
+
+<figure style={`max-width: ${displayWidth}px`}>
+	<a href={src} data-pswp-width={width} data-pswp-height={height} target="_blank" rel="noopener noreferrer" aria-label={`Увеличить скриншот — ${alt}`}>
+		<img src={src} width={width} height={height} alt={alt} loading="lazy" decoding="async" draggable="false" />
+	</a>
+	<figcaption>{caption}</figcaption>
+</figure>
+
+<style>
+	figure { width: 100%; margin: 1.25rem 0; break-inside: avoid; }
+	a { display: block; overflow: hidden; border: 1px solid var(--guide-line); border-radius: .65rem; cursor: zoom-in; }
+	a:focus-visible { outline: 2px solid var(--guide-blue); outline-offset: 4px; }
+	img { display: block; width: 100%; height: auto; user-select: none; -webkit-user-drag: none; }
+	figcaption { margin-top: .65rem; color: var(--guide-muted); font-size: .8rem; line-height: 1.55; }
+</style>

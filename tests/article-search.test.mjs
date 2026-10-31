@@ -24,3 +24,9 @@ test('full text is searchable, with all words required across fields', () => {
 	assert.deepEqual(searchArticles(articles, 'Kubernetes Яндекс'), []);
 	assert.deepEqual(searchArticles(articles, 'zzzznonexistentzzzz'), []);
 });
+
+test('Tailscale Mac guide is discoverable by product and task', () => {
+	for (const query of ['tailscale mac', 'удаленный доступ mac', 'перезагрузки tailscale']) {
+		assert.deepEqual(searchArticles(articles, query), ['/articles/tailscale-mac/'], query);
+	}
+});
