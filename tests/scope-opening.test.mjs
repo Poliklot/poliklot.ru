@@ -218,7 +218,9 @@ test('native layers keep their accessibility gates; only the opening has a Canva
 		assert.match(source, /prefers-reduced-motion: no-preference/);
 		assert.match(source, /forced-colors: none/);
 	}
-	assert.doesNotMatch(opening, /animation-(?:duration|delay):\s*\d+(?:ms|s)/);
+	// Ambient ink is the sole timed exception; the product narrative stays native.
+	const narrative = opening.replace(/\.scope-scene \.product-glow(?:_warm|_current)?::before \{[^}]+\}/g, '');
+	assert.doesNotMatch(narrative, /animation-(?:duration|delay):\s*-?\d+(?:ms|s)|\binfinite\b/);
 	assert.doesNotMatch(layers, /<script|requestAnimationFrame|preventDefault/);
 	assert.equal((panel.match(/class="browser-shell build"/g) || []).length, 1, 'reuse the existing frontend DOM');
 	assert.doesNotMatch(layers, /front-intro|style=\{`--phase:/);
@@ -521,13 +523,50 @@ test('the eight original logo glyphs travel through gutters, never through cards
 	assert.deepEqual(letters(65),letters(66),'wordmark is complete before the plan heading');
 });
 
-test('transition lighting is gated, reversible and quiet before the later stages', () => {
-	for (const name of ['product-light-left','product-light-right']) {
-		assert.equal(at(name,27),'0');
-		assert.equal(at(name,70),'0');
-		assert.equal(at(name,100),'0');
-		assert.ok(frames(opening,name).every(f => Object.keys(f.style).every(k=>['opacity','transform'].includes(k))));
+test('three color fields keep the stage composition scroll-owned and preserve the quiet handoff', () => {
+	assert.equal((layers.match(/class="product-glow product-glow_/g) || []).length, 3);
+	assert.match(layers, /<div class="scope-scene" aria-hidden="true">\s*<div class="scope-light">/);
+	assert.match(opening, /\.product-atmosphere \{ display: none; \}/);
+	assert.match(opening, /\.scope-scene \.product-atmosphere \{[^}]*mask-image: radial-gradient\(ellipse closest-side at center, #000 35%, transparent 100%\)/, 'moving clouds feather to black before the sticky scene clips them');
+	const fieldRule = opening.match(/\.scope-scene \.product-glow \{([^}]+)\}/)?.[1];
+	assert.ok(fieldRule);
+	assert.match(fieldRule, /pointer-events: none/);
+	assert.match(fieldRule, /animation-timeline: --product-story; animation-range: contain 0% contain 100%/);
+	assert.doesNotMatch(fieldRule, /filter:|blend-mode:|infinite|will-change/);
+	assert.ok(opening.indexOf('.scope-scene .product-glow {') > opening.indexOf('@media (prefers-reduced-motion: no-preference) and (forced-colors: none)'));
+	for (const role of ['depth', 'warm', 'current']) {
+		const name = `product-light-${role}`;
+		assert.match(layers, new RegExp(`product-glow_${role}`));
+		const stops = frames(opening, name);
+		assert.deepEqual(stops.map(f => f.at), [0, 10, 24, 34, 43, 48, 63, 72, 100]);
+		assert.ok(stops.every(f => Object.keys(f.style).length === 3 && Object.keys(f.style).every(k => ['opacity', 'transform', 'color'].includes(k))));
+		assert.ok(stops.every(f => Number(f.style.opacity) >= 0 && Number(f.style.opacity) <= .52));
+		assert.ok(stops.every(f => /^#[\da-f]{6}$/.test(f.style.color)));
+		assert.ok(new Set(stops.map(f => f.style.color)).size >= 4, 'the colors change, not just the position');
+		assert.ok(new Set(stops.map(f => f.style.transform)).size >= 6, 'each field travels continuously through the story');
+		assert.equal(at(name, 72), '0');
+		assert.deepEqual(stops.at(-1).style, stops.at(-2).style, 'no extra light or motion leaks into the later stages');
 	}
-	assert.match(opening, /\.scope-light::before,[^}]*animation-timeline: --product-story; animation-range: contain 0% contain 100%/);
-	assert.doesNotMatch(opening, /animation-iteration-count:\s*infinite/);
+	assert.doesNotMatch(opening, /product-light-left|product-light-right|scope-light::(?:before|after)/);
+});
+
+test('only the gradient ink drifts on time, with staggered seamless cycles inside the motion gate', () => {
+	const ink = opening.match(/\.scope-scene \.product-glow::before \{([^}]+)\}/)?.[1];
+	assert.ok(ink);
+	assert.match(ink, /radial-gradient\(ellipse at center, currentColor 0%, transparent 70%\)/);
+	assert.match(ink, /animation: product-light-drift 18s cubic-bezier\(\.45, 0, \.55, 1\) -6s infinite/);
+	assert.doesNotMatch(ink, /animation-timeline:|filter:|blend-mode:|will-change:/);
+	assert.match(opening, /\.product-glow_warm::before \{ animation-duration: 23s; animation-delay: -11s; animation-direction: reverse; \}/);
+	assert.match(opening, /\.product-glow_current::before \{ animation-duration: 29s; animation-delay: -18s; \}/);
+	assert.ok(opening.indexOf('.scope-scene .product-glow::before {') > opening.indexOf('@media (prefers-reduced-motion: no-preference) and (forced-colors: none)'));
+	assert.equal((opening.match(/\binfinite\b/g) || []).length, 1, 'no other owner becomes time-driven');
+	const drift = frames(opening, 'product-light-drift');
+	assert.deepEqual(drift.map(f => f.at), [0, 33, 66, 100]);
+	assert.deepEqual(drift[0].style, drift.at(-1).style, 'no jump at the loop seam');
+	assert.ok(drift.every(f => Object.keys(f.style).join(',') === 'transform'), 'idle motion never flashes, changes the palette or affects layout');
+	for (const f of drift) {
+		const [, x, y, angle, sx, sy] = f.style.transform.match(/^translate\(([-.\d]+)%, ([-.\d]+)%\) rotate\(([-.\d]+)deg\) scale\(([-.\d]+), ([-.\d]+)\)$/) || [];
+		assert.ok(Math.abs(Number(x)) <= 10 && Math.abs(Number(y)) <= 10 && Math.abs(Number(angle)) <= 9);
+		assert.ok(Number(sx) >= .95 && Number(sx) <= 1.12 && Number(sy) >= .95 && Number(sy) <= 1.12);
+	}
 });

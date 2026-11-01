@@ -66,6 +66,7 @@
 .product-layer > svg { width: 3.5cqw; height: 3.5cqw; flex-shrink: 0; stroke: #a5bad7; stroke-width: 1.4; }
 .product-layer > span { font-size: clamp(.75rem, 2.7cqw, 1rem); font-weight: 550; }
 .product-layer > small { margin-left: auto; font-size: clamp(.75rem, 2.45cqw, .9rem); color: #b7c1d0; }
+.product-atmosphere { display: none; }
 .product-logic { top: 84%; transform: translateZ(12px); }
 .product-data { top: 100%; transform: translateZ(8px); background: #161d28; }
 .product-route { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; transform: translateZ(14px); }
@@ -115,8 +116,15 @@
 		.scope-scene .spec-socket-core { animation-name: spec-socket-core, spec-trace-draw; animation-range: contain 0% contain 100%, contain 45.5% contain 46.1%; animation-timing-function: cubic-bezier(.42, 0, .58, 1), linear; }
 		.scope-scene .spec-letter-ink { animation-name: spec-letter-develop; animation-range: contain 46% contain 48%; animation-timing-function: cubic-bezier(.42, 0, .58, 1); }
 		.scope-scene .spec-letter { animation-name: spec-letter-fan, spec-letter-gather, spec-letter-flight; animation-range: contain 49% contain 51%, contain 51% contain 54%, contain calc(54% + var(--letter-order) * .7%) contain calc(60% + var(--letter-order) * .7%); animation-fill-mode: both, forwards, forwards; animation-timing-function: cubic-bezier(.42, 0, .58, 1); }
-		.scope-scene .scope-light::before, .scope-scene .scope-light::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, #347de856, transparent 62%); animation: product-light-left auto cubic-bezier(.42, 0, .58, 1) both; animation-timeline: --product-story; animation-range: contain 0% contain 100%; }
-		.scope-scene .scope-light::after { background: radial-gradient(ellipse at center, #35b3cb38, transparent 60%); animation-name: product-light-right; }
+		/* The field owns the scroll composition; its ink owns the time drift.
+		   Separate transforms compose without resetting each other on scroll. */
+		.scope-scene .product-atmosphere { display: block; position: absolute; inset: 0; mask-image: radial-gradient(ellipse closest-side at center, #000 35%, transparent 100%); }
+		.scope-scene .product-glow { display: block; position: absolute; inset: 0; pointer-events: none; animation: product-light-depth auto cubic-bezier(.42, 0, .58, 1) both; animation-timeline: --product-story; animation-range: contain 0% contain 100%; }
+		.scope-scene .product-glow::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, currentColor 0%, transparent 70%); animation: product-light-drift 18s cubic-bezier(.45, 0, .55, 1) -6s infinite; }
+		.scope-scene .product-glow_warm { animation-name: product-light-warm; }
+		.scope-scene .product-glow_warm::before { animation-duration: 23s; animation-delay: -11s; animation-direction: reverse; }
+		.scope-scene .product-glow_current { animation-name: product-light-current; }
+		.scope-scene .product-glow_current::before { animation-duration: 29s; animation-delay: -18s; }
 		.scope-scene .product-note { animation-name: product-note, plan-note-padding; animation-range: contain calc(14% + var(--i) * .5%) contain calc(23% + var(--i) * .5%), contain 62% contain 68%; animation-fill-mode: both, forwards; }
 		.scope-scene .question-reel { animation-name: question-roll; animation-range: contain calc(16% + var(--i) * .5%) contain calc(22% + var(--i) * .5%); }
 		.scope-scene .story-answer { animation-name: product-answer; animation-range: contain calc(20% + var(--i) * 1%) contain calc(24% + var(--i) * 1%); }
@@ -219,21 +227,42 @@
 	75% { top: -6%; }
 	100% { left: var(--letter-end); top: -12%; }
 }
-@keyframes product-light-left {
-	0%, 27% { opacity: 0; transform: translate(-6%, 5%) scale(.75); }
-	34% { opacity: .4; transform: translate(-6%, 5%) scale(.85); }
-	43% { opacity: .55; transform: translate(-20%, -8%) scale(.75); }
-	47% { opacity: .65; transform: translate(0, 4%) scale(.6); }
-	63% { opacity: .45; transform: translate(0, -24%) scale(.7); }
-	70%, 100% { opacity: 0; transform: translate(0, -16%) scale(1); }
+/* Same end pose and zero endpoint velocity: no seam when the loop repeats.
+   Offset periods/phases keep the combined field flowing at each soft turn. */
+@keyframes product-light-drift {
+	0%, 100% { transform: translate(-8%, 4%) rotate(-9deg) scale(1.08, .95); }
+	33% { transform: translate(10%, -6%) rotate(7deg) scale(1, 1.12); }
+	66% { transform: translate(-3%, 8%) rotate(-2deg) scale(.96, 1.06); }
 }
-@keyframes product-light-right {
-	0%, 27% { opacity: 0; transform: translate(8%, 8%) scale(.75); }
-	34% { opacity: .4; transform: translate(8%, 8%) scale(.85); }
-	43% { opacity: .65; transform: translate(20%, 16%) scale(.75); }
-	47% { opacity: .65; transform: translate(0, 4%) scale(.6); }
-	63% { opacity: .4; transform: translate(4%, -16%) scale(.8); }
-	70%, 100% { opacity: 0; transform: translate(4%, -12%) scale(1); }
+@keyframes product-light-depth {
+	0% { opacity: .3; color: #496ef0; transform: translate(-8%, 8%) rotate(-18deg) scale(.9, .8); }
+	10% { opacity: .48; color: #496ef0; transform: translate(-14%, 0%) rotate(-28deg) scale(1.1, .8); }
+	24% { opacity: .4; color: #7758d1; transform: translate(10%, 8%) rotate(12deg) scale(1, .9); }
+	34% { opacity: .32; color: #7758d1; transform: translate(-6%, 2%) rotate(-8deg) scale(1, .85); }
+	43% { opacity: .48; color: #515fe1; transform: translate(-18%, -6%) rotate(-24deg) scale(.95, .8); }
+	48% { opacity: .52; color: #3b83d4; transform: translate(0%, 0%) rotate(0deg) scale(.9, .7); }
+	63% { opacity: .36; color: #5268df; transform: translate(8%, -18%) rotate(18deg) scale(1, .8); }
+	72%, 100% { opacity: 0; color: #4774cb; transform: translate(0%, -12%) rotate(8deg) scale(1, .9); }
+}
+@keyframes product-light-warm {
+	0% { opacity: .16; color: #ba4771; transform: translate(20%, 14%) rotate(24deg) scale(.85, .75); }
+	10% { opacity: .38; color: #d45c70; transform: translate(10%, -16%) rotate(8deg) scale(.9, .8); }
+	24% { opacity: .3; color: #bf638b; transform: translate(-16%, 4%) rotate(-20deg) scale(.9, .85); }
+	34% { opacity: .24; color: #9e57c7; transform: translate(10%, 14%) rotate(0deg) scale(1, .85); }
+	43% { opacity: .36; color: #9e57c7; transform: translate(18%, 18%) rotate(20deg) scale(.9, .8); }
+	48% { opacity: .38; color: #6889e6; transform: translate(8%, 8%) rotate(0deg) scale(.85, .8); }
+	63% { opacity: .28; color: #bb668b; transform: translate(-16%, 10%) rotate(-24deg) scale(1, .75); }
+	72%, 100% { opacity: 0; color: #c7865c; transform: translate(-8%, -4%) rotate(-8deg) scale(1, .85); }
+}
+@keyframes product-light-current {
+	0% { opacity: 0; color: #348dba; transform: translate(12%, 18%) rotate(0deg) scale(.85, .8); }
+	10% { opacity: .2; color: #348dba; transform: translate(18%, 18%) rotate(-16deg) scale(.9, .85); }
+	24% { opacity: .28; color: #2d949c; transform: translate(18%, -8%) rotate(14deg) scale(.85, .95); }
+	34% { opacity: .24; color: #2d949c; transform: translate(-6%, 16%) rotate(24deg) scale(.9, .8); }
+	43% { opacity: .4; color: #2ea9a3; transform: translate(16%, 16%) rotate(12deg) scale(.9, .85); }
+	48% { opacity: .48; color: #50aebf; transform: translate(-4%, 4%) rotate(-12deg) scale(.8, .8); }
+	63% { opacity: .36; color: #4a9dba; transform: translate(12%, -12%) rotate(-24deg) scale(.9, .85); }
+	72%, 100% { opacity: 0; color: #538bba; transform: translate(8%, -8%) rotate(-8deg) scale(1, .9); }
 }
 @keyframes plan-marker { from { width: .9cqw; background: #8bbaff; box-shadow: inset 0 0 0 0 #8bbaff; } to { width: 2.8cqw; background: transparent; box-shadow: inset 0 0 0 1px #8bbaff; } }
 @keyframes plan-number { from { opacity: 0; } to { opacity: 1; } }
