@@ -1,0 +1,144 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleScreenshot from '../../components/ArticleScreenshot.astro';
+import ScreenshotLightbox from '../../components/ScreenshotLightbox.astro';
+import {publishedArticles} from '../../data/articles';
+import '../../styles/article.css';
+
+const article = publishedArticles.find(({slug}) => slug === 'timeweb-developer-access')!;
+const shots = '/articles/timeweb-developer-access';
+---
+
+<BaseLayout title={`${article.title} — Poliklot`} description={article.description} locale="ru"
+	path="/articles/timeweb-developer-access/" pageType="article"
+	datePublished={article.publishedAt} dateModified={article.publishedAt}>
+	<article class="guide timeweb-guide">
+		<header class="guide-hero page-width">
+			<nav class="guide-breadcrumbs" aria-label="Хлебные крошки">
+				<a href="/">Главная</a><span aria-hidden="true">/</span><a href="/articles/">Материалы</a>
+			</nav>
+			<div class="guide-hero-copy">
+				<p class="guide-kicker">Инструкция для владельца проекта</p>
+				<h1>Доступ разработчику в Timeweb Cloud. Без финансов.</h1>
+				<p class="guide-lead">Создайте отдельного пользователя и выберите проект. Рабочие разделы и поддержка — с управлением, финансы — без доступа. Пароль от своего аккаунта передавать не нужно.</p>
+				<div class="guide-meta" data-search-ignore>
+					<span>Игорь / Poliklot</span><time datetime={article.publishedAt}>{article.publishedLabel}</time><span>6 шагов · Со скриншотами</span>
+				</div>
+			</div>
+		</header>
+		<div class="guide-body page-width">
+			<div class="guide-content" data-screenshot-gallery>
+				<div class="intro">
+					<p>Инструкция для <a href="https://timeweb.cloud/my/">Timeweb Cloud</a>, не для панели обычного хостинга Timeweb. Начинайте из аккаунта владельца. Заранее попросите у разработчика его рабочую почту и уточните, к какому проекту нужен доступ.</p>
+					<p class="note"><strong>Без доступа к финансам — не значит без возможности тратить деньги.</strong> С правами «Управление» разработчик сможет создавать платные ресурсы, если на балансе достаточно средств. Бюджет и новые услуги согласуйте отдельно. Это <a href="https://timeweb.cloud/docs/iam/osobennosti-nastrojki-dostupov">особенность прав Timeweb Cloud</a>.</p>
+					<p class="small">Нажмите на любой скриншот, чтобы увеличить. Данные аккаунта скрыты прямо в файлах изображений.</p>
+				</div>
+
+				<section id="users" aria-labelledby="users-title">
+					<h2 id="users-title"><span>01</span> Откройте «Пользователи»</h2>
+					<p>Нажмите на логин в правом верхнем углу → <strong>«Настройки аккаунта» → «Пользователи»</strong>. В разделе «Дополнительные пользователи» нажмите <strong>«Создать»</strong>.</p>
+					<ArticleScreenshot src={`${shots}/01-users.jpg`} width={820} height={300}
+						alt="Вкладка «Пользователи» в настройках аккаунта и кнопка «Создать». Данные владельца закрыты."
+						caption="Нужна кнопка «Создать» внутри раздела пользователей, не в боковом меню проектов." />
+				</section>
+
+				<section id="details" aria-labelledby="details-title">
+					<h2 id="details-title"><span>02</span> Заполните данные разработчика</h2>
+					<ArticleScreenshot src={`${shots}/02-user-details.jpg`} width={470} height={650} displayWidth={470}
+						alt="Форма нового пользователя с полями «Имя», «Емейл», «Пароль пользователя» и «Комментарий»."
+						caption="Указывайте почту разработчика, а не почту владельца аккаунта." />
+					<ul>
+						<li><strong>Имя</strong> — имя разработчика, чтобы потом было понятно, кому выдан доступ.</li>
+						<li><strong>Емейл</strong> — его рабочая почта. На неё придёт ссылка для входа.</li>
+						<li><strong>Пароль пользователя</strong> — оставьте сгенерированный. Не подставляйте пароль от своего аккаунта.</li>
+						<li><strong>Комментарий</strong> — необязательная пометка для себя.</li>
+					</ul>
+					<p>Проверьте почту до создания. По <a href="https://timeweb.cloud/docs/iam/upravlenie-polzovatelyami">правилам Timeweb Cloud</a> изменить её у готового пользователя нельзя — при ошибке придётся создавать нового.</p>
+				</section>
+
+				<section id="project" aria-labelledby="project-title">
+					<h2 id="project-title"><span>03</span> Выберите только нужный проект</h2>
+					<p>В блоке «Проекты» переключитесь с <strong>«Все проекты»</strong> на <strong>«Выбрать проекты»</strong>. Откройте список и выберите проект, над которым будет работать разработчик.</p>
+					<ArticleScreenshot src={`${shots}/03-project.jpg`} width={890} height={255}
+						alt="Активен вариант «Выбрать проекты». Под списком добавлен один проект, его название скрыто."
+						caption="Выбранный проект появится отдельной строкой под списком. Его название на снимке скрыто." />
+					<p>Проверьте, что добавлен только нужный проект. Не оставляйте «Все проекты», если доступ нужен к одному. Если нужные серверы пока лежат в другом проекте, сначала приведите их распределение в порядок из аккаунта владельца.</p>
+				</section>
+
+				<section id="permissions" aria-labelledby="permissions-title">
+					<h2 id="permissions-title"><span>04</span> Включите «Управление»</h2>
+					<p>Ниже находится блок <strong>«Доступы»</strong>. Справа от каждого рабочего раздела нажмите <strong>«Нет доступа»</strong> и выберите <strong>«Управление»</strong>. Проверьте отдельно:</p>
+					<ul>
+						<li><strong>«Поддержка» — «Управление».</strong></li>
+						<li><strong>«Финансы» — «Нет доступа».</strong></li>
+					</ul>
+					<ArticleScreenshot src={`${shots}/04-permission.jpg`} width={890} height={235}
+						alt="Меню уровня доступа с вариантами «Управление», «Только просмотр» и «Нет доступа»."
+						caption="«Управление» позволяет работать с разделом, а не только смотреть его содержимое." />
+					<p>Пройдите список до конца. Он длинный — после серверов, баз данных и хранилища есть другие разделы. Некоторые связанные права переключаются вместе, поэтому проверьте итоговые значения, а не количество нажатий.</p>
+					<p class="note"><strong>Это широкие права для доверенного разработчика.</strong> Они позволяют менять и удалять доступные ресурсы. Для «Поддержки» выберите <strong>«Управление»</strong>, чтобы разработчик мог создавать обращения. Он также увидит все обращения аккаунта, не только выбранного проекта. Если там есть чужая переписка, согласуйте доступ отдельно. <a href="https://timeweb.cloud/docs/iam/osobennosti-nastrojki-dostupov">Ограничения и связанные доступы</a>.</p>
+				</section>
+
+				<section id="finances" aria-labelledby="finances-title">
+					<h2 id="finances-title"><span>05</span> Оставьте «Финансы» без доступа</h2>
+					<p>Найдите строку <strong>«Финансы»</strong>. Для доступа без управления финансами оставьте <strong>«Нет доступа»</strong>.</p>
+					<ArticleScreenshot src={`${shots}/05-no-finances.jpg`} width={890} height={305}
+						alt="У поддержки и остальных показанных рабочих разделов выбрано «Управление», у финансов — «Нет доступа»."
+						caption="Поддержка — с управлением, финансы — без доступа." />
+					<p><strong>У финансов нет режима «Только просмотр».</strong> В проверенной форме доступны только «Управление» и «Нет доступа». Не выбирайте «Управление» вместо отсутствующего просмотра — это другие права.</p>
+					<ArticleScreenshot src={`${shots}/07-finance-options.jpg`} width={890} height={305}
+						alt="Раскрытое меню финансов содержит только «Управление» и «Нет доступа», без «Только просмотр»."
+						caption="Варианты доступа к финансам в интерфейсе на 4 ноября 2026." />
+					<p>Так вы не открываете баланс, платежи и документы. Финансовые права в Timeweb Cloud действуют на весь аккаунт, а не на отдельный проект. Поэтому ограничение проектом само по себе финансы не скрывает. <a href="https://timeweb.cloud/docs/iam/osobennosti-nastrojki-dostupov">Как устроен доступ к финансам</a>.</p>
+				</section>
+
+				<section id="create" aria-labelledby="create-title">
+					<h2 id="create-title"><span>06</span> Создайте пользователя и проверьте вход</h2>
+					<p>Ещё раз проверьте почту, выбранный проект и строки «Поддержка» и «Финансы». Затем нажмите <strong>«Создать»</strong> в самом низу формы.</p>
+					<ArticleScreenshot src={`${shots}/06-create.jpg`} width={890} height={365}
+						alt="Нижняя часть списка разрешений и кнопка «Создать» под ним."
+						caption="На демонстрационном снимке кнопка неактивна — личные данные не заполнялись и пользователь не создавался." />
+					<p>После создания Timeweb Cloud отправит письмо на указанную почту. Попросите разработчика открыть ссылку и проверить результат:</p>
+					<ul>
+						<li>Вход выполнен под его пользователем, не под владельцем.</li>
+						<li>Нужный проект и его ресурсы доступны, посторонние проекты не открываются.</li>
+						<li>В рабочих разделах есть управление.</li>
+						<li>В поддержке можно просматривать и создавать обращения.</li>
+						<li>Баланс, платежи и документы недоступны.</li>
+					</ul>
+					<p>Не создавайте платный ресурс и не удаляйте рабочий сервер только ради проверки прав. Достаточно сверить настройки пользователя у владельца и доступность нужных разделов у разработчика.</p>
+				</section>
+
+				<section id="after" aria-labelledby="after-title">
+					<h2 id="after-title">Что остаётся у владельца</h2>
+					<p>«Управление» не превращает разработчика во владельца аккаунта. Управление пользователями, создание и удаление проектов, перенос сервисов между проектами остаются у владельца. <a href="https://timeweb.cloud/docs/iam/osobennosti-nastrojki-dostupov">Разделы, доступные только владельцу</a>.</p>
+					<p>После завершения работ вернитесь в <strong>«Настройки аккаунта» → «Пользователи»</strong> и пересмотрите доступ. Если он больше не нужен, заблокируйте пользователя. Если нужно сузить права, откройте его карточку и вкладку <strong>«Права и доступы»</strong>. <a href="https://timeweb.cloud/docs/iam/upravlenie-polzovatelyami">Редактирование и блокировка пользователя</a>.</p>
+				</section>
+				<p class="small" data-search-ignore>Скриншоты сделаны 4 ноября 2026 в реальном интерфейсе Timeweb Cloud. Название организации, почта и название проекта закрыты непрозрачными масками. Логин, баланс и боковое меню с ресурсами исключены из кадров. Для инструкции использовалась несохранённая форма — доступ никому не выдавался.</p>
+				<ScreenshotLightbox />
+			</div>
+		</div>
+	</article>
+</BaseLayout>
+
+<style>
+	.timeweb-guide { --guide-hero-copy-gap: 2.75rem; --guide-hero-end: 2.5rem; --guide-body-end: 4rem; }
+	.guide-hero-copy, .guide-content { max-width: 48rem; }
+	.guide-hero-copy { text-align: left; }
+	.guide-hero h1 { margin-left: 0; max-width: 23ch; font-size: clamp(2.5rem, 4.5vw, 3.75rem); line-height: 1.07; }
+	.guide-lead { margin: 1.4rem 0 0; font-size: 1.12rem; text-wrap: initial; }
+	.guide-meta { justify-content: flex-start; flex-wrap: wrap; margin-top: 1.25rem; }
+	.guide-content { font-size: 1rem; line-height: 1.75; }
+	.guide-content p { margin: 1rem 0; }
+	.guide-content a { color: var(--guide-blue); text-underline-offset: .2em; }
+	a:focus-visible { outline: 2px solid var(--guide-blue); outline-offset: 4px; }
+	section { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--guide-line); scroll-margin-top: 6rem; }
+	h2 { margin: 0 0 1.25rem; font-size: clamp(1.5rem, 2.5vw, 2rem); line-height: 1.2; letter-spacing: -.035em; }
+	h2 span { color: var(--guide-muted); font-size: .75em; margin-right: .4rem; font-weight: 400; }
+	ul { margin: 1rem 0; padding-left: 1.4rem; }
+	li { padding: .25rem 0 .25rem .15rem; }
+	.note { padding: 1rem 1.25rem; border-left: 3px solid var(--guide-blue); background: var(--guide-soft); border-radius: 0 .5rem .5rem 0; }
+	.guide-content .small { font-size: .83rem; line-height: 1.65; color: var(--guide-muted); }
+	@media (max-width: 680px) { .guide-lead { font-size: 1rem; } .guide-content { font-size: .96rem; } }
+	@media print { h2 { break-after: avoid; } }
+</style>

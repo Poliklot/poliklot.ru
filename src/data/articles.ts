@@ -9,6 +9,13 @@ export interface ArticleSummary {
 
 const articles: readonly ArticleSummary[] = [
 	{
+		slug: 'timeweb-developer-access',
+		publishedAt: '2026-11-04',
+		publishedLabel: '4 ноября 2026',
+		title: 'Как дать разработчику доступ к проекту в Timeweb Cloud без финансов',
+		description: 'Шесть шагов со скриншотами. Разработчику — управление проектом и поддержкой, финансы — без доступа. Без передачи пароля владельца.',
+	},
+	{
 		slug: 'tailscale-mac',
 		publishedAt: '2026-10-31',
 		publishedLabel: '31 октября 2026',

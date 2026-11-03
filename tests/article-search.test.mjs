@@ -30,3 +30,9 @@ test('Tailscale Mac guide is discoverable by product and task', () => {
 		assert.deepEqual(searchArticles(articles, query), ['/articles/tailscale-mac/'], query);
 	}
 });
+
+test('Timeweb guide is discoverable by product and finance restriction', () => {
+	for (const query of ['timeweb', 'разработчику финансы']) {
+		assert.deepEqual(searchArticles(articles, query), ['/articles/timeweb-developer-access/'], query);
+	}
+});
