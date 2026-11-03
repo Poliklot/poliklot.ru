@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "postbuild": "node scripts/check-built-css.mjs",
     "preview": "astro preview",
     "check": "astro check",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
@@ -31,6 +32,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "esbuild": "0.28.2",
     "typescript": "^6.0.3"
   }
 }

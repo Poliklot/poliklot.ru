@@ -8,6 +8,8 @@ export default defineConfig({
 	output: 'static',
 	integrations: [react()],
 	vite: {
+		// Keep named scroll timelines out of animation shorthands unsupported by Chrome.
+		build: { cssMinify: 'esbuild' },
 		resolve: { noExternal: [/^@gravity-ui\//] },
 	},
 });
