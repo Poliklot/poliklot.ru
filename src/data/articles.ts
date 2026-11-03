@@ -11,11 +11,11 @@ export interface ArticleSummary {
 const articles: readonly ArticleSummary[] = [
 	{
 		slug: 'timeweb-developer-access',
-		shareImage: {src: '/share/timeweb-developer-access-2026-11-v1.jpg', alt: 'Timeweb Cloud. Доступ разработчику без финансов.'},
+		shareImage: {src: '/share/timeweb-developer-access-2026-11-v2.jpg', alt: 'Timeweb Cloud. Доступ разработчику. Настройка прав.'},
 		publishedAt: '2026-11-04',
 		publishedLabel: '4 ноября 2026',
-		title: 'Как дать разработчику доступ к проекту в Timeweb Cloud без финансов',
-		description: 'Шесть шагов со скриншотами. Разработчику — управление проектом и поддержкой, финансы — без доступа. Без передачи пароля владельца.',
+		title: 'Как настроить доступ разработчика к проекту в Timeweb Cloud',
+		description: 'Нужные права — управление проектом и поддержкой, финансы только для просмотра. Настройка пользователя со скриншотами и ограничение текущей панели Timeweb Cloud.',
 	},
 	{
 		slug: 'tailscale-mac',
