@@ -5,11 +5,13 @@ export interface ArticleSummary {
 	updatedAt?: string;
 	title: string;
 	description: string;
+	shareImage: {src: string; alt: string};
 }
 
 const articles: readonly ArticleSummary[] = [
 	{
 		slug: 'timeweb-developer-access',
+		shareImage: {src: '/share/timeweb-developer-access-2026-11-v1.jpg', alt: 'Timeweb Cloud. Доступ разработчику без финансов.'},
 		publishedAt: '2026-11-04',
 		publishedLabel: '4 ноября 2026',
 		title: 'Как дать разработчику доступ к проекту в Timeweb Cloud без финансов',
@@ -17,6 +19,7 @@ const articles: readonly ArticleSummary[] = [
 	},
 	{
 		slug: 'tailscale-mac',
+		shareImage: {src: '/share/tailscale-mac-2026-11-v1.jpg', alt: 'Tailscale. Ваш Mac — разработчик на связи. Удалённый доступ без передачи аккаунта.'},
 		publishedAt: '2026-10-31',
 		publishedLabel: '31 октября 2026',
 		updatedAt: '2026-11-01',
@@ -25,6 +28,7 @@ const articles: readonly ArticleSummary[] = [
 	},
 	{
 		slug: 'yandex-metrika-handoff',
+		shareImage: {src: '/share/yandex-metrika-handoff-2026-11-v1.jpg', alt: 'Яндекс Метрика. Создать счётчик. Передать код. Не пароль.'},
 		publishedAt: '2026-10-05',
 		publishedLabel: '5 октября 2026',
 		updatedAt: '2026-10-06',
@@ -33,6 +37,7 @@ const articles: readonly ArticleSummary[] = [
 	},
 	{
 		slug: 'ephemeral-github-actions',
+		shareImage: {src: '/share/ephemeral-github-actions-2026-11-v1.jpg', alt: 'GitHub Actions. Платим за сборки, а не за простой. Временные серверы для CI.'},
 		publishedAt: '2026-09-20',
 		publishedLabel: '20 сентября 2026',
 		updatedAt: '2026-10-06',
@@ -41,6 +46,7 @@ const articles: readonly ArticleSummary[] = [
 	},
 	{
 		slug: 'mobile-app-testing',
+		shareImage: {src: '/share/mobile-app-testing-2026-11-v1.jpg', alt: 'Google Play. От тестирования до публикации. 12 тестировщиков и 14 дней.'},
 		publishedAt: '2026-09-08',
 		publishedLabel: '8 сентября 2026',
 		title: 'Как пройти обязательное тестирование в Google Play',

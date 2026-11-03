@@ -4,6 +4,7 @@ import '../styles/global.css';
 import { getRootClassName } from '@gravity-ui/uikit/server';
 import { HeaderActions, LinkArrow } from '../components/GravityUI';
 import type { Locale } from '../data/site';
+import { publishedArticles } from '../data/articles';
 import { copy, HH_URL } from '../data/site';
 
 interface Props {
@@ -27,7 +28,7 @@ const {
 	alternatePath,
 	pageType = 'profile',
 	ogImagePath = 'https://www.poliklot.ru/og-poliklot-2026-09-telegram.jpg',
-	ogImageAlt,
+	ogImageAlt: defaultOgImageAlt,
 	datePublished,
 	dateModified = '2026-09-08',
 } = Astro.props;
@@ -37,7 +38,13 @@ const canonical = new URL(path, Astro.site ?? 'https://poliklot.ru');
 const alternateLocale = locale === 'ru' ? 'en' : 'ru';
 const alternate = alternatePath ? new URL(alternatePath, Astro.site ?? 'https://poliklot.ru') : undefined;
 const siteUrl = new URL('/', Astro.site ?? 'https://poliklot.ru');
-const ogImage = new URL(ogImagePath, siteUrl);
+// Article covers belong to the article registry, never to the profile fallback.
+const article = pageType === 'article'
+	? publishedArticles.find(({slug}) => canonical.pathname.replace(/\/$/, '') === `/articles/${slug}`)
+	: undefined;
+if (pageType === 'article' && !article) throw new Error(`Missing article metadata for ${canonical.pathname}`);
+const ogImage = new URL(article?.shareImage.src ?? ogImagePath, siteUrl);
+const ogImageAlt = article?.shareImage.alt ?? defaultOgImageAlt;
 const personId = new URL('/#igor-poliklot', siteUrl);
 const rootClassName = getRootClassName({ theme: 'light' });
 const languageHref = alternatePath ?? (locale === 'ru' ? '/en/' : '/');
