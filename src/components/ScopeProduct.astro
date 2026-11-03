@@ -6,10 +6,12 @@ import ScopePanel from './ScopePanel.astro';
 interface Props {locale: Locale; staticView?: boolean;}
 const {locale, staticView = false} = Astro.props;
 const ru = locale === 'ru';
-const {brief, points} = productStory[locale];
+const {brief, points, plan} = productStory[locale];
 const offsets = [['-5cqw', '-10cqw'], ['53cqw', '-14cqw'], ['-7cqw', '8cqw'], ['48cqw', '-3cqw']];
 // Target geometry is in percentages of the same paper: two above, two below the wordmark.
 const cards = [{x: 2, y: 10, w: 44, h: 32}, {x: 54, y: 10, w: 44, h: 32}, {x: 2, y: 66, w: 44, h: 32}, {x: 54, y: 66, w: 44, h: 32}];
+// Four papers become a dependency graph; the last unfolds into three rows.
+const planCards = [{x: 8, y: 16, w: 84, h: 18}, {x: 54, y: 44, w: 44, h: 22}, {x: 2, y: 44, w: 44, h: 22}, {x: 8, y: 76, w: 84, h: 54}];
 // Make room for the derived action without crossing the central brand or the other column.
 const preparedTops = [-4, -4, 66, 66];
 // Physical SVG units keep the corners at 45°. Each route exits a different
@@ -37,7 +39,7 @@ const letterLanes = [46.1, 46.1, 46.1, 47.6, 50.25, 50.6, 50.6, 50.6];
 ---
 
 <!-- Each answer, spec section and planned action keeps the same paper fragment.
-     The four fragments join into the plan; no second sheet replaces them. -->
+     The same four fragments form the dependencies; the last unfolds, never duplicates. -->
 <product-morph class:list={['product-model', {'product-model_static': staticView}]} data-story-motion aria-hidden="true">
 	{staticView && <div class="product-static-screen"><ScopePanel kind="frontend" locale={locale} /></div>}
 	{!staticView && <>
@@ -58,22 +60,25 @@ const letterLanes = [46.1, 46.1, 46.1, 47.6, 50.25, 50.6, 50.6, 50.6];
 			</svg>
 		</div>
 		<div class="product-spec" data-story-motion>
-			{points.map((point, i) => <div class:list={['product-fragment', {'product-fragment_first': i === 0, 'product-fragment_last': i === points.length - 1}]} data-story-motion style={`--i: ${i}; --split-left: ${cards[i].x}%; --split-top: ${cards[i].y}%; --split-width: ${cards[i].w}%; --split-height: ${cards[i].h}%; --prepared-top: ${preparedTops[i]}%; --ordered-top: ${10 + i * 31}%; --plan-top: ${16 + i * 22}%; --compact-copy-width: ${cards[i].w * .847826 - 3}cqw`}>
+			{points.map((point, i) => <div class:list={['product-fragment', {'product-fragment_first': i === 0, 'product-fragment_last': i === points.length - 1}]} data-story-motion style={`--i: ${i}; --split-left: ${cards[i].x}%; --split-top: ${cards[i].y}%; --split-width: ${cards[i].w}%; --split-height: ${cards[i].h}%; --prepared-top: ${preparedTops[i]}%; --ordered-top: ${10 + i * 31}%; --plan-left: ${planCards[i].x}%; --plan-top: ${planCards[i].y}%; --plan-width: ${planCards[i].w}%; --plan-height: ${planCards[i].h}%; --compact-copy-width: ${cards[i].w * .847826 - 3}cqw`}>
 				<div class="fragment-paper" data-story-motion>
 					{i === 0 && <div class="product-spec-heading" data-story-motion><strong>{ru ? 'Ответы на вопросы' : 'Questions answered'}</strong><span>{ru ? 'Кабинет заказчика' : 'Client portal'}</span></div>}
 				</div>
 				<div class="product-note" data-point={point.key} data-story-motion style={`--note-x: ${offsets[i][0]}; --note-y: ${offsets[i][1]}`}>
 					<div class="note-heading-row">
-						<i class="note-anchor" data-story-motion><span class="task-number" data-story-motion>{i + 1}</span></i>
+						<i class="note-anchor" data-story-motion><span class="task-number" data-story-motion>{point.task.step}</span></i>
 						<div class="note-heading" data-story-motion><div class="question-reel" data-story-motion><span class="story-seed">{point.seed}</span><span class="story-question">{point.question}</span></div></div>
 						<strong class="spec-title" data-story-motion>{point.spec.title}</strong>
 					</div>
+					<small class="spec-artifact" data-story-motion>{point.spec.artifact}</small>
 					<div class="discovery-answer" data-story-motion><div class="story-answer" data-story-motion>{point.requirement}</div></div>
 					<div class="spec-copy" data-story-motion>
 						<strong>{point.spec.summary}</strong>
-						<small class="spec-artifact">{point.spec.artifact}</small>
 					</div>
-					<div class="product-task" data-story-motion>{point.task}</div>
+					<div class="product-task" data-story-motion><strong>{point.task.title}</strong><small class="task-detail" data-story-motion>{point.task.detail}</small></div>
+					{point.key === 'quality' && plan.followups.map((action, j) => <div class="plan-followup" data-story-motion style={`--row: ${j + 1}`}>
+						<span class="followup-number">{action.step}</span><strong>{action.title}</strong><small class="task-detail" data-story-motion>{action.detail}</small>
+					</div>)}
 				</div>
 			</div>)}
 			<svg class="spec-circuits" data-story-motion viewBox="0 0 140 100" fill="none" focusable="false">
@@ -93,6 +98,12 @@ const letterLanes = [46.1, 46.1, 46.1, 47.6, 50.25, 50.6, 50.6, 50.6];
 					<image class="spec-letter-ink" data-story-motion href="/brands/openspec.svg" width="640" height="80" />
 				</svg>)}
 			</div>
+			<svg class="plan-dependencies" data-story-motion viewBox="0 0 140 100" fill="none" focusable="false">
+				<path d="M70 34V39M33.6 44V39H106.4V44" pathLength="1" />
+				<path d="M33.6 66V71H106.4V66M70 71V76" pathLength="1" />
+			</svg>
+			<div class="plan-dependency-label plan-dependency-label_split" data-story-motion>{plan.parallel}</div>
+			<div class="plan-dependency-label plan-dependency-label_join" data-story-motion>{plan.joined}</div>
 			<div class="product-plan-heading" data-story-motion>{ru ? 'План работы' : 'Implementation plan'}</div>
 		</div>
 	</>}

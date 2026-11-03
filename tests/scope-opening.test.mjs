@@ -8,6 +8,11 @@ const layers = readFileSync(new URL('../src/components/ScopeLayers.astro', impor
 const panel = readFileSync(new URL('../src/components/ScopePanel.astro', import.meta.url), 'utf8');
 const product = readFileSync(new URL('../src/components/ScopeProduct.astro', import.meta.url), 'utf8');
 
+function cardRects(name = 'cards') {
+	const literal = product.match(new RegExp(`const ${name} = (\\[[^;]+\\]);`))[1];
+	return [...literal.matchAll(/\{x: (\d+), y: (\d+), w: (\d+), h: (\d+)\}/g)].map(([,x,y,w,h]) => ({x:+x,y:+y,w:+w,h:+h}));
+}
+
 // Read the actual CSS score, not a second implementation of the animation.
 function frames(source, name) {
 	const start = source.indexOf(`@keyframes ${name} {`);
@@ -43,7 +48,7 @@ test('four bilingual semantic chains feed one set of conclusions and derived tas
 		for (const p of story.points) assert.ok(p.spec.title && p.spec.summary);
 		assert.match(story.phases[1].description, /OpenSpec/);
 		for (const point of story.points) {
-			for (const field of ['seed', 'question', 'requirement', 'task']) assert.ok(point[field].length > 3);
+			for (const field of ['seed', 'question', 'requirement']) assert.ok(point[field].length > 3);
 		}
 	}
 	assert.equal((product.match(/\{point.requirement\}/g) || []).length, 1, 'reuse the conclusions inside the spec');
@@ -102,7 +107,8 @@ test('concrete answers precede their sheet, separation, OpenSpec and the plan', 
 	assert.ok(ranges('product-fragment')[2][0] >= 48, 'plan starts after the original OpenSpec hold');
 	assert.ok(ranges('product-fragment').at(-1)[1] <= 70, 'plan settles before the existing frontend entrance');
 	assert.equal(at('product-screen', 70), '0');
-	assert.equal(at('product-screen', 72), '1');
+	assert.equal(at('product-screen', 72), '0', 'no frontend seed over the readable dependency graph');
+	assert.equal(at('product-screen', 74), '1');
 	assert.equal(at('product-logic', 77), '0');
 	assert.equal(at('product-data', 79), '0');
 	assert.doesNotMatch(panel + product + opening, /product-save|product-editor|product-record|product-status/);
@@ -167,10 +173,11 @@ test('the plan has no derivation wires; the later nonrepeating product signal is
 
 test('compact parts and documents are covered before the neutral frontend handoff', () => {
 	assert.match(opening, /\.product-layer \{[^}]*height: 12%/);
-	assert.equal(at('product-spec', 84, 'transform'), 'translate(-3.12%, -19.78%) translateZ(10px) scale(.66)');
+	assert.equal(at('product-spec', 84, 'transform'), 'translate(-3.12%, -29.27%) translateZ(10px) scale(.53)');
 	assert.match(opening, /\.product-spec \{[^}]*transform-origin: 57% 61%/);
 	assert.equal(78 * -.04, -3.12, 'same horizontal retreat as the former 78%-wide panel');
-	assert.equal(86 * -.23, -19.78, 'same vertical retreat as the former 86%-tall panel');
+	const top = 61 + (-12 - 61) * .53 - 29.27, bottom = 61 + (130 - 61) * .53 - 29.27;
+	assert.ok(top >= -6.97 && bottom <= 69.6, 'the taller plan retains the previous covered bottom envelope');
 	assert.equal(at('product-internals-presence', 100, 'visibility'), 'hidden');
 	assert.equal(at('product-foundation', 100), '1');
 	assert.equal(at('product-screen', 100), '1');
@@ -246,7 +253,7 @@ test('question anchors share the heading row, independent of answer height', () 
 });
 
 test('overlapping card axes preserve closed edges, readable text and the later score', () => {
-	const cards = [...product.matchAll(/\{x: (\d+), y: (\d+), w: (\d+), h: (\d+)\}/g)].map(([,x,y,w,h])=>({x:+x,y:+y,w:+w,h:+h}));
+	const cards = cardRects();
 	assert.equal(cards.length, 4);
 	assert.equal(cards.filter(c=>c.y<30).length, 2);
 	assert.equal(cards.filter(c=>c.y>60).length, 2);
@@ -297,7 +304,7 @@ function ease(t, [x1, y1, x2, y2]) {
 }
 
 test('the descending first paper edge clips a stationary header, without an opacity exit', () => {
-	assert.match(opening, /\.product-fragment_first \.fragment-paper \{[^}]*overflow: hidden/);
+	assert.match(opening, /\.fragment-paper \{[^}]*overflow: hidden/);
 	assert.deepEqual(ranges('product-spec-heading'), [[31, 34]]);
 	assert.match(opening, /\.product-spec-heading \{[^}]*white-space: nowrap/, 'clipped copy must not wrap back into the first card');
 	assert.match(opening, /\.product-fragment_first \.fragment-paper \{[^}]*contain 31% contain 34%/);
@@ -317,7 +324,7 @@ function pointsFrom(name) {
 
 test('four PCB routes start on different card edges and continue into one closed socket', () => {
 	const routes=pointsFrom('circuitRoutes'), rails=pointsFrom('socketRails');
-	const cards=[...product.matchAll(/\{x: (\d+), y: (\d+), w: (\d+), h: (\d+)\}/g)].map(([,x,y,w,h])=>({x:+x*1.4,y:+y,w:+w*1.4,h:+h}));
+	const cards=cardRects().map(c => ({...c, x:c.x*1.4, w:c.w*1.4}));
 	assert.equal(routes.length,4);
 	assert.equal(rails.length,4);
 	assert.match(product, /class="spec-circuits"[^>]*viewBox="0 0 140 100"/);
@@ -376,7 +383,7 @@ test('neon borders feed the traces, then the socket, then the original glyphs', 
 });
 
 test('continuous card paths have clearance, bounded speed and no pause at the turn', () => {
-	const cards = [...product.matchAll(/\{x: (\d+), y: (\d+), w: (\d+), h: (\d+)\}/g)].map(([,x,y,w,h]) => ({x:+x,y:+y,w:+w,h:+h}));
+	const cards = cardRects();
 	const [horizontal, vertical] = ranges('product-fragment');
 	const curve = opening.match(/\.product-fragment \{[^}]*cubic-bezier\(([^)]+)\)/)[1].split(',').map(Number);
 	const pose = p => {
@@ -402,20 +409,44 @@ test('continuous card paths have clearance, bounded speed and no pause at the tu
 	}
 });
 
-test('each existing fragment becomes one plan row, without duplicate paper or clipped actions', () => {
-	assert.equal((product.match(/\{point.task\}/g) || []).length, 1);
-	assert.match(product, /class="spec-copy"[\s\S]*\{point.spec.summary\}[\s\S]*class="product-task" data-story-motion>\{point.task\}/);
+test('four original documents form six actions with an explicit parallel level', () => {
+	assert.equal((product.match(/\{point.task.title\}/g) || []).length, 1);
+	assert.match(product, /point.key === 'quality' && plan.followups.map/);
 	assert.doesNotMatch(product, /class="product-plan"|product-plan-paper/);
-	assert.doesNotMatch(opening, /\.product-task \{[^}]*(?:overflow: hidden|clip-path|;\s*height:)/);
-	assert.match(product, /class="note-anchor"[^>]*><span class="task-number"[^>]*>\{i \+ 1\}/);
-	assert.equal(at('plan-fragment-align', 100, 'left'), '18%');
-	assert.equal(at('plan-fragment-align', 100, 'width'), '78%');
-	assert.equal(at('plan-fragment-join', 100, 'top'), 'var(--plan-top)');
-	assert.equal(at('plan-fragment-join', 100, 'height'), '22%');
-	assert.match(product, /--plan-top: \$\{16 \+ i \* 22\}%/);
-	assert.equal(at('plan-fragment-paper', 100, 'border-radius'), 'var(--plan-radius, 0)');
-	assert.equal(at('spec-title', 100), '1', 'section headings remain as source labels');
+	assert.doesNotMatch(opening, /\.(?:product-task|plan-followup) \{[^}]*(?:overflow: hidden|clip-path|;\s*height:)/);
+	assert.match(product, /class="task-number"[^>]*>\{point.task.step\}/);
+	for (const [lang, story] of Object.entries(productStory)) {
+		const actions = story.points.map(p => p.task).concat(story.plan.followups);
+		assert.equal(actions.length, 6);
+		assert.deepEqual(actions.map(a => a.step), lang === 'ru' ? ['1','2б','2а','3','4','5'] : ['1','2b','2a','3','4','5']);
+		assert.ok(actions.every(a => a.title.length > 5 && a.detail.length > 5));
+		assert.match(story.points[1].task.detail, /моках|mocks/);
+		assert.match(story.phases[2].description, /параллельно|parallel/);
+	}
+	const [contract, ui, api, finish] = cardRects('planCards');
+	assert.equal(ui.y, api.y);
+	assert.equal(ui.h, api.h);
+	assert.ok(contract.y + contract.h < api.y);
+	assert.ok(api.y + api.h < finish.y);
+	assert.equal(finish.h, contract.h * 3);
+	for (const property of ['left','width','top','height']) assert.equal(at('plan-fragment-layout',100,property), `var(--plan-${property})`);
+	assert.equal(at('plan-fragment-paper',100,'border-radius'), '1.5cqw');
+	assert.doesNotMatch(opening, /product-task-focus/, 'a plan must not pretend to execute the work');
 	assert.equal((product.match(/href="\/brands\/openspec.svg"/g) || []).length, 1);
+});
+
+test('dependency connections wait for docking and join the actual node edges', () => {
+	const settle = ranges('product-fragment').at(-1)[1];
+	assert.ok(ranges('plan-dependency-label')[0][0] >= settle);
+	assert.match(product, /viewBox="0 0 140 100"[^>]*>[\s\S]*M70 34V39M33.6 44V39H106.4V44/);
+	assert.match(product, /M33.6 66V71H106.4V66M70 71V76/);
+	const [root, ui, api, tail] = cardRects('planCards');
+	assert.equal(root.y + root.h, 34);
+	assert.equal(api.y, 44);
+	assert.equal(api.y + api.h, 66);
+	assert.equal(tail.y, 76);
+	assert.ok(Math.abs((api.x + api.w / 2) * 1.4 - 33.6) < .001);
+	assert.ok(Math.abs((ui.x + ui.w / 2) * 1.4 - 106.4) < .001);
 });
 
 test('actions are fully readable before their source retires and move only after it has left', () => {
@@ -424,42 +455,41 @@ test('actions are fully readable before their source retires and move only after
 	assert.ok(reveal[1] <= retire[0]);
 	assert.ok(retire[1] <= place[0]);
 	assert.ok(ranges('product-fragment')[2][0] < reveal[0], 'make space before revealing more text');
-	assert.match(opening, /\.product-fragment \{[^}]*animation-fill-mode: both, both, forwards, forwards, forwards/);
+	assert.match(opening, /\.product-fragment \{[^}]*animation-fill-mode: both, both, forwards, forwards/);
 	assert.match(opening, /\.spec-title \{[^}]*animation-fill-mode: both, forwards/);
 	assert.match(opening, /\.spec-copy \{[^}]*animation-fill-mode: both, forwards/);
+	assert.deepEqual(ranges('spec-title')[1], retire, 'source title retires with its body, never before the action');
+	assert.ok(ranges('task-detail')[0][0] >= place[1], 'details wait for their own space');
 	assert.equal(at('spec-letter-fan', 0, 'width'), '3.5cqw', 'eight original glyphs form the 28cqw wordmark');
 });
 
 function planGeometry() {
-	const cards = [...product.matchAll(/\{x: (\d+), y: (\d+), w: (\d+), h: (\d+)\}/g)].map(([,x,y,w,h])=>({x:+x,y:+y,w:+w,h:+h}));
+	const cards = cardRects(), final = cardRects('planCards');
 	const prepared = JSON.parse(product.match(/const preparedTops = (\[[^;]+\]);/)[1]);
-	const series = name => product.match(new RegExp(`--${name}: \\$\\{([\\d.]+) \\+ i \\* ([\\d.]+)\\}%`)).slice(1).map(Number);
-	const ordered = series('ordered-top'), joined = series('plan-top');
-	const [, , order, align, join] = ranges('product-fragment');
+	const ordered = product.match(/--ordered-top: \$\{([\d.]+) \+ i \* ([\d.]+)\}%/).slice(1).map(Number);
+	const [, , order, join] = ranges('product-fragment');
 	const curve = opening.match(/\.product-fragment \{[^}]*cubic-bezier\(([^)]+)\)/)[1].split(',').map(Number);
 	const time = stop => order[0] + (order[1] - order[0]) * stop / 100;
-	const preparationEnd = time(25), verticalStart = time(37.5), shrinkStart = time(81.25);
+	const preparationEnd = time(25), verticalStart = time(37.5), shrinkStart = time(Math.max(...frames(opening,'plan-fragment-order').filter(f => f.style.height === '48%').map(f => f.at)));
 	const mix = (a,b,t) => a+(b-a)*t;
 	const t = (p,a,b) => ease((p-a)/(b-a),curve);
 	const preparedHeight = parseFloat(at('plan-fragment-order',25,'height'));
 	const orderedHeight = parseFloat(at('plan-fragment-order',100,'height'));
-	const finalHeight = parseFloat(at('plan-fragment-join',100,'height'));
-	const finalX = parseFloat(at('plan-fragment-align',100,'left'));
-	const finalWidth = parseFloat(at('plan-fragment-align',100,'width'));
 	const pose = p => cards.map((c,i) => {
 		let y = p < verticalStart ? mix(c.y,prepared[i],t(p,order[0],preparationEnd)) : mix(prepared[i],ordered[0]+i*ordered[1],t(p,verticalStart,order[1]));
 		let h = p < shrinkStart ? mix(c.h,preparedHeight,t(p,order[0],preparationEnd)) : mix(preparedHeight,orderedHeight,t(p,shrinkStart,order[1]));
-		if (p >= join[0]) { y=mix(ordered[0]+i*ordered[1],joined[0]+i*joined[1],t(p,...join)); h=mix(orderedHeight,finalHeight,t(p,...join)); }
-		return {x:mix(c.x,finalX,t(p,...align)),y,w:mix(c.w,finalWidth,t(p,...align)),h};
+		if (p >= join[0]) { y=mix(ordered[0]+i*ordered[1],final[i].y,t(p,...join)); h=mix(orderedHeight,final[i].h,t(p,...join)); }
+		return {x:mix(c.x,final[i].x,t(p,...join)),y,w:mix(c.w,final[i].w,t(p,...join)),h};
 	});
 	return {pose, verticalStart, join};
 }
 
 test('OpenSpec-to-plan geometry has no intersections, abrupt jumps or stop at axis handoffs', () => {
 	const {pose, verticalStart, join} = planGeometry();
-	let maxSpeed=0;
+	let maxSpeed=0, maxBottom=0;
 	for(let p=48;p<=72;p+=.01){
 		const current=pose(p), next=pose(p+.01);
+		maxBottom=Math.max(maxBottom,...current.map(c=>c.y+c.h));
 		for(let i=0;i<4;i++){
 			for(let j=i+1;j<4;j++){
 				const a=current[i],b=current[j];
@@ -469,6 +499,7 @@ test('OpenSpec-to-plan geometry has no intersections, abrupt jumps or stop at ax
 			if(p>verticalStart && p<join[1]-.01) assert.ok(Math.hypot(next[i].x-current[i].x,next[i].y-current[i].y,next[i].w-current[i].w,next[i].h-current[i].h)>.000001,`row ${i} stops at ${p}`);
 		}
 	}
+	assert.ok(maxBottom<135,`plan bottom ${maxBottom} leaves the scene envelope`);
 	assert.ok(maxSpeed<20,`plan edge speed ${maxSpeed} exceeds the opening's smoothness budget`);
 	assert.deepEqual(pose(70),pose(72),'hold before the existing frontend handoff');
 });
@@ -569,4 +600,57 @@ test('only the gradient ink drifts on time, with staggered seamless cycles insid
 		assert.ok(Math.abs(Number(x)) <= 10 && Math.abs(Number(y)) <= 10 && Math.abs(Number(angle)) <= 9);
 		assert.ok(Number(sx) >= .95 && Number(sx) <= 1.12 && Number(sy) >= .95 && Number(sy) <= 1.12);
 	}
+});
+
+test('the same paper changes material and its file header becomes the plan ordinal rail', () => {
+	assert.equal((product.match(/class="fragment-paper"/g) || []).length, 1, 'one paper per point, no replacement document');
+	assert.equal((product.match(/\{point.spec.artifact\}/g) || []).length, 1, 'one filename per document');
+	assert.match(product, /<small class="spec-artifact" data-story-motion>\{point.spec.artifact\}<\/small>/);
+	assert.doesNotMatch(product.match(/<div class="spec-copy"[^>]*>([\s\S]*?)<\/div>/)[1], /spec-artifact/, 'the filename owns the header, not the retiring body');
+	assert.match(opening, /\.fragment-paper::before \{[^}]*animation: document-chrome auto[^}]*animation-timeline: --product-story/);
+	assert.match(opening, /\.fragment-paper \{[^}]*overflow: hidden/);
+	assert.doesNotMatch(opening, /\.(?:product-note|spec-copy|spec-title|product-task|spec-artifact) \{[^}]*(?:overflow: hidden|clip-path)/);
+	assert.equal(at('paper-material', 31, 'background-color'), '#111924');
+	assert.equal(at('paper-material', 43, 'background-color'), '#192535');
+	assert.equal(at('paper-material', 64, 'background-color'), '#111a26');
+	assert.equal(at('answer-fragment-paper', 34, 'border-radius'), '2cqw');
+	assert.equal(at('answer-fragment-paper', 43, 'border-radius'), '.65cqw');
+	assert.equal(at('plan-fragment-paper', 0, 'border-radius'), '.65cqw', 'no corner jump when the join takes ownership');
+	assert.equal(at('document-chrome', 38, 'height'), '0');
+	assert.equal(at('document-chrome', 59, 'width'), '100%');
+	assert.equal(at('document-chrome', 61, 'height'), 'calc(2.35714cqw + var(--document-header-height))');
+	assert.equal(at('document-chrome', 63, 'width'), '1.1cqw');
+	assert.equal(at('document-chrome', 65, 'height'), '100%');
+	assert.equal(at('document-chrome', 59, 'border-bottom-color'), 'transparent', 'erase the line before the band sweeps through the content');
+	assert.ok(frames(opening, 'document-chrome').every(f => !('border-right-color' in f.style)), 'the slim edge needs no second separator');
+});
+
+test('document content makes room before filenames appear and returns only after they retire', () => {
+	for (const name of ['spec-title', 'spec-copy', 'note-anchor']) {
+		assert.match(opening, new RegExp(`\\.${name} \\{[^}]*animation-name: [^;]*document-content-offset`));
+	}
+	assert.ok(frames(opening, 'document-content-offset').every(f => Object.keys(f.style).join(',') === 'translate'), 'do not replace the reveal transform or dim the heading');
+	assert.equal(at('document-content-offset', 38, 'translate'), '0 0');
+	assert.equal(at('document-content-offset', 42, 'translate'), '0 var(--document-header-height)');
+	assert.equal(at('document-filename', 42), '0');
+	assert.equal(at('document-filename', 44.5), '1');
+	assert.equal(at('document-filename', 54), '1');
+	assert.equal(at('document-filename', 57), '0');
+	assert.equal(at('document-content-offset', 57, 'translate'), '0 var(--document-header-height)');
+	assert.equal(at('document-content-offset', 61.5, 'translate'), '0 0');
+	assert.equal(at('document-content-offset', 100, 'translate'), '0 0');
+	assert.equal(at('document-filename', 100), '0');
+	assert.ok(ranges('product-task')[0][1] <= 54, 'the action is readable before filename and description retire');
+});
+
+
+test('ordinals stay beside actions and the final paper unfolds before revealing its rows', () => {
+	assert.equal(at('plan-marker',100,'width'), '3.8cqw');
+	assert.equal(at('plan-action-indent',100,'left'), '4.8cqw');
+	assert.equal(at('plan-action-place',100,'top'), '0');
+	assert.match(opening, /\.plan-followup \{[^}]*top: calc\(var\(--row\) \* 12.857143cqw\)/);
+	const {pose} = planGeometry();
+	assert.ok(pose(66)[3].h >= 36, 'first followup has an entire second row before it appears');
+	assert.ok(pose(68)[3].h >= 50, 'last followup has space before it appears');
+	assert.equal(pose(70)[3].h,54);
 });
