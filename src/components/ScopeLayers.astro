@@ -56,7 +56,7 @@ const panels: PanelKind[] = ['frontend', 'backend', 'devops', 'access'];
 								<div class:list={['scope-plane', `scope-plane_${kind}`]}>
 									<div class="plane-face"><ScopePanel kind={kind} locale={locale} /></div>
 									{kind === 'frontend' && <>
-										<div class="front-complete"><span>Fullstack</span><strong>{t.heroTitle[1]}</strong></div>
+										<div class="front-complete"><span>{locale === 'ru' ? 'Продукт' : 'Product'}</span><strong>{locale === 'ru' ? 'Целиком.' : 'End to end.'}</strong></div>
 									</>}
 								</div>
 							</div>

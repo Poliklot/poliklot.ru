@@ -1,12 +1,13 @@
 # Poliklot — product landing
 
-Source for [poliklot.ru](https://poliklot.ru): a bilingual personal product landing for Igor / Poliklot.
+Source for [poliklot.ru](https://poliklot.ru): the bilingual personal website of Игорь Майоров / Poliklot (Майоров Игорь Олегович), his products and his AI team.
 
 ## Design intent
 
 - product-style storytelling instead of a traditional résumé layout;
-- one specialist presented as a complete delivery contour: product, engineering, infrastructure and release;
-- AI agents shown as a practical speed multiplier backed by engineering judgement;
+- product ownership from concept and design to engineering, launch and growth, rather than a frontend job title;
+- a compact public project selection in `src/data/projects.ts` with short descriptions and verified destinations;
+- AI-agent roles shown alongside Igor's personal responsibility for decisions, quality and release;
 - six technology chapters with recognizable product and infrastructure tooling;
 - commercial experience, product ownership and technical leadership before public profiles;
 - no remote fonts; the homepage stays static, interactive article tools load only where needed;
@@ -20,6 +21,8 @@ Source for [poliklot.ru](https://poliklot.ru): a bilingual personal product land
 - major search and AI crawlers are explicitly allowed in `robots.txt`;
 - the Open Graph card uses a versioned filename so Telegram and other messengers do not keep serving an overwritten cached image.
 - practical guides use `TechArticle` structured data and their own 1200×630 preview images.
+- full Russian identity and the Poliklot alias share the existing stable Person ID; article topics do not replace the author biography;
+- the build checks both language versions, project links, the AI-team section, author links and the new profile cover.
 
 When the social artwork changes, publish it under a new filename and update `ogImage` in `src/layouts/BaseLayout.astro`. After deployment, refresh the clean canonical URL through Telegram's `@WebpageBot`; query parameters are not a reliable substitute because the page correctly canonicalizes to `/`.
 

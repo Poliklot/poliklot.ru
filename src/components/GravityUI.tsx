@@ -54,7 +54,6 @@ import {
     siVuedotjs,
 } from 'simple-icons';
 
-const HH_URL = 'https://hh.ru/resume/ebe2b012ff0834a84e0039ed1f6d6b526b584f';
 
 type IconName = 'frontend' | 'backend' | 'devsecops' | 'ai' | 'mobile' | 'quality' | 'github' | 'briefcase' | 'delivery' | 'auth';
 
@@ -119,11 +118,11 @@ export function GravityIcon({name, size = 24, className}: {name: IconName; size?
     return <Icon data={iconMap[name]} size={size} className={className} />;
 }
 
-export function HeaderActions({language, languageHref, resumeLabel}: {language: string; languageHref: string; resumeLabel: string}) {
+export function HeaderActions({language, languageHref, contactLabel, contactHref}: {language: string; languageHref: string; contactLabel: string; contactHref: string}) {
     return (
         <div className="gravity-header-actions">
-            <Button href={HH_URL} target="_blank" rel="noreferrer" view="normal" size="m">
-                {resumeLabel}
+            <Button href={contactHref} view="normal" size="m">
+                {contactLabel}
             </Button>
             <Button href={languageHref} view="flat-secondary" size="m">{language}</Button>
         </div>

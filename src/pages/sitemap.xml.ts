@@ -1,9 +1,10 @@
 import type { APIRoute } from 'astro';
 import {articlesUpdatedAt, publishedArticles} from '../data/articles';
+import {profileUpdatedAt} from '../data/site';
 
 const staticPages = [
-	{url: 'https://poliklot.ru/', language: 'ru', alternates: true, lastmod: articlesUpdatedAt},
-	{url: 'https://poliklot.ru/en/', language: 'en', alternates: true, lastmod: '2026-09-08'},
+	{url: 'https://poliklot.ru/', language: 'ru', alternates: true, lastmod: [profileUpdatedAt, articlesUpdatedAt].sort().at(-1)},
+	{url: 'https://poliklot.ru/en/', language: 'en', alternates: true, lastmod: profileUpdatedAt},
 	{url: 'https://poliklot.ru/articles/', language: 'ru', alternates: false, lastmod: articlesUpdatedAt},
 ];
 

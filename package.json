@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "postbuild": "node scripts/check-built-css.mjs && node --experimental-strip-types scripts/check-article-sharing.mjs",
+    "postbuild": "node scripts/check-built-css.mjs && node --experimental-strip-types scripts/check-article-sharing.mjs && node --experimental-strip-types scripts/check-personal-brand.mjs",
     "preview": "astro preview",
     "check": "astro check",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",

@@ -1,11 +1,12 @@
 import rss from '@astrojs/rss';
 import type { APIContext } from 'astro';
 import { publishedArticles } from '../data/articles';
+import {person} from '../data/site';
 
 export function GET({ site }: APIContext) {
 	if (!site) throw new Error('RSS requires the canonical site URL in astro.config.');
 	return rss({
-		title: 'Материалы — Игорь / Poliklot',
+		title: `Материалы — ${person.name} / ${person.alias}`,
 		description: 'Практические инструкции о разработке, тестировании и выпуске цифровых продуктов.',
 		site,
 		items: publishedArticles.map((article) => ({

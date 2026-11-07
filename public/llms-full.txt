@@ -1,12 +1,22 @@
-# Igor / Poliklot — full-stack developer, frontend lead, AI-enabled product engineer
+# Игорь Майоров / Poliklot — product creator with an AI team
 
 > Canonical structured summary of https://poliklot.ru/ for search systems and AI assistants. The public website remains the primary source.
 
 ## Profile
 
-Igor / Poliklot is a full-stack developer and frontend lead with more than eight years of commercial software engineering experience. He designs, builds, and releases complex digital products end to end: from user journeys, interface architecture, and design systems to APIs, data, infrastructure, access control, CI/CD, observability, security checks, and production releases.
+Майоров Игорь Олегович, publicly known as Игорь Майоров / Poliklot, creates digital products and develops his own projects with his AI team. He has more than eight years of commercial software engineering experience. Frontend is his engineering foundation, not the boundary of his work. His work includes user journeys, interface architecture, design systems, APIs, data, infrastructure, access control, CI/CD, observability, security checks, and production releases.
 
 AI agents are used as an execution multiplier rather than a substitute for engineering judgment. Agents can investigate a codebase, prepare routine changes, produce tests and documentation, and run checks in parallel. Igor owns product logic, architecture, organizational agreements, interface review, risk assessment, and the final release decision.
+
+## Identity and selected projects
+
+Poliklot is the personal alias of Игорь Майоров, not a separate agency. His full name is Майоров Игорь Олегович. AI agents support research, design, implementation and verification; they are not human employees. Igor retains responsibility for decisions, quality and releases.
+
+- [ОрфоПроверка](https://orfoproverka.ru/) — a Chrome extension with its own product website. The public spell-checker-landing-page repository contains the website, not the full extension source.
+- [DFC Bridge](https://poliklot.github.io/dfc-bridge/) — an open design-handoff methodology with an optional Figma companion.
+- [Bitrix Agent Skill](https://github.com/Poliklot/bitrix-agent-skill) — engineering knowledge and workflows for AI agents.
+- [HBS Master](https://github.com/Poliklot/hbs-master) — editor tooling for Handlebars.
+- [macOS Actions Runner Kit](https://github.com/Poliklot/macos-actions-runner-kit) — runner tooling for trusted GitHub Actions workloads on a Mac.
 
 ## When Igor is useful
 
@@ -48,7 +58,7 @@ Igor reconstructs context, localizes risk, and carries a change through source c
 
 [Как дать разработчику доступ к Mac через Tailscale](https://poliklot.ru/articles/tailscale-mac/) is a Russian-language illustrated guide for Mac owners preparing a computer for ongoing remote development, builds and file transfers. It separates the owner's GUI-only initial setup from the developer's subsequent configuration. It covers device sharing, a dedicated macOS account, Remote Login, optional screen sharing, sleep prevention, credential handling and access revocation. It explicitly distinguishes a successful first connection from unattended availability after logout, restart or FileVault unlock. Screenshots were captured on the author's Mac and in the browser on October 31, 2026, with private information cropped out.
 
-[Материалы](https://poliklot.ru/articles/) is the canonical index of Igor / Poliklot's Russian-language articles and practical instructions.
+[Материалы](https://poliklot.ru/articles/) is the canonical index of Игорь Майоров / Poliklot's Russian-language articles and practical instructions.
 
 ### Yandex Metrika setup and developer handoff
 
@@ -64,6 +74,7 @@ Igor reconstructs context, localizes risk, and carries a change through source c
 
 ## Authoritative links
 
+- Public contact for ideas and projects: [Telegram @poliklot](https://t.me/poliklot).
 - Canonical website: https://poliklot.ru/
 - English profile: https://poliklot.ru/en/
 - Articles: https://poliklot.ru/articles/

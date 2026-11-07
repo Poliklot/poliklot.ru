@@ -1,6 +1,6 @@
-# Igor / Poliklot — full-stack product engineer
+# Игорь Майоров / Poliklot — products and an AI team
 
-> Personal portfolio of Igor / Poliklot, a full-stack developer and frontend lead who ships complex digital products end to end and uses AI agents to accelerate engineering work without delegating architecture, quality, or release responsibility.
+> Personal website of Майоров Игорь Олегович (Игорь Майоров / Poliklot). He creates his own digital products and brings ideas to life with his AI team, from concept and design to engineering, launch and growth. He personally owns decisions, quality and the outcome.
 
 ## Main pages
 
@@ -14,7 +14,17 @@
 - [GitHub](https://github.com/Poliklot): Public engineering profile and repositories.
 - [Résumé](https://hh.ru/resume/ebe2b012ff0834a84e0039ed1f6d6b526b584f): Full professional résumé on hh.ru.
 
+## Selected projects
+
+- [ОрфоПроверка](https://orfoproverka.ru/) — Chrome extension for checking Russian text on websites.
+- [DFC Bridge](https://poliklot.github.io/dfc-bridge/) — Design Frontend Contract methodology with an optional Figma companion.
+- [Bitrix Agent Skill](https://github.com/Poliklot/bitrix-agent-skill) — Core-first engineering knowledge for AI agents working with 1C-Bitrix and Bitrix24.
+- [HBS Master](https://github.com/Poliklot/hbs-master) — VS Code tooling for Handlebars templates.
+- [macOS Actions Runner Kit](https://github.com/Poliklot/macos-actions-runner-kit) — On-demand GitHub Actions runners on a Mac for trusted workloads.
+
 ## Key facts
+
+- Full name: Майоров Игорь Олегович. Public name: Игорь Майоров. Alias: Poliklot.
 
 - 8+ years of commercial software development since 2018.
 - Frontend lead with experience coordinating a team of five.
@@ -24,5 +34,6 @@
 
 ## Contact
 
+- Telegram: [@poliklot](https://t.me/poliklot) — public contact for ideas and projects.
 - Website: https://poliklot.ru/
 - GitHub: https://github.com/Poliklot

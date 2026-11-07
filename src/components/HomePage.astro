@@ -2,15 +2,16 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ScopeLayers from './ScopeLayers.astro';
 import {GravityIcon, GravityLinkButton, LinkArrow, ToolCloud} from './GravityUI';
-import {articlesUpdatedAt, homepageArticles} from '../data/articles';
-import {copy, HH_URL, type Locale} from '../data/site';
+import {homepageArticles} from '../data/articles';
+import {projects} from '../data/projects';
+import {copy, GITHUB_URL, HH_URL, TELEGRAM_URL, profileUpdatedAt, type Locale} from '../data/site';
 
 interface Props { locale: Locale; }
 const {locale} = Astro.props;
 const t = copy[locale];
 ---
 
-<BaseLayout title={`${t.name} — ${t.role}`} description={t.lead} locale={locale} path={locale === 'ru' ? '/' : '/en/'} alternatePath={locale === 'ru' ? '/en/' : '/'} dateModified={locale === 'ru' ? articlesUpdatedAt : '2026-09-08'}>
+<BaseLayout title={t.pageTitle} description={t.lead} locale={locale} path={locale === 'ru' ? '/' : '/en/'} alternatePath={locale === 'ru' ? '/en/' : '/'} dateModified={profileUpdatedAt}>
 	<div class="landing">
 		<section class="launch-hero page-width">
 			<p class="hero-overline">{t.name}<span>{t.heroOverline}</span></p>
@@ -18,7 +19,7 @@ const t = copy[locale];
 			<p class="hero-copy">{t.heroLead}</p>
 			<div class="hero-actions">
 				<a class="primary-link" href="#scope">{t.heroPrimary}</a>
-				<a class="quiet-link" href={HH_URL} target="_blank" rel="noreferrer">{t.heroSecondary}</a>
+				<a class="quiet-link" href="#projects">{t.heroSecondary}</a>
 			</div>
 			<ul class="hero-facts" aria-label={locale === 'ru' ? 'Ключевые факты' : 'Key facts'}>
 				{t.heroFacts.map((fact) => <li><strong>{fact.value}</strong><span>{fact.label}</span></li>)}
@@ -35,10 +36,10 @@ const t = copy[locale];
 			</div>
 		</section>
 
-		<section class="velocity-stage" id="velocity">
-			<div class="page-width">
+		<section class="velocity-stage" id="ai-team" aria-labelledby="team-title">
+			<div class="page-width" id="velocity">
 				<p class="velocity-eyebrow">{t.velocityEyebrow}</p>
-				<h2>{t.velocityTitle}</h2>
+				<h2 id="team-title">{t.velocityTitle}</h2>
 				<p class="velocity-lead">{t.velocityLead}</p>
 				<div class="responsibility-split">
 					<article>
@@ -104,6 +105,7 @@ const t = copy[locale];
 
 		<section class="experience-stage page-width" id="experience">
 			<h2>{t.experienceTitle}</h2>
+			<p class="profile-summary" id="about"><strong class="about-full-name">{t.aboutFullName}.</strong> {t.aboutText} <a href={HH_URL} target="_blank" rel="noopener noreferrer">{t.aboutResume}</a></p>
 			<div class="experience-list">
 				{t.experience.map((item) => (
 					<article>
@@ -113,6 +115,25 @@ const t = copy[locale];
 					</article>
 				))}
 			</div>
+		</section>
+
+		<section class="projects-stage page-width" id="projects" aria-labelledby="projects-title">
+			<div class="projects-heading">
+				<h2 id="projects-title">{t.projectsTitle}</h2>
+				<a href={`${GITHUB_URL}?tab=repositories`} target="_blank" rel="noopener noreferrer">{t.projectsMore} <LinkArrow /></a>
+			</div>
+			<p class="projects-lead">{t.projectsLead}</p>
+			<ul class="project-list">
+				{projects.map((project) => (
+					<li class="project-entry">
+						<a href={project.url} target="_blank" rel="noopener noreferrer">
+							<h3 id={`project-${project.id}`}>{project.name}</h3>
+							<p>{project.description[locale]}</p>
+							<LinkArrow />
+						</a>
+					</li>
+				))}
+			</ul>
 		</section>
 
 		{locale === 'ru' && (
@@ -140,8 +161,8 @@ const t = copy[locale];
 				<h2>{t.contactTitle}</h2>
 				<p>{t.contactText}</p>
 				<div class="contact-actions">
-					<GravityLinkButton href={HH_URL}>{t.contactPrimary}</GravityLinkButton>
-					<a href="https://github.com/Poliklot" target="_blank" rel="noreferrer">{t.contactSecondary}</a>
+					<GravityLinkButton href={TELEGRAM_URL}>{t.contactPrimary}</GravityLinkButton>
+					<a href={GITHUB_URL} target="_blank" rel="noreferrer">{t.contactSecondary}</a>
 				</div>
 			</div>
 		</section>
