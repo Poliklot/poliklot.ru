@@ -1,0 +1,9 @@
+[Unit]
+Description=Close owned finite leases independently of dispatch
+[Timer]
+OnBootSec=10s
+OnUnitInactiveSec=15s
+AccuracySec=1s
+Unit=ephemeral-ci@cleanup.service
+[Install]
+WantedBy=timers.target

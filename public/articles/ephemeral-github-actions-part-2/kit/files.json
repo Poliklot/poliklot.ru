@@ -1,0 +1,21 @@
+[
+  "README.md",
+  "config.example.json",
+  "requirements.txt",
+  "install.sh",
+  "prepare.py",
+  "controller.py",
+  "clients.py",
+  "bootstrap.py",
+  "worker.py",
+  "systemd/ephemeral-ci@.service",
+  "systemd/ephemeral-ci-dispatch.timer",
+  "systemd/ephemeral-ci-cleanup.timer",
+  "systemd/ephemeral-ci-readback.timer",
+  "repository/.github/workflows/auto-ci.yml",
+  "repository/.github/workflows/auto-build.yml",
+  "repository/demo.py",
+  "tests/test_controller.py",
+  "tests/test_boundaries.py",
+  "tests/test_sdk.py"
+]

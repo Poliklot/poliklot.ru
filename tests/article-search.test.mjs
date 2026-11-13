@@ -32,7 +32,15 @@ test('Tailscale Mac guide is discoverable by product and task', () => {
 });
 
 test('Timeweb guide is discoverable by product and finance restriction', () => {
-	for (const query of ['timeweb', 'разработчику финансы']) {
+	for (const query of ['timeweb доступ', 'разработчику финансы']) {
 		assert.deepEqual(searchArticles(articles, query), ['/articles/timeweb-developer-access/'], query);
 	}
+});
+
+test('the practical CI sequel is discoverable without replacing the first part', () => {
+	assert.deepEqual(searchArticles(articles, 'Python S3'), ['/articles/ephemeral-github-actions-part-2/']);
+	assert.deepEqual(searchArticles(articles, 'удаление VPS'), ['/articles/ephemeral-github-actions-part-2/']);
+	const matches = searchArticles(articles, 'github');
+	assert.ok(matches.includes('/articles/ephemeral-github-actions/'));
+	assert.ok(matches.includes('/articles/ephemeral-github-actions-part-2/'));
 });

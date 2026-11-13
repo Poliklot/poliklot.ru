@@ -1,0 +1,13 @@
+name: Ephemeral CI
+on:
+  push:
+    branches: [dev]
+permissions:
+  contents: read
+concurrency:
+  group: auto-ci-${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    if: ${{ vars.CI_ENABLED == 'true' }}
+    uses: YOUR_ORG/YOUR_REPO/.github/workflows/auto-build.yml@REUSABLE_SHA

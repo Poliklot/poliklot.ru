@@ -10,6 +10,14 @@ export interface ArticleSummary {
 
 const articles: readonly ArticleSummary[] = [
 	{
+		slug: 'ephemeral-github-actions-part-2',
+		shareImage: {src: '/share/ephemeral-github-actions-part-2-2026-11-v2.jpg', alt: 'GitHub Actions. Настраиваем временные VPS. Практическая часть — от workflow до готовой сборки.'},
+		publishedAt: '2026-11-13',
+		publishedLabel: '13 ноября 2026',
+		title: 'Настраиваем GitHub Actions на временных VPS — часть 2',
+		description: 'Практика с исходниками Python и скачиваемым комплектом. Установка Control, GitHub App, workflow, первый демопроект, проверка S3 и удаление VPS в Timeweb Cloud.',
+	},
+	{
 		slug: 'timeweb-developer-access',
 		shareImage: {src: '/share/timeweb-developer-access-2026-11-v2.jpg', alt: 'Timeweb Cloud. Доступ разработчику. Настройка прав.'},
 		publishedAt: '2026-11-04',
@@ -40,7 +48,7 @@ const articles: readonly ArticleSummary[] = [
 		shareImage: {src: '/share/ephemeral-github-actions-2026-11-v1.jpg', alt: 'GitHub Actions. Платим за сборки, а не за простой. Временные серверы для CI.'},
 		publishedAt: '2026-09-20',
 		publishedLabel: '20 сентября 2026',
-		updatedAt: '2026-10-06',
+		updatedAt: '2026-11-13',
 		title: 'GitHub Actions: платим за сборки, а не за простой',
 		description: 'Временные серверы для GitHub Actions: оплата в рублях, понятный расчёт расходов и одна машина на сборку. Часть 1.',
 	},

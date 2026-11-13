@@ -1,0 +1,9 @@
+[Unit]
+Description=Look for an approved queued job
+[Timer]
+OnBootSec=30s
+OnUnitInactiveSec=20s
+AccuracySec=1s
+Unit=ephemeral-ci@dispatch.service
+[Install]
+WantedBy=timers.target

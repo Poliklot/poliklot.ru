@@ -1,0 +1,323 @@
+---
+import {Code} from 'astro:components';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleScreenshot from '../../components/ArticleScreenshot.astro';
+import ScreenshotLightbox from '../../components/ScreenshotLightbox.astro';
+import {publishedArticles} from '../../data/articles';
+import {ciKitFiles, ciKitFile, ciKitRoot} from '../../data/ephemeral-ci-kit';
+import {ciExamples} from '../../data/ephemeral-ci-examples';
+import {ciLifecycles, ciOutcomeLabels, ciEconomics, ciTotalSeconds, ciLatestPairSeconds, ciModelRub, ciDuration} from '../../data/ephemeral-ci-results';
+import '../../styles/ephemeral-article.css';
+import '../../styles/ephemeral-case-study.css';
+
+const article = publishedArticles.find(({slug}) => slug === 'ephemeral-github-actions-part-2')!;
+const assets = '/articles/ephemeral-github-actions-part-2';
+const rub = (amount: number) => new Intl.NumberFormat('ru-RU', {maximumFractionDigits: 2, minimumFractionDigits: 2}).format(amount);
+const contents = [
+	['architecture', '1. Облако и Control'], ['github', '2. GitHub и workflow'],
+	['runner', '3. Конфигурация VPS'], ['build', '4. Проверки и сборка'],
+	['delivery', '5. Результат в S3'], ['cleanup', '6. Службы и удаление'],
+	['verification', '7. Сквозной запуск'], ['sources', 'Файлы комплекта'],
+];
+const outcomeMarks = {pass: '✓', failure: '×', cancelled: '−', setup: '?'};
+const installCommands = [
+	'sha256sum -c ephemeral-ci-kit-v1.zip.sha256', 'python3 -m zipfile -e ephemeral-ci-kit-v1.zip .',
+	'cd ephemeral-ci', 'sha256sum -c SHA256SUMS', 'sudo bash install.sh',
+].join('\n');
+const controlCommand = 'sudo /opt/ephemeral-ci/venv/bin/python -I -B /opt/ephemeral-ci/controller.py';
+---
+
+<BaseLayout title={article.title + ' — Poliklot'} description={article.description} locale="ru"
+	path="/articles/ephemeral-github-actions-part-2/" pageType="article"
+	datePublished={article.publishedAt} dateModified={article.updatedAt ?? article.publishedAt}>
+	<article class="ci-guide ci-case">
+		<nav class="ci-breadcrumbs" aria-label="Хлебные крошки">
+			<a href="/">Главная</a><span aria-hidden="true">/</span><a href="/articles/">Материалы</a>
+		</nav>
+		<div class="ci-layout">
+			<header class="ci-hero">
+				<p class="ci-series">GitHub Actions на своих серверах · Часть 2</p>
+				<h1>Настраиваем GitHub Actions на временных VPS</h1>
+				<p class="ci-lead">Поднимаем управляющий сервер, подключаем GitHub и собираем первый проект. С исходниками, установкой и проверкой всего цикла.</p>
+				<div class="ci-meta" data-search-ignore>
+					<span>Игорь Майоров / Poliklot</span><time datetime={article.publishedAt}>{article.publishedLabel}</time><span>15 минут · код и детали под раскрытием</span>
+				</div>
+			</header>
+			<aside class="ci-toc">
+				<nav aria-label="Содержание статьи"><p>Порядок настройки</p><ul>{contents.map(([id, label]) => <li><a href={'#' + id}>{label}</a></li>)}</ul></nav>
+			</aside>
+			<div class="ci-content" data-screenshot-gallery>
+				<p class="ci-opening">В <a href="/articles/ephemeral-github-actions/">первой части</a> разобрали идею — оставляем GitHub Actions, а мощный сервер арендуем только на время сборки. Здесь собираем этот контур с нуля. Начнём с небольшого демопроекта, чтобы повторить все шаги без доступа к нашему приложению.</p>
+				<div class="ci-kit" id="kit">
+					<h2>Весь код в одном комплекте</h2>
+					<p>Диспетчер, очистка, проверка S3, подготовка runner, оба workflow, демопроект и тесты.</p>
+					<p class="ci-kit-downloads"><a href={ciKitRoot + '/ephemeral-ci-kit-v1.zip'} download>Скачать комплект ZIP</a><a href={ciKitRoot + '/ephemeral-ci-kit-v1.zip.sha256'} download>SHA-256</a><a href={ciKitRoot + '/README.md'} download>Инструкция README</a></p>
+					<p class="ci-note">Проверен в Timeweb 13 ноября 2026 — успешная сборка, ошибка теста и отмена работающего job. Android и Backend ниже показывают подключение реального проекта к этой схеме.</p>
+				</div>
+
+				<section id="architecture" class="ci-section">
+					<h2>1. Готовим облако и управляющий сервер</h2>
+					<p>Нужны отдельный Linux-сервер <strong>Control</strong> с Ubuntu 24.04 x86_64, проект временных VPS в Timeweb Cloud и приватный S3-бакет. Control управляет арендой, но не исполняет код приложения.</p>
+					<ArticleScreenshot src={assets + '/workflow.drawio.svg'} width={1259} height={197}
+						mobile={{src: assets + '/workflow-mobile.drawio.svg', width: 406, height: 674}}
+						alt="Control получает задание из GitHub, создаёт временную VPS и после работы удаляет её. VPS сохраняет сборку в S3, Control проверяет сохранённые файлы."
+						caption="GitHub хранит задания. Control управляет машинами. Временная VPS собирает. S3 хранит результат." />
+					<p>В исходной схеме сервер создавал отдельный job в GitHub. Теперь это делает Control, поэтому создание и удаление тоже не расходуют GitHub-hosted минуты.</p>
+					<p>Скачиваем ZIP и файл контрольной суммы на Control. Установщик кладёт программы в <code>/opt/ephemeral-ci</code>, настройки в <code>/etc/ephemeral-ci</code>, журнал в <code>/var/lib/ephemeral-ci</code>. Таймеры пока не включает.</p>
+					<div class="ci-code"><p>На Control</p><Code code={installCommands} lang="bash" theme="github-light" tabindex="0" /></div>
+					<details class="ci-detail">
+						<summary>Доступы Timeweb, два пользователя S3 и установщик целиком</summary>
+						<div>
+							<p>В Timeweb создаём отдельный проект для временных машин. В его токене включаем управление серверами и сетями, разрешаем удаление через API без Telegram. Остальные права отключаем. Для баланса выпускаем отдельный финансовый токен — программа использует его только для GET-запроса.</p>
+							<p>В разделе «Сети» создаём отдельную сеть CI в зоне будущих VPS. Её ID записываем в <code>cloud.network_id</code>. Control и worker подключаем к ней, а не к сети рабочих серверов.</p>
+							<p>Бакет создаём приватным, в регионе <code>ru-1</code>. В <a href="https://timeweb.cloud/docs/s3-storage/manage-storage/additional-users">пользователях S3</a> заводим два доступа только к этому бакету — writer с чтением и записью, reader только с чтением. В жизненном цикле бакета задаём удаление префикса <code>ephemeral-ci/</code> через семь дней, включая старые версии, если версионирование включено.</p>
+							<table class="ci-config-table">
+								<caption>Файлы секретов на Control, владелец root и права 0600</caption>
+								<thead><tr><th scope="col">Файл в /etc/ephemeral-ci/</th><th scope="col">Содержимое</th></tr></thead>
+								<tbody>
+									<tr><th scope="row"><code>timeweb.token</code></th><td>Токен проекта, без Bearer и кавычек.</td></tr>
+									<tr><th scope="row"><code>finance.token</code></th><td>Токен для чтения баланса.</td></tr>
+									<tr><th scope="row"><code>github-app.pem</code></th><td>Private key GitHub App из следующего шага.</td></tr>
+									<tr><th scope="row"><code>s3-writer.json</code><br /><code>s3-reader.json</code></th><td>Два разных JSON с полями <code>aws_access_key_id</code> и <code>aws_secret_access_key</code>.</td></tr>
+								</tbody>
+							</table>
+							<p>Значения заполняем через <code>sudoedit</code>, не в репозитории. Затем выполняем <code>sudo chown root:root /etc/ephemeral-ci/*</code> и <code>sudo chmod 600 /etc/ephemeral-ci/*</code>.</p>
+							<div class="ci-code ci-source" data-search-ignore><p>install.sh · полный файл</p><Code code={ciKitFile('install.sh')} lang="bash" theme="github-light" tabindex="0" /></div>
+						</div>
+					</details>
+				</section>
+
+				<section id="github" class="ci-section">
+					<h2>2. Подключаем GitHub и настраиваем workflow</h2>
+					<p>В своём приватном репозитории создаём ветку <code>dev</code>. Сначала добавляем из комплекта <code>demo.py</code> и <code>.github/workflows/auto-build.yml</code>. Сохраняем коммит и копируем его полный SHA — на эту версию будет ссылаться запуск сборки.</p>
+					<p>В распакованном комплекте подставляем свой репозиторий и этот SHA. Команда подготовит <code>auto-ci.yml</code> и выведет SHA-256 обоих workflow для Control.</p>
+					<div class="ci-code"><p>В каталоге комплекта</p><Code code="python3 prepare.py --repository YOUR_ORG/YOUR_REPO --reusable-sha FULL_COMMIT_SHA" lang="bash" theme="github-light" tabindex="0" /></div>
+					<p>Добавляем получившийся <code>auto-ci.yml</code> в репозиторий. В Settings → Secrets and variables → Actions → Variables создаём <code>CI_ENABLED=false</code>. Включим её перед первым прогоном.</p>
+					<p>Затем создаём GitHub App без Webhook, устанавливаем только в этот репозиторий. Сохраняем App ID, Installation ID и private key на Control.</p>
+					<details class="ci-detail">
+						<summary>Права GitHub App и оба workflow целиком</summary>
+						<div>
+							<table class="ci-config-table">
+								<caption>Repository permissions</caption>
+								<thead><tr><th scope="col">Разрешение</th><th scope="col">Для чего</th></tr></thead>
+								<tbody>
+									<tr><th scope="row">Actions · read/write</th><td>Читать задания и отменять свой запуск.</td></tr>
+									<tr><th scope="row">Administration · read/write</th><td>Регистрировать и удалять repository runner.</td></tr>
+									<tr><th scope="row">Contents · read</th><td>Сверять точные файлы workflow.</td></tr>
+								</tbody>
+							</table>
+							<p>App ID указан на странице приложения. Installation ID — в адресе страницы его установки после <code>/installations/</code>. Права регистрации описаны в <a href="https://docs.github.com/en/rest/actions/self-hosted-runners">API GitHub</a>.</p>
+							<p>Каждая попытка имеет метку <code>auto-ci-&lt;run_id&gt;-&lt;run_attempt&gt;</code>. Она совпадает в <code>runs-on</code> и при регистрации машины. Control проверяет источник push, ID репозитория, ветку, job, SHA и содержимое двух workflow. PR и fork этот комплект не запускает.</p>
+							<div class="ci-code"><p>auto-ci.yml · YOUR_ORG/YOUR_REPO и REUSABLE_SHA заменит prepare.py</p><Code code={ciKitFile('repository/.github/workflows/auto-ci.yml')} lang="yaml" theme="github-light" tabindex="0" /></div>
+							<div class="ci-code"><p>auto-build.yml · полный демо-workflow</p><Code code={ciKitFile('repository/.github/workflows/auto-build.yml')} lang="yaml" theme="github-light" tabindex="0" /></div>
+							<div class="ci-code ci-source" data-search-ignore><p>prepare.py · полный файл</p><Code code={ciKitFile('prepare.py')} lang="python" theme="github-light" tabindex="0" /></div>
+						</div>
+					</details>
+				</section>
+
+				<section id="runner" class="ci-section">
+					<h2>3. Настраиваем создание VPS и runner</h2>
+					<p>Открываем <code>/etc/ephemeral-ci/config.json</code>. Заполняем реквизиты GitHub App и имя репозитория, затем читаем каталог. Команда покажет ID репозитория, тарифы VPS и образы ОС, ничего не заказывая.</p>
+					<div class="ci-code"><p>На Control</p><Code code={controlCommand + ' catalog'} lang="bash" theme="github-light" tabindex="0" /></div>
+					<p>Для первого демо выбираем Ubuntu 24.04 x86_64 и небольшой тариф, например 2 vCPU и 4 ГиБ RAM. В конфигурацию переносим ID проекта, тарифа, ОС, отдельной сети и зону. Добавляем pin и хеши workflow, имя бакета и одобренные цены.</p>
+					<details class="ci-detail">
+						<summary>Полная конфигурация и откуда брать значения</summary>
+						<div>
+							<p><code>repository_id</code>, <code>preset_id</code> и <code>os_id</code> берём из <code>catalog</code>. <code>project_id</code> и зону доступности — из панели Timeweb. <code>reusable_sha</code> — SHA первого коммита из шага 2, <code>workflow_sha256</code> — вывод <code>prepare.py</code>.</p>
+							<p><code>max_vm_monthly_rub</code> задаёт верхнюю цену выбранной VPS. В <code>limits</code> заполняем текущие цены IPv4, бакета и исходящего трафика. Срок проверки этих цен — UTC в <code>approved_until</code>, максимум семь дней. На Ubuntu дату на сутки вперёд даст <code>date -u -d '+1 day' '+%Y-%m-%dT%H:%M:%SZ'</code>.</p>
+							<p>Первый запуск ограничен одной арендой и резервом 300 ₽. Если выбранный тариф, хранение и запас не помещаются, проверка остановится до заказа. Закрытие машины не обнуляет учёт ранее принятых аренд.</p>
+							<div class="ci-code ci-source"><p>config.example.json · заменяем FILL_ME, YOUR_ORG/YOUR_REPO и нулевые значения</p><Code code={ciKitFile('config.example.json')} lang="json" theme="github-light" tabindex="0" /></div>
+						</div>
+					</details>
+					<p>Проверяем настройки и доступы. Ожидаемый ответ — <code>CHECK_OK</code>. Машина ещё не создаётся.</p>
+					<div class="ci-code"><p>На Control</p><Code code={controlCommand + ' check'} lang="bash" theme="github-light" tabindex="0" /></div>
+					<p>Дальше диспетчер работает сам. Находит queued job, записывает аренду в SQLite и ждёт подтверждения от службы очистки. Только после этого отправляет один POST создания VPS. Если ответ потерялся, ищет уже созданную машину, а не заказывает вторую.</p>
+					<details class="ci-detail">
+						<summary>Полная реализация диспетчера, очистки и проверки результата</summary>
+						<div>
+							<p>Это один модуль с отдельными командами <code>dispatch</code>, <code>cleanup</code> и <code>readback</code>. Три systemd-таймера запускают их независимо. Короткая общая блокировка защищает журнал только на время одного прохода.</p>
+							<div class="ci-code ci-source" data-search-ignore><p>controller.py · полный файл</p><Code code={ciKitFile('controller.py')} lang="python" theme="github-light" tabindex="0" /></div>
+						</div>
+					</details>
+					<p>Cloud-init готовит чистую VPS. В демокомплекте нужны Python, Git и зависимости GitHub runner. Runner запускается от отдельного пользователя, с уникальной меткой и <code>--ephemeral</code> — на одну задачу.</p>
+					<details class="ci-detail">
+						<summary>Полная подготовка и регистрация runner на VPS</summary>
+						<div>
+							<p>Архив runner закреплён по версии и SHA-256. На worker передаётся короткий registration token, а не приватный ключ App. Входящие соединения закрыты, Control не нужен SSH-доступ к worker. Pre-job hook проверяет, что исполнитель получил именно назначенный run и attempt.</p>
+							<p>В <code>write_files</code> стоит <code>defer: true</code>. Так cloud-init сначала создаёт пользователя <code>ci-runner</code>, затем записывает принадлежащие его группе файлы. Без этого первый облачный прогон остановился на подготовке VPS.</p>
+							<div class="ci-code ci-source" data-search-ignore><p>bootstrap.py · полный файл</p><Code code={ciKitFile('bootstrap.py')} lang="python" theme="github-light" tabindex="0" /></div>
+						</div>
+					</details>
+				</section>
+
+				<section id="build" class="ci-section">
+					<h2>4. Проверяем код и собираем результат</h2>
+					<p>Демо не требует внешних зависимостей. Job запускает тест, собирает HTML-страницу и кладёт её вместе с исходным SHA в <code>out/</code>. На этом результате проверяем весь цикл перед подключением приложения.</p>
+					<details class="ci-detail">
+						<summary>Полный демопроект и подключение своей сборки</summary>
+						<div>
+							<div class="ci-code"><p>demo.py · полный файл</p><Code code={ciKitFile('repository/demo.py')} lang="python" theme="github-light" tabindex="0" /></div>
+							<p>После приёмки демо заменяем Test и Build в <code>auto-build.yml</code> командами своего проекта. Готовые файлы складываем в <code>out/</code>. Последний шаг публикации остаётся общим. Java, Node.js, Android SDK или Docker добавляем в bootstrap под версии проекта. Обновлённый reusable workflow снова закрепляем по SHA и пересчитываем хеши.</p>
+						</div>
+					</details>
+					<p>В проекте, ради которого появился этот CI, Android сначала проходит lint, проверку конфигурации и тесты. Потом получает Gradle-зависимости и DEV-ключ, собирает подписанный AAB. Одна из ошибок форматирования остановила запуск ещё до чтения ключа.</p>
+					<ArticleScreenshot src={assets + '/android-steps.webp'} width={1536} height={682}
+						mobile={{src: assets + '/android-steps-mobile.webp', width: 900, height: 682}}
+						alt="Порядок шагов Android в проектной реализации. Проверки и зависимости идут перед чтением DEV-ключа и сборкой."
+						caption="Проектный Android workflow. В демокомплекте вместо этих шагов — Test, Build и Publish." />
+					<details class="ci-detail">
+						<summary>Как подключили Android, Backend и Vault в проекте</summary>
+						<div>
+							<p>Для React Native и PHP/Laravel использовали VPS с 16 vCPU, 32 ГиБ RAM и диском 160 ГиБ. Android выполняет следующие проверки после установки JS-зависимостей.</p>
+							<div class="ci-code"><p>Проверки Android</p><Code code={ciExamples.androidChecks} lang="bash" theme="github-light" tabindex="0" /></div>
+							<p>Затем читает DEV-ключ через Vault и запускает сборку из каталога <code>android</code>.</p>
+							<div class="ci-code"><p>Сборка AAB</p><Code code={ciExamples.androidBuild} lang="bash" theme="github-light" tabindex="0" /></div>
+							<p>Вход в Vault привязан к GitHub OIDC, репозиторию, dev-ветке и точной версии workflow. Это интеграция конкретного приложения, не зависимость демокомплекта. Для собственной подписи нужны свои ключи и настроенная роль Vault по <a href="https://developer.hashicorp.com/validated-patterns/vault/retrieve-vault-secrets-from-github-actions">официальной схеме</a>.</p>
+							<p>На одном запуске SSH-канал проектного прокси Vault оборвался раньше чтения ключа. Для постоянного соединения увеличили допустимое время без ответа, повторная сборка прошла с прежним DEV-ключом.</p>
+							<figure class="ci-relay">
+								<figcaption>Настройка проектного SSH-канала к Vault</figcaption>
+								<div class="ci-relay-comparison">
+									<div class="ci-relay-before"><span>Было</span><strong>5 с</strong><small>1 пропуск<br />интервал 5 с</small></div>
+									<span class="ci-relay-arrow" aria-hidden="true">→</span>
+									<div class="ci-relay-after"><span>Стало</span><strong>≈45 с</strong><small>3 пропуска<br />интервал 15 с</small></div>
+								</div>
+							</figure>
+							<div class="ci-code"><p>Постоянный relay</p><Code code={ciExamples.relay} lang="ssh-config" theme="github-light" tabindex="0" /></div>
+							<ArticleScreenshot src={assets + '/android-failure.webp'} width={1536} height={705}
+								mobile={{src: assets + '/android-failure-mobile.webp', width: 880, height: 705}}
+								alt="Неудачная проектная Android-сборка после обрыва канала к Vault."
+								caption="Машина и IP после этой ошибки удалились автоматически." />
+							<p>Backend проходит проверки PHP/Laravel в Docker Compose с отдельным MySQL по TLS. Затем собирает три образа и сохраняет их через <code>docker save</code>. Управление арендой остаётся таким же.</p>
+						</div>
+					</details>
+				</section>
+
+				<section id="delivery" class="ci-section">
+					<h2>5. Сохраняем результат в S3 и проверяем его</h2>
+					<p>В комплекте Control выдаёт worker две короткие подписанные PUT-ссылки только на его объекты. Постоянные S3-ключи остаются на Control. Worker упаковывает <code>out/</code>, считает SHA-256 и загружает архив, затем итоговый маркер.</p>
+					<div class="ci-code ci-package"><p>Пакет демосборки в S3</p><Code code={'ephemeral-ci/ci-<lease>/\n├── result.tar.gz\n└── delivery.json'} lang="text" theme="github-light" tabindex="0" /></div>
+					<p>Reader использует другого S3-пользователя. Скачивает сохранённый архив, сверяет run, attempt, job, исходный SHA, размер и хеш. Через ETag проверяет, что объекты не изменились за время чтения. Только после этого результат помечается проверенным.</p>
+					<details class="ci-detail">
+						<summary>Упаковка и публикация на worker — полный исходник</summary>
+						<div>
+							<p>Маркер появляется последним. При ошибке тестов шаг Publish не выполняется, а при неудачной загрузке архива маркер не отправляется. Ссылки истекают по исходному сроку очистки.</p>
+							<div class="ci-code ci-source" data-search-ignore><p>worker.py · полный файл</p><Code code={ciKitFile('worker.py')} lang="python" theme="github-light" tabindex="0" /></div>
+						</div>
+					</details>
+					<details class="ci-detail">
+						<summary>GitHub App, Timeweb API и независимый reader — полный исходник</summary>
+						<div>
+							<p>В <code>clients.py</code> находятся все внешние обращения, включая формирование JWT приложения и подписанных S3-ссылок. SDK используется только на Control. Writer и reader имеют разные ключи, архив на Control не распаковывается и не исполняется.</p>
+							<div class="ci-code ci-source" data-search-ignore><p>clients.py · полный файл</p><Code code={ciKitFile('clients.py')} lang="python" theme="github-light" tabindex="0" /></div>
+						</div>
+					</details>
+				</section>
+
+				<section id="cleanup" class="ci-section">
+					<h2>6. Включаем службы и автоматическое удаление</h2>
+					<p>Сначала запускаем очистку и reader. После этого ставим <code>enabled=true</code> в конфигурации Control, ещё раз выполняем <code>check</code> и включаем диспетчер.</p>
+					<div class="ci-code"><p>На Control · очистка включается первой</p><Code code={'sudo systemctl enable --now ephemeral-ci-cleanup.timer ephemeral-ci-readback.timer\nsudo systemctl start ephemeral-ci@cleanup.service\n\n# После enabled=true в config.json\n' + controlCommand + ' check\nsudo systemctl enable --now ephemeral-ci-dispatch.timer\nsudo systemctl list-timers \'ephemeral-ci-*\''} lang="bash" theme="github-light" tabindex="0" /></div>
+					<p><code>--ephemeral</code> делает одноразовым runner в GitHub, но не удаляет VPS. Это делает отдельная команда <code>cleanup</code>. При успехе, ошибке или отмене она удаляет свою VPS, её IPv4 и регистрацию runner, затем дважды проверяет их отсутствие с интервалом не менее 30 секунд.</p>
+					<p>Общее окно аренды — четыре часа. Для зависшего задания очистка начинается не позднее трёх часов тридцати минут. Перезапуск служб этот срок не сдвигает.</p>
+					<details class="ci-detail">
+						<summary>Все systemd units и безопасная остановка</summary>
+						<div>
+							{ciKitFiles.filter(file => file.name.startsWith('systemd/')).map(file => <div class="ci-code"><p>{file.name} · полный файл</p><Code code={file.content} lang="ini" theme="github-light" tabindex="0" /></div>)}
+							<p>Чтобы запретить новые заказы и закрыть текущую аренду, выполняем <code>stop</code> и выключаем только dispatcher timer. Очистку оставляем до <code>closed=true</code> у всех записей.</p>
+							<div class="ci-code"><p>Остановить эксперимент</p><Code code={controlCommand + ' stop\nsudo systemctl stop ephemeral-ci-dispatch.timer\n' + controlCommand + ' status'} lang="bash" theme="github-light" tabindex="0" /></div>
+							<p>При потерянном ответе создания слот остаётся занятым до выяснения состояния. Журнал <code>state.sqlite3</code> не удаляем — в нём владельцы ресурсов и защита от повторного заказа. В README описаны восстановление, проверка перепривязанного IP и завершение эксперимента.</p>
+						</div>
+					</details>
+				</section>
+
+				<section id="verification" class="ci-section">
+					<h2>7. Выполняем сквозной запуск и проверяем результат</h2>
+					<p>В GitHub меняем <code>CI_ENABLED</code> на <code>true</code> и отправляем новое изменение <code>demo.py</code> в <code>dev</code>. В Actions появится queued job, затем временный runner и три шага сборки. В S3 — архив и маркер.</p>
+					<div class="ci-code"><p>Состояние на Control</p><Code code={controlCommand + ' status\nsudo journalctl -u \'ephemeral-ci@*.service\' --since \'30 min ago\' --no-pager'} lang="bash" theme="github-light" tabindex="0" /></div>
+					<p>Первый запуск принят, когда <code>conclusion="success"</code>, <code>closed=true</code>, <code>readback=true</code> и <code>accepted=true</code>. Проверенный архив лежит в <code>/var/lib/ephemeral-ci/results/</code>. Дополнительно проверяем отсутствие VPS и IP в панели Timeweb и runner в настройках GitHub.</p>
+					<ArticleScreenshot src={assets + '/kit-live-success.jpg'} width={1920} height={907}
+						alt="Реальный запуск демопроекта из комплекта. Тест, сборка и публикация результата в S3 завершились успешно."
+						caption="Демо из архива на новой VPS. После загрузки Control проверил результат и удалил временные ресурсы." />
+					<p>На том же стенде проверили ошибку теста и отмену работающего job. В обоих случаях пакет не публикуется, а VPS, IP и runner удаляются автоматически.</p>
+					<details class="ci-detail">
+						<summary>Повторить ошибку, отмену и локальные тесты</summary>
+						<div>
+							<p>Для двух дополнительных прогонов после первой приёмки явно увеличиваем <code>max_leases_total</code> до 3 и общий резерв до 900 ₽, не сбрасывая журнал.</p>
+							<ol class="ci-list">
+								<li>Добавляем файл <code>FAIL_DEMO</code> в корень деморепозитория. Тест должен упасть, полный пакет не публикуется, ресурсы закрываются.</li>
+								<li>Ставим <code>CI_ENABLED=false</code> на время подготовки. Удаляем <code>FAIL_DEMO</code>, добавляем перед Test шаг <code>run: sleep 120</code>. Закрепляем новый SHA reusable workflow и обновляем caller и хеши Control.</li>
+								<li>Включаем переменную, отправляем одно новое изменение и отменяем job после старта runner. Проверяем закрытие ресурсов без принятого пакета.</li>
+							</ol>
+							<p>Сами программы можно проверить без аккаунтов и расходов. В распакованном комплекте запускаем тесты с подставными API.</p>
+							<div class="ci-code"><p>Локально, без создания VPS</p><Code code={'python3 -m venv .venv\n.venv/bin/pip install -r requirements.txt\n.venv/bin/python -B -m unittest discover -s tests -v\nbash -n install.sh'} lang="bash" theme="github-light" tabindex="0" /></div>
+							<p>Они проверяют полный цикл, потерю ответа POST, остановку GitHub, неизменность срока, чужой workflow, перепривязанный IP и подмену сохранённых файлов. Это проверка логики комплекта. Реальную интеграцию с облаком подтверждает прогон выше.</p>
+						</div>
+					</details>
+					<p>А так выглядела приёмка проектной реализации, из которой выросла эта схема.</p>
+					<div class="ci-deliverables">
+						<div><span>Android</span><strong>AAB · 99,5 МБ</strong><p>Подписанная DEV-сборка и символы отладки.</p></div>
+						<div><span>Backend</span><strong>3 образа · 704 МБ</strong><p>Проверенный архив серверной части.</p></div>
+					</div>
+					<ArticleScreenshot src={assets + '/android-success.webp'} width={1536} height={530}
+						mobile={{src: assets + '/android-success-mobile.webp', width: 640, height: 530}}
+						alt="Успешный проектный Android workflow. Общее время 38 мин 12 с, job 31 мин 59 с."
+						caption="Проектный Android. Workflow — 38 мин 12 с, полный цикл аренды — 39 мин 34 с." />
+					<ArticleScreenshot src={assets + '/backend-success.webp'} width={1536} height={530}
+						mobile={{src: assets + '/backend-success-mobile.webp', width: 640, height: 530}}
+						alt="Успешный проектный Backend workflow. Общее время 20 мин 08 с, job 15 мин 45 с."
+						caption="Проектный Backend. Полный цикл аренды — 19 мин 19 с, результат сохранён и проверен через S3." />
+					<details class="ci-detail">
+						<summary>Все десять аренд при настройке проектной версии</summary>
+						<div>
+							<p>Журнал за 12–13 ноября включает готовые сборки, наладку подготовки, ошибки и отмену. Все десять аренд закрыты.</p>
+							<table class="ci-run-table">
+								<caption>Время от приёма задания до подтверждения закрытия аренды</caption>
+								<thead><tr><th scope="col">Что проверяли</th><th scope="col">Полный цикл</th></tr></thead>
+								<tbody>{ciLifecycles.map((row) => <tr>
+									<th scope="row"><span class={'ci-outcome ci-outcome-' + row.outcome} role="img" aria-label={ciOutcomeLabels[row.outcome]}>{outcomeMarks[row.outcome]}</span><span>{row.label}</span></th>
+									<td><span>{ciDuration(row.seconds)}</span><div class={'ci-run-track ci-run-' + row.outcome} aria-hidden="true"><i style={'width: ' + row.seconds / 2400 * 100 + '%'}></i></div></td>
+								</tr>)}</tbody>
+							</table>
+							<p>Четыре задания успешны, три завершились ошибкой, одно отменено. Ещё два остановились на подготовке, их причины не подтверждены.</p>
+						</div>
+					</details>
+					<div class="ci-model">
+						<p class="ci-model-label">Проектная VPS с IPv4 · 16 vCPU, 32 ГиБ RAM</p>
+						<dl>
+							<div><dt>Backend + Android · 58 мин 53 с</dt><dd>{rub(ciModelRub(ciLatestPairSeconds))} ₽</dd></div>
+							<div><dt>Все 10 аренд · 3,125 часа</dt><dd>{rub(ciModelRub(ciTotalSeconds))} ₽</dd></div>
+						</dl>
+						<p>Модель по тарифу ноября 2026 — 23 560 ₽/мес ÷ 732 ч × время аренды. Это расчёт проектных запусков, не цена демокомплекта. Индивидуальный счёт этих VPS не выделен.</p>
+					</div>
+					<p class="ci-note">Общий проектный Control — {ciEconomics.monthlySharedControlRub.toLocaleString('ru-RU')} ₽/мес, бакет — {ciEconomics.monthlyBucketRub} ₽/мес. Трафик и сопровождение учитываются отдельно.</p>
+					<p class="ci-ending">После первого сквозного прогона меняется содержимое сборки, а не вся система. GitHub ставит задачу, Control поднимает машину, результат остаётся в S3, временные ресурсы удаляются.</p>
+				</section>
+
+				<section id="sources" class="ci-section ci-kit-files">
+					<h2>Файлы для повторения</h2>
+					<p><a href={ciKitRoot + '/ephemeral-ci-kit-v1.zip'} download>Скачать весь комплект</a> или открыть нужный файл отдельно. Исходники на странице и в архиве берутся из одних файлов проекта.</p>
+					<details class="ci-detail"><summary>Все файлы, проверки и зависимости</summary><div>
+						<ul class="ci-list">{ciKitFiles.map(file => <li><a href={ciKitRoot + '/' + file.name} download>{file.name}</a></li>)}</ul>
+						<div class="ci-code"><p>requirements.txt</p><Code code={ciKitFile('requirements.txt')} lang="text" theme="github-light" tabindex="0" /></div>
+						<p>Полная установка, восстановление после ошибки, остановка и различия учебной и проектной версий описаны в README. Для демо не требуется Vault, ключ подписи или закрытый репозиторий приложения.</p>
+					</div></details>
+				</section>
+				<nav class="ci-next" aria-label="Другие части серии"><p class="ci-series">Часть 1 · Идея</p><h2><a href="/articles/ephemeral-github-actions/">Платим за сборки,<br />а не за простой</a></h2><p>Зачем брать сервер только на время работы и как посчитать экономику под свою нагрузку.</p></nav>
+				<footer class="ci-sources">
+					<details class="ci-detail"><summary>Материалы и официальная документация</summary><div>
+						<p>Проектные результаты за 12–13 ноября 2026, скриншоты обезличены. Учебный комплект — самостоятельная реализация того же цикла.</p>
+						<ul>
+							<li><a href="https://docs.github.com/en/actions/reference/runners/self-hosted-runners">GitHub — одноразовые исполнители</a> · <a href="https://docs.github.com/en/rest/actions/self-hosted-runners">регистрация runner</a></li>
+							<li><a href="https://timeweb.cloud/api-docs">Timeweb — API облака</a></li>
+							<li><a href="https://docs.cloud-init.io/en/latest/reference/modules.html#write-files">cloud-init — порядок создания файлов</a></li>
+							<li><a href="https://timeweb.cloud/docs/s3-storage/manage-storage/additional-users">S3 — пользователи и права</a> · <a href="https://timeweb.cloud/docs/s3-storage/supported-features/presigned-url">подписанные ссылки</a></li>
+							<li><a href="https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html">systemd — таймеры</a></li>
+							<li><a href="https://man.openbsd.org/ssh_config.5">OpenSSH — настройки соединения</a></li>
+						</ul>
+					</div></details>
+				</footer>
+				<ScreenshotLightbox />
+			</div>
+		</div>
+	</article>
+</BaseLayout>

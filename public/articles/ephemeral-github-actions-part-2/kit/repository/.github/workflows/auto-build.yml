@@ -1,0 +1,19 @@
+name: Build and publish
+on: workflow_call
+jobs:
+  build:
+    runs-on: auto-ci-${{ github.run_id }}-${{ github.run_attempt }}
+    timeout-minutes: 60
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1, Node 24
+        with:
+          persist-credentials: false
+          ref: ${{ github.sha }}
+      - name: Test
+        run: python3 -m unittest -v demo
+      - name: Build
+        run: python3 demo.py
+      - name: Publish verified output
+        run: python3 /opt/ci/worker.py publish out

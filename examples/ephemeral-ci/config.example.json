@@ -1,0 +1,53 @@
+{
+  "enabled": false,
+  "state_dir": "/var/lib/ephemeral-ci",
+  "github": {
+    "app_id": "FILL_ME",
+    "installation_id": "FILL_ME",
+    "private_key": "/etc/ephemeral-ci/github-app.pem",
+    "repository": "YOUR_ORG/YOUR_REPO",
+    "repository_id": 0,
+    "branch": "dev",
+    "reusable_sha": "FILL_ME",
+    "workflow_sha256": {
+      ".github/workflows/auto-ci.yml": "FILL_ME",
+      ".github/workflows/auto-build.yml": "FILL_ME"
+    }
+  },
+  "cloud": {
+    "token_file": "/etc/ephemeral-ci/timeweb.token",
+    "finance_token_file": "/etc/ephemeral-ci/finance.token",
+    "project_id": 0,
+    "preset_id": 0,
+    "os_id": 0,
+    "availability_zone": "FILL_ME",
+    "network_id": "FILL_ME",
+    "max_vm_monthly_rub": "0"
+  },
+  "s3": {
+    "endpoint": "https://s3.twcstorage.ru",
+    "region": "ru-1",
+    "bucket": "FILL_ME",
+    "writer_file": "/etc/ephemeral-ci/s3-writer.json",
+    "reader_file": "/etc/ephemeral-ci/s3-reader.json",
+    "max_artifact_bytes": 16777216,
+    "capacity_bytes": 10000000000
+  },
+  "limits": {
+    "lease_seconds": 14400,
+    "cleanup_margin_seconds": 1800,
+    "max_leases_total": 1,
+    "reserve_rub": "300",
+    "budget_rub": "300",
+    "minimum_balance_rub": "1000",
+    "approved_until": "FILL_ME",
+    "ipv4_monthly_rub": "0",
+    "storage_monthly_rub": "0",
+    "egress_rub_per_gb": "0",
+    "cleanup_reserve_rub": "50"
+  },
+  "runner": {
+    "version": "2.338.2",
+    "sha256": "baebf204307bac6193480852732f0aba2ae97b6c5597c244f4d5558390147c40"
+  }
+}

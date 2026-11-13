@@ -1,0 +1,9 @@
+[Unit]
+Description=Read and verify completed build packages
+[Timer]
+OnBootSec=20s
+OnUnitInactiveSec=30s
+AccuracySec=1s
+Unit=ephemeral-ci@readback.service
+[Install]
+WantedBy=timers.target
