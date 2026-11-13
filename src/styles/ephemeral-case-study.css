@@ -14,16 +14,14 @@
 .ci-kit-downloads { display: flex; flex-wrap: wrap; gap: 10px 24px; margin-top: 18px; }
 .ci-kit-downloads a:first-child { font-weight: 650; }
 .ci-kit-files a { overflow-wrap: anywhere; }
-.ci-source pre { max-height: 520px; overscroll-behavior: contain; }
+.ci-source .expressive-code pre { max-height: 520px; overscroll-behavior: contain; }
 .ci-case .ci-list { padding-left: 23px; margin: 18px 0; }
 .ci-case .ci-list li { padding-left: 4px; margin-top: 9px; }
 .ci-case .ci-list li::marker { color: var(--ci-blue); }
-.ci-code { margin: 22px 0; border: 1px solid var(--ci-line); border-radius: 8px; overflow: hidden; }
-.ci-code > p { padding: 10px 16px; border-bottom: 1px solid var(--ci-line); background: #f3f5f8; color: var(--ci-muted); font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
-.ci-code pre { margin: 0; padding: 18px 16px; max-width: 100%; overflow: auto; font-size: 12px; line-height: 1.7; tab-size: 2; }
-.ci-code pre code { padding: 0; border-radius: 0; background: none; font-size: inherit; overflow-wrap: normal; }
+.ci-code { margin: 22px 0; min-width: 0; }
+.ci-code .expressive-code { margin: 0; }
+.ci-code .expressive-code .copy button, .ci-code .expressive-code .copy .feedback { transition-duration: .1s; }
 .ci-case .ci-code pre:focus-visible { outline-offset: -3px; }
-.ci-package pre { font-size: 14px; }
 .ci-config-table { width: 100%; border-collapse: collapse; margin: 12px 0 22px; text-align: left; font-size: 13px; line-height: 1.6; }
 .ci-config-table caption { text-align: left; padding-bottom: 12px; color: var(--ci-muted); font-size: 12px; }
 .ci-config-table th, .ci-config-table td { padding: 12px; border-bottom: 1px solid var(--ci-line); vertical-align: top; }
@@ -79,10 +77,8 @@
 .ci-case .ci-sources .ci-detail { border-bottom: 0; }
 @media (max-width: 600px) {
 	.ci-kit { padding: 20px; }
-	.ci-source pre { max-height: 420px; }
-	.ci-code > p { padding: 9px 12px; }
-	.ci-code pre { padding: 15px 12px; font-size: 11px; }
-	.ci-package pre { font-size: 12px; }
+	.ci-source .expressive-code pre { max-height: 420px; }
+	.ci-code .expressive-code { --ec-codeFontSize: 13px; }
 	.ci-config-table th, .ci-config-table td { padding: 10px 7px; }
 	.ci-machine dd { font-size: 19px; }
 	.ci-relay, .ci-model { padding: 20px; }

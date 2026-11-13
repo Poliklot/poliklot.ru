@@ -20,6 +20,7 @@
     "@gravity-ui/icons": "^2.22.0",
     "@gravity-ui/uikit": "^7.49.0",
     "astro": "^7.2.10",
+    "astro-expressive-code": "0.44.3",
     "chart.js": "^4.5.1",
     "fuse.js": "^7.5.0",
     "photoswipe": "^5.4.4",
