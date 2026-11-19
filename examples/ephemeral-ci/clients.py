@@ -110,8 +110,14 @@ class GitHub:
         repo = self.c['repository']
         base = '/repos/' + repo + '/actions'
         found = []
-        # Status-filtered searches can lag. Inspect the actual attempt's jobs.
-        for r in self.pages(base + '/runs', 'workflow_runs'):
+        runs = {}
+        for status in ('queued', 'in_progress'):
+            query = urllib.parse.urlencode({'branch': self.c['branch'], 'event': 'push', 'status': status})
+            for r in self.pages(base + '/workflows/auto-ci.yml/runs?' + query, 'workflow_runs'):
+                # The same attempt may change status between the two requests.
+                runs[r['id'], r['run_attempt']] = r
+        # Search results can lag. Inspect the actual attempt's jobs before admitting it.
+        for r in runs.values():
             if (r.get('path') != '.github/workflows/auto-ci.yml'
                     or r.get('head_branch') != self.c['branch']
                     or r.get('event') != 'push' or r.get('status') not in ('queued', 'in_progress')):

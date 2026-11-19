@@ -9,6 +9,7 @@ import sys
 import tempfile
 import unittest
 from unittest.mock import patch
+from urllib.parse import parse_qs
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from clients import Cloud, GitHub, Refused, Storage
@@ -34,7 +35,36 @@ class AdmissionTest(unittest.TestCase):
         self.gh.content = lambda path, sha: self.entry if path.endswith('auto-ci.yml') else self.build
 
     def test_exact_queued_job_is_admitted(self):
-        self.assertEqual(self.gh.queued()[0]['label'], 'auto-ci-1-1')
+        # A run can appear in both listings if it changes status between requests.
+        self.assertEqual([job['label'] for job in self.gh.queued()], ['auto-ci-1-1'])
+
+    def test_queued_job_is_found_behind_1000_completed_runs(self):
+        base = '/repos/example/project/actions'
+        history = [dict(self.run, id=i, status='completed') for i in range(2, 1002)] + [self.run]
+
+        def api(path):
+            route, _, query = path.partition('?')
+            if route in (base + '/runs', base + '/workflows/auto-ci.yml/runs'):
+                params = parse_qs(query)
+                rows = history
+                if route != base + '/runs':
+                    self.assertEqual(params['branch'], [self.c['branch']])
+                    self.assertEqual(params['event'], ['push'])
+                    rows = [r for r in rows if [r['status']] == params['status']]
+                size = int(params['per_page'][0])
+                start = (int(params['page'][0]) - 1) * size
+                return {'workflow_runs': rows[start:start + size]}
+            if route == base + '/runs/1':
+                return self.run
+            self.assertEqual(route, base + '/runs/1/attempts/1/jobs')
+            return {'jobs': [self.job]}
+
+        del self.gh.pages  # Exercise the real paginator against the in-memory GitHub API.
+        self.gh.api = api
+        for status in ('queued', 'in_progress'):
+            with self.subTest(status=status):
+                self.run['status'] = status
+                self.assertEqual([job['job_id'] for job in self.gh.queued()], [2])
 
     def test_foreign_fork_wrong_label_and_changed_workflow_are_denied(self):
         self.run['head_repository']['id'] = 999
